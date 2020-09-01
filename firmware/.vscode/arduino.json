@@ -1,0 +1,8 @@
+{
+    "board": "esp32:esp32:nodemcu-32s",
+    "configuration": "FlashFreq=80,UploadSpeed=921600",
+    "port": "COM9",
+    "programmer": "AVR ISP",
+    "sketch": "Main.ino",
+	"output": "../bin"
+}
