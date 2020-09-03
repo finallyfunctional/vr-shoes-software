@@ -19,7 +19,6 @@ class BluetoothCommunicator : ICommunicator
     StaticJsonDocument<200> json;
 
     const String PING = "ping"; 
-
 };
 
 #endif
