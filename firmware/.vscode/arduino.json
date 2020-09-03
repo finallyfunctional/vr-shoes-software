@@ -4,5 +4,5 @@
     "port": "COM9",
     "programmer": "AVR ISP",
     "sketch": "Main.ino",
-	"output": "../bin"
+    "output": "../bin"
 }
