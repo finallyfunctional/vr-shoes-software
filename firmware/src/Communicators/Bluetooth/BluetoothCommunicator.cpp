@@ -1,4 +1,4 @@
-#include "BluetoothCommunicator.h"
+#include "../../../include/Communicators/Bluetooth/BluetoothCommunicator.h"
 
 void BluetoothCommunicator::initialize()
 {

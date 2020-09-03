@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <BluetoothSerial.h>
-#include <namedMesh.h>
+#include "./namedMesh.h"
 #include <ArduinoJson.h>
 #include "../ICommunicator.h"
 
