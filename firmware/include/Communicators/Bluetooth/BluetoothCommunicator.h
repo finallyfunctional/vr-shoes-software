@@ -5,6 +5,7 @@
 #include <BluetoothSerial.h>
 #include <ArduinoJson.h>
 #include "../ICommunicator.h"
+#include "../Commands.h"
 
 class BluetoothCommunicator : ICommunicator
 {
@@ -17,8 +18,6 @@ class BluetoothCommunicator : ICommunicator
 
     BluetoothSerial serialBt;
     StaticJsonDocument<200> json;
-
-    const String PING = "ping"; 
 };
 
 #endif

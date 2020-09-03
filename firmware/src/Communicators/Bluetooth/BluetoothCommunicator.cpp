@@ -19,7 +19,7 @@ void BluetoothCommunicator::processMessages()
     }
 
     String commandId = json["command"].as<String>();
-    if(commandId.equals(PING))
+    if(commandId.equals(Commands::PING))
     {
         serialBt.println("ping received");
     }
