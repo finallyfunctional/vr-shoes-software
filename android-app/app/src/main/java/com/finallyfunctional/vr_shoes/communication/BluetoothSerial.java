@@ -1,7 +1,9 @@
-package com.finallyfunctional.vr_shoes;
+package com.finallyfunctional.vr_shoes.communication;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+
+import com.finallyfunctional.vr_shoes.communication.Communicator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +12,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.UUID;
 
-public class BluetoothSerial
+public class BluetoothSerial extends Communicator
 {
     private OutputStream btOutputStream;
     private InputStream btInputStream;
@@ -94,12 +96,12 @@ public class BluetoothSerial
         }
     }
 
-    public String readNextMessage()
+    protected String readNextMessage()
     {
         return recievedMessages.size() == 0 ? "" : recievedMessages.remove();
     }
 
-    public void writeMessage(String message) throws IOException
+    protected void writeMessage(String message) throws IOException
     {
         btOutputStream.write(message.getBytes());
     }
