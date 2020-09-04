@@ -8,15 +8,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.finallyfunctional.vr_shoes.BluetoothSerial;
 import com.finallyfunctional.vr_shoes.R;
 import com.finallyfunctional.vr_shoes.Settings;
 
+import java.io.IOException;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
 {
     private BluetoothAdapter btAdapter;
     private Settings settings;
+    private BluetoothSerial btSerial;
 
     private final static int REQUEST_ENABLE_BT = 1;
 
@@ -34,6 +37,31 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         initializeBluetooth();
+        //sendTestMessage();
+    }
+
+    private void sendTestMessage()
+    {
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+        String vrShoeId = settings.getPairedVrShoe();
+        BluetoothDevice btDevice = null;
+        for(BluetoothDevice device : pairedDevices)
+        {
+            if(device.getName().equals(vrShoeId))
+            {
+                btDevice = device;
+            }
+        }
+        try
+        {
+            btSerial = new BluetoothSerial(btDevice);
+            btSerial.startReading();
+            btSerial.writeMessage("{\"command\":\"ping\"}");
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     private void initializeBluetooth()
