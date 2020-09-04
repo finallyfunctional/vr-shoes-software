@@ -7,24 +7,14 @@ void BluetoothCommunicator::initializeCommunication()
 
 void BluetoothCommunicator::processMessages()
 {
-    if(!serialBt.available())
+    while(serialBt.available())
     {
-        return;
+        String message = serialBt.readStringUntil('\n');
+        handleMessage(message);
     }
-    String command = serialBt.readStringUntil('\n');
-    DeserializationError error = deserializeJson(json, command);
-    if (error) 
-    {
-        serialBt.println("Could not parse Command: ");
-        serialBt.println(command);
-        return;
-    }
+}
 
-    String commandId = json["command"].as<String>();
-    if(commandId.equals(Commands::PING))
-    {
-        serialBt.print("ping received from VR-Shoe-");
-        serialBt.println(deviceId);
-    }
-    json.clear();
+void BluetoothCommunicator::sendMessage(String message)
+{
+    serialBt.println(message);
 }

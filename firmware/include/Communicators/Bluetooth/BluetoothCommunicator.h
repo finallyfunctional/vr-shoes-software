@@ -5,7 +5,6 @@
 #include <BluetoothSerial.h>
 #include <ArduinoJson.h>
 #include "../AbstractCommunicator.h"
-#include "../Commands.h"
 
 class BluetoothCommunicator : public AbstractCommunicator
 {
@@ -14,9 +13,10 @@ class BluetoothCommunicator : public AbstractCommunicator
     void processMessages();
 
     private:
-
     BluetoothSerial serialBt;
-    StaticJsonDocument<200> json;
+
+    protected:
+    void sendMessage(String message);
 };
 
 #endif

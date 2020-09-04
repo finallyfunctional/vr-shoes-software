@@ -2,7 +2,9 @@
 #define AbstractCommunicator_h
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <Preferences.h>
+#include "./Messages.h"
 
 class AbstractCommunicator
 {
@@ -14,8 +16,13 @@ class AbstractCommunicator
     static const char* DEVICE_ID_KEY;
     static const String DEVICE_ID_PREFIX;
 
+    StaticJsonDocument<200> json;
+
     protected:
     virtual void initializeCommunication() = 0;
+    void handleMessage(String message);
+    void ping();
+    virtual void sendMessage(String message) = 0;
 
     String deviceId;
 };
