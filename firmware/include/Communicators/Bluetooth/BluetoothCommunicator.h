@@ -14,7 +14,6 @@ class BluetoothCommunicator : ICommunicator
     void processMessages();
 
     private:
-    String parseBluetoothSerialCommand();
 
     BluetoothSerial serialBt;
     StaticJsonDocument<200> json;

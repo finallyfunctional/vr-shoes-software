@@ -7,15 +7,17 @@ void BluetoothCommunicator::initialize()
 
 void BluetoothCommunicator::processMessages()
 {
-    String command = parseBluetoothSerialCommand();
-    if(command == NULL || command == "")
+    if(!serialBt.available())
     {
         return;
     }
+    String command = serialBt.readStringUntil('\n');
     DeserializationError error = deserializeJson(json, command);
     if (error) 
     {
-        return; //TODO
+        serialBt.println("Could not parse Command: ");
+        serialBt.println(command);
+        return;
     }
 
     String commandId = json["command"].as<String>();
@@ -24,15 +26,4 @@ void BluetoothCommunicator::processMessages()
         serialBt.println("ping received");
     }
     json.clear();
-}
-
-String BluetoothCommunicator::parseBluetoothSerialCommand()
-{
-    String command = "";
-    while(serialBt.available())
-    {
-        char c = serialBt.read();
-        command += c;
-    }
-    return command;
 }
