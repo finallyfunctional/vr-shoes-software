@@ -9,7 +9,6 @@ void setup()
 {
   Serial.begin(9600);
   preferences.begin("VR-Shoe");
-  EepromStorage::initialize();
   bluetoothCommunicator.initialize(preferences);
 }
 

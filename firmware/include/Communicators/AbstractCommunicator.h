@@ -12,6 +12,7 @@ class AbstractCommunicator
 
     private:
     static const char* DEVICE_ID_KEY;
+    static const String DEVICE_ID_PREFIX;
 
     protected:
     virtual void initializeCommunication() = 0;

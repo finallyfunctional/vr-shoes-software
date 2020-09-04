@@ -2,7 +2,7 @@
 
 void BluetoothCommunicator::initializeCommunication()
 {
-    serialBt.begin("VR-Shoe-" + deviceId);
+    serialBt.begin(deviceId);
 }
 
 void BluetoothCommunicator::processMessages()
