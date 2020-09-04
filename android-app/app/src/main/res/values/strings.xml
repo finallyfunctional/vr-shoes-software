@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">FinallyFunctional-VR-Shoes</string>
+    <string name="app_name">FinallyFunctional\'s VR Shoes</string>
+    <string name="bt_not_available">Your device does not support bluetooth</string>
+    <string name="bt_enabled_msg">Bluetooth has been enabled</string>
+    <string name="pair_vr_shoes_header">Pair VR Shoes</string>
+    <string name="refresh">Refresh</string>
+    <string name="OK">OK</string>
+    <string name="pair_vr_shoes_list_header">Select a VR shoe to pair with.</string>
+    <string name="no_vr_shoes_paired">No paired VR shoes found. Please go to your bluetooth settings and pair with two VR shoes.</string>
+    <string name="stored_vr_shoes_not_found">VR shoes previously used were not found. Redirecting you to pairing page.</string>
 </resources>
