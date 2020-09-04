@@ -4,13 +4,13 @@
 #include <Arduino.h>
 #include <BluetoothSerial.h>
 #include <ArduinoJson.h>
-#include "../ICommunicator.h"
+#include "../AbstractCommunicator.h"
 #include "../Commands.h"
 
-class BluetoothCommunicator : ICommunicator
+class BluetoothCommunicator : public AbstractCommunicator
 {
     public:
-    void initialize();
+    void initializeCommunication();
     void processMessages();
 
     private:

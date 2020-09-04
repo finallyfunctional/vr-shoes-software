@@ -1,8 +1,8 @@
 #include "../../../include/Communicators/Bluetooth/BluetoothCommunicator.h"
 
-void BluetoothCommunicator::initialize()
+void BluetoothCommunicator::initializeCommunication()
 {
-    serialBt.begin("VR-Shoe");
+    serialBt.begin("VR-Shoe-" + deviceId);
 }
 
 void BluetoothCommunicator::processMessages()
@@ -23,7 +23,8 @@ void BluetoothCommunicator::processMessages()
     String commandId = json["command"].as<String>();
     if(commandId.equals(Commands::PING))
     {
-        serialBt.println("ping received");
+        serialBt.print("ping received from VR-Shoe-");
+        serialBt.println(deviceId);
     }
     json.clear();
 }
