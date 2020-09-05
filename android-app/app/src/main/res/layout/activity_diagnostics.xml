@@ -6,4 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.DiagnosticsActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/diagnosticsPingBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="showLogsBtnClick"
+            android:text="@string/show_logs" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

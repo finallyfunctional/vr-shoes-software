@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.finallyfunctional.vr_shoes.R;
+import com.finallyfunctional.vr_shoes.Settings;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
 import com.finallyfunctional.vr_shoes.communication.BluetoothInitializer;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotEnabledException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotSupportedException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.ConfigurationWithOtherActivityNeededException;
+import com.finallyfunctional.vr_shoes.logging.VrShoesLogcatLogger;
+import com.finallyfunctional.vr_shoes.logging.monitor.VrShoesAggregateLogger;
+import com.finallyfunctional.vr_shoes.logging.monitor.VrShoesMonitor;
 
 import java.io.IOException;
 
@@ -21,14 +25,13 @@ public class MainActivity extends AppCompatActivity
 {
     private CommunicationInitializer communicationInitializer;
 
-    public static final String COMMUNICATOR_KEY = "communicator";
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        communicationInitializer = new BluetoothInitializer(this);
+        communicationInitializer = new BluetoothInitializer(new Settings(this));
+        VrShoesAggregateLogger.initialize();
     }
 
     @Override

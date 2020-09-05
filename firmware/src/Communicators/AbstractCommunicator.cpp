@@ -2,6 +2,7 @@
 
 const String AbstractCommunicator::DEVICE_ID_PREFIX = "VR-Shoe-";
 const char* AbstractCommunicator::DEVICE_ID_KEY = "device-id";
+const char AbstractCommunicator::MESSAGE_TERMINATOR = '\n';
 
 void AbstractCommunicator::initialize(Preferences preferences)
 {

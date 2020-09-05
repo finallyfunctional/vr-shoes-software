@@ -8,4 +8,8 @@
     <string name="pair_vr_shoes_list_header">Select a VR shoe to pair with.</string>
     <string name="no_vr_shoes_paired">No paired VR shoes found. Please go to your bluetooth settings and pair with two VR shoes.</string>
     <string name="stored_vr_shoes_not_found">VR shoes previously used were not found. Redirecting you to pairing page.</string>
+    <string name="show_logs">Show Logs</string>
+    <string name="back">Back</string>
+    <string name="ping">Ping</string>
+    <string name="unknownError">An unknown error has occured.</string>
 </resources>

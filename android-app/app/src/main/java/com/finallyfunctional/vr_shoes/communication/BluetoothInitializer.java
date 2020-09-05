@@ -1,6 +1,5 @@
 package com.finallyfunctional.vr_shoes.communication;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
@@ -16,19 +15,15 @@ import java.util.Set;
 
 public class BluetoothInitializer extends CommunicationInitializer
 {
-    private Activity activity;
     private BluetoothAdapter btAdapter;
     private Settings settings;
 
-    private final static int REQUEST_ENABLE_BT = 1;
-
-    public BluetoothInitializer(Activity activity)
+    public BluetoothInitializer(Settings settings)
     {
-        this.activity = activity;
-        settings = new Settings(activity);
+        this.settings = settings;
     }
 
-    public void initialize() throws
+    public void setup() throws
             IOException,
             CommunicationNotSupportedException,
             CommunicationNotEnabledException,
@@ -44,6 +39,7 @@ public class BluetoothInitializer extends CommunicationInitializer
             throw new CommunicationNotEnabledException(BluetoothAdapter.ACTION_REQUEST_ENABLE, R.string.bt_enabled_msg);
         }
         communicator = pairDevices();
+        communicator.startReading();
     }
 
     private Communicator pairDevices() throws IOException, ConfigurationWithOtherActivityNeededException

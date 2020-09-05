@@ -9,7 +9,7 @@ void BluetoothCommunicator::processMessages()
 {
     while(serialBt.available())
     {
-        String message = serialBt.readStringUntil('\n');
+        String message = serialBt.readStringUntil(MESSAGE_TERMINATOR);
         handleMessage(message);
     }
 }

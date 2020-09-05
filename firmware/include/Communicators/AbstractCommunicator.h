@@ -19,6 +19,8 @@ class AbstractCommunicator
     StaticJsonDocument<200> json;
 
     protected:
+    static const char MESSAGE_TERMINATOR;
+
     virtual void initializeCommunication() = 0;
     void handleMessage(String message);
     void ping();

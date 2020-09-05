@@ -3,13 +3,9 @@ package com.finallyfunctional.vr_shoes.communication;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
-import com.finallyfunctional.vr_shoes.communication.Communicator;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.UUID;
 
 public class BluetoothSerial extends Communicator
@@ -19,15 +15,12 @@ public class BluetoothSerial extends Communicator
     byte[] inputBuffer;
     int inputBufferIndex;
     private boolean keepLoopAlive;
-    private Queue<String> recievedMessages;
 
     private static final String BT_SERIAL_PORT_SERVICE_ID = "00001101-0000-1000-8000-00805F9B34FB";
-    private static final int NEW_LINE_ASCII_CODE = 10;
 
     public BluetoothSerial(BluetoothDevice device) throws IOException
     {
-         inputBuffer = new byte[1024];
-         recievedMessages = new PriorityQueue<>();
+        inputBuffer = new byte[1024];
         setupStreams(device);
     }
 
@@ -82,11 +75,11 @@ public class BluetoothSerial extends Communicator
         for(int i = 0; i < bytesAvailable; i++)
         {
             byte b = packetBytes[i];
-            if(b == NEW_LINE_ASCII_CODE)
+            if(b == MESSAGE_TERMINATOR_ASCII)
             {
                 byte[] messageBytes = new byte[inputBufferIndex];
                 System.arraycopy(inputBuffer, 0, messageBytes, 0, messageBytes.length);
-                String message = new String(messageBytes, "US-ASCII");
+                storeReadMessage(new String(messageBytes, "US-ASCII"));
                 inputBufferIndex = 0;
             }
             else
@@ -96,13 +89,8 @@ public class BluetoothSerial extends Communicator
         }
     }
 
-    protected String readNextMessage()
+    protected void writeMessageImplementation(String message) throws IOException
     {
-        return recievedMessages.size() == 0 ? "" : recievedMessages.remove();
-    }
-
-    protected void writeMessage(String message) throws IOException
-    {
-        btOutputStream.write(message.getBytes());
+        btOutputStream.write(message.toLowerCase().getBytes());
     }
 }
