@@ -4,8 +4,9 @@ const String Communicator::DEVICE_ID_PREFIX = "VR-Shoe-";
 const char* Communicator::DEVICE_ID_KEY = "device-id";
 const char Communicator::MESSAGE_TERMINATOR = '\n';
 
-void Communicator::initialize(Preferences preferences)
+void Communicator::initialize(Preferences preferences, Sensors* sensors)
 {
+    this->sensors = sensors;
     deviceId = preferences.getString(DEVICE_ID_KEY);
     if(deviceId == NULL || deviceId.equals(""))
     {
@@ -13,6 +14,13 @@ void Communicator::initialize(Preferences preferences)
         preferences.putString(DEVICE_ID_KEY, deviceId);
     }
     initializeCommunication();
+    lastSensorDataMessageSent = "";
+}
+
+void Communicator::update()
+{
+    processMessages();
+    sendSensorData(false);
 }
 
 void Communicator::handleMessage(String message)
@@ -33,6 +41,10 @@ void Communicator::handleMessage(String message)
     {
         ping();
     }
+    else if(commandId.equals(Messages::READ_SENSOR_DATA))
+    {
+        sendSensorData(true);
+    }
     else 
     {
         json.clear();
@@ -50,8 +62,25 @@ void Communicator::ping()
     json.clear();
     json["command"] = Messages::PING;
     json["reply"] = true;
+    json[Messages::DEVICE_ID] = deviceId;
     json["message"] = "Ping recieved on " + deviceId;
     String reply;
     serializeJson(json, reply);
     sendMessage(reply);
+}
+
+void Communicator::sendSensorData(bool force)
+{
+    json.clear();
+    json["command"] = Messages::READ_SENSOR_DATA;
+    json["frontButtonPressed"] = sensors->isFrontButtonPressed();
+    json["rearButtonPressed"] = sensors->isRearButtonPressed();
+    json[Messages::DEVICE_ID] = deviceId;
+    String message;
+    serializeJson(json, message);
+    if(force || !message.equals(lastSensorDataMessageSent))
+    {
+        sendMessage(message);
+    }
+    lastSensorDataMessageSent = message;
 }

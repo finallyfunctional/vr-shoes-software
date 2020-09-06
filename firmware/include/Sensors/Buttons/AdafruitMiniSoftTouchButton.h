@@ -4,15 +4,16 @@
 #include <Arduino.h>
 #include "Button.h"
 
-class AdafruitMiniSoftTouchButton : Button 
+//https://www.adafruit.com/product/3983
+class AdafruitMiniSoftTouchButton : public Button 
 {
     public:
-    AdafruitMiniSoftTouchButton(int pin);
+    AdafruitMiniSoftTouchButton(int buttonPin);
     void initialize();
     bool isPressed();
 
     private:
-    int pin;
+    int buttonPin;
 };
 
 #endif

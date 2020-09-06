@@ -17,5 +17,12 @@
             android:layout_height="wrap_content"
             android:onClick="showLogsBtnClick"
             android:text="@string/show_logs" />
+
+        <Button
+            android:id="@+id/diagnosticsButtonTestBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="buttonsTestBtnClick"
+            android:text="@string/buttons_test" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

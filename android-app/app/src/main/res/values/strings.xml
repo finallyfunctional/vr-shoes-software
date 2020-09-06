@@ -12,4 +12,7 @@
     <string name="back">Back</string>
     <string name="ping">Ping</string>
     <string name="unknownError">An unknown error has occured.</string>
+    <string name="buttons_test">Buttons Test</string>
+    <string name="front_button_pressed">Front Button Pressed</string>
+    <string name="rear_button_pressed">Rear Button Pressed</string>
 </resources>

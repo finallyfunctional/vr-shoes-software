@@ -27,6 +27,8 @@ public abstract class CommunicationInitializer
     {
         setup();
         communicator.addObserver(new CommunicatorLogger(VrShoesAggregateLogger.getLogger()));
+        communicator.start();
+        communicator.readSensorDataFromShoes();
     }
 
     public static Communicator getCommunicator()

@@ -14,7 +14,6 @@ public class BluetoothSerial extends Communicator
     private InputStream btInputStream;
     byte[] inputBuffer;
     int inputBufferIndex;
-    private boolean keepLoopAlive;
 
     private static final String BT_SERIAL_PORT_SERVICE_ID = "00001101-0000-1000-8000-00805F9B34FB";
 
@@ -33,37 +32,7 @@ public class BluetoothSerial extends Communicator
         btInputStream = btSocket.getInputStream();
     }
 
-    public void startReading()
-    {
-        keepLoopAlive = true;
-        final Thread loop = new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                while(keepLoopAlive && !Thread.currentThread().isInterrupted())
-                {
-                    try
-                    {
-                        loop();
-                    }
-                    catch(IOException ex)
-                    {
-                        ex.printStackTrace();
-                        //TODO handle the error
-                    }
-                }
-            }
-        });
-        loop.start();
-    }
-
-    public void stopReading()
-    {
-        keepLoopAlive = false;
-    }
-
-    private void loop() throws IOException
+    protected void readMessagesIntoQueue() throws IOException
     {
         int bytesAvailable = btInputStream.available();
         if(bytesAvailable == 0)
@@ -91,6 +60,6 @@ public class BluetoothSerial extends Communicator
 
     protected void writeMessageImplementation(String message) throws IOException
     {
-        btOutputStream.write(message.toLowerCase().getBytes());
+        btOutputStream.write(message.getBytes());
     }
 }

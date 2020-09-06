@@ -1,5 +1,6 @@
 package com.finallyfunctional.vr_shoes.logging;
 
+import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.ICommunicatorObserver;
 
 public class CommunicatorLogger implements ICommunicatorObserver
@@ -21,5 +22,11 @@ public class CommunicatorLogger implements ICommunicatorObserver
     public void messageWritten(String message)
     {
         logger.verbose(CommunicatorLogger.class.toString(), "Message Written: " + message);
+    }
+
+    @Override
+    public void sensorDataRead(VrShoe vrShoe1)
+    {
+
     }
 }

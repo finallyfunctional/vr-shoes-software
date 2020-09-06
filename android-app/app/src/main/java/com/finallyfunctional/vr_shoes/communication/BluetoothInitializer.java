@@ -39,7 +39,6 @@ public class BluetoothInitializer extends CommunicationInitializer
             throw new CommunicationNotEnabledException(BluetoothAdapter.ACTION_REQUEST_ENABLE, R.string.bt_enabled_msg);
         }
         communicator = pairDevices();
-        communicator.startReading();
     }
 
     private Communicator pairDevices() throws IOException, ConfigurationWithOtherActivityNeededException

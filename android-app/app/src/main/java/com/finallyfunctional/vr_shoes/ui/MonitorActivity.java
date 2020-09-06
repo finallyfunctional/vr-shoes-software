@@ -75,15 +75,6 @@ public class MonitorActivity extends AppCompatActivity implements IMonitorLogObs
     public void pingBtnClicked(View view)
     {
         Communicator communicator = CommunicationInitializer.getCommunicator();
-        try
-        {
-            communicator.ping();
-        }
-        catch(IOException ex)
-        {
-            ex.printStackTrace();
-            //TODO handle error
-            Toast.makeText(getApplicationContext(), getString(R.string.unknownError), Toast.LENGTH_LONG).show();
-        }
+        communicator.ping();
     }
 }

@@ -1,18 +1,19 @@
 #include <Arduino.h>
 #include <Preferences.h>
-#include "../include/Communicators/Bluetooth/BluetoothCommunicator.h"
+#include "../include/VrShoeConfiguration.h"
 
-BluetoothCommunicator bluetoothCommunicator;
+VrShoeConfiguration config;
 Preferences preferences;
 
 void setup() 
 {
   Serial.begin(9600);
   preferences.begin("VR-Shoe");
-  bluetoothCommunicator.initialize(preferences);
+  config.initialize(preferences);
 }
 
 void loop() 
 {
-  bluetoothCommunicator.processMessages();
+  config.getSensors()->updateSensors();
+  config.getCommunicator()->update();
 }
