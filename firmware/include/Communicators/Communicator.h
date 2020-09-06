@@ -1,12 +1,12 @@
-#ifndef AbstractCommunicator_h
-#define AbstractCommunicator_h
+#ifndef Communicator_h
+#define Communicator_h
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <Preferences.h>
 #include "./Messages.h"
 
-class AbstractCommunicator
+class Communicator
 {
     public:
     virtual void processMessages() = 0;

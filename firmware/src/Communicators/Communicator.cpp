@@ -1,10 +1,10 @@
-#include "../../include/Communicators/AbstractCommunicator.h"
+#include "../../include/Communicators/Communicator.h"
 
-const String AbstractCommunicator::DEVICE_ID_PREFIX = "VR-Shoe-";
-const char* AbstractCommunicator::DEVICE_ID_KEY = "device-id";
-const char AbstractCommunicator::MESSAGE_TERMINATOR = '\n';
+const String Communicator::DEVICE_ID_PREFIX = "VR-Shoe-";
+const char* Communicator::DEVICE_ID_KEY = "device-id";
+const char Communicator::MESSAGE_TERMINATOR = '\n';
 
-void AbstractCommunicator::initialize(Preferences preferences)
+void Communicator::initialize(Preferences preferences)
 {
     deviceId = preferences.getString(DEVICE_ID_KEY);
     if(deviceId == NULL || deviceId.equals(""))
@@ -15,7 +15,7 @@ void AbstractCommunicator::initialize(Preferences preferences)
     initializeCommunication();
 }
 
-void AbstractCommunicator::handleMessage(String message)
+void Communicator::handleMessage(String message)
 {
     DeserializationError error = deserializeJson(json, message);
     if (error) 
@@ -45,7 +45,7 @@ void AbstractCommunicator::handleMessage(String message)
     json.clear();
 }
 
-void AbstractCommunicator::ping()
+void Communicator::ping()
 {
     json.clear();
     json["command"] = Messages::PING;

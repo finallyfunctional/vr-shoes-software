@@ -4,9 +4,9 @@
 #include <Arduino.h>
 #include <BluetoothSerial.h>
 #include <ArduinoJson.h>
-#include "../AbstractCommunicator.h"
+#include "../Communicator.h"
 
-class BluetoothCommunicator : public AbstractCommunicator
+class BluetoothCommunicator : public Communicator
 {
     public:
     void initializeCommunication();
