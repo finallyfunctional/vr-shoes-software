@@ -15,7 +15,6 @@ class Sensors
     private:
     Button* frontButton;
     Button* rearButton;
-
 };
 
 #endif

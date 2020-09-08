@@ -8,7 +8,7 @@ Sensors::Sensors(Button* frontButton, Button* rearButton)
 
 void Sensors::updateSensors()
 {
-
+    
 }
 
 bool Sensors::isFrontButtonPressed()

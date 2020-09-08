@@ -8,6 +8,8 @@ Preferences preferences;
 void setup() 
 {
   Serial.begin(9600);
+  Serial1.begin(115200);
+  Serial2.begin(115200);
   preferences.begin("VR-Shoe");
   config.initialize(preferences);
 }
