@@ -6,6 +6,7 @@
 #include <Preferences.h>
 #include "./Messages.h"
 #include "../Sensors/Sensors.h"
+#include "../Vector2D.h"
 
 class Communicator
 {
@@ -29,6 +30,8 @@ class Communicator
     virtual void sendMessage(String message) = 0;
     void ping();
     void sendSensorData(bool force);
+    void resetOrigin();
+    void sendDistanceFromOrigin();
 
     String deviceId;
     String lastSensorDataMessageSent;

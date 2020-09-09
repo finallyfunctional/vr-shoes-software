@@ -45,6 +45,14 @@ void Communicator::handleMessage(String message)
     {
         sendSensorData(true);
     }
+    else if(commandId.equals(Messages::RESET_ORIGIN))
+    {
+        resetOrigin();
+    }
+    else if(commandId.equals(Messages::READ_DISTANCE_FROM_ORIGIN))
+    {
+        sendDistanceFromOrigin();
+    }
     else 
     {
         json.clear();
@@ -76,6 +84,11 @@ void Communicator::sendSensorData(bool force)
     json["frontButtonPressed"] = sensors->isFrontButtonPressed();
     json["rearButtonPressed"] = sensors->isRearButtonPressed();
     json[Messages::DEVICE_ID] = deviceId;
+
+    Vector2D speed = sensors->getMovementTracker()->getSpeed();
+    json["forwardSpeed"] = speed.getX();
+    json["sidewaySpeed"] = speed.getY();
+
     String message;
     serializeJson(json, message);
     if(force || !message.equals(lastSensorDataMessageSent))
@@ -83,4 +96,33 @@ void Communicator::sendSensorData(bool force)
         sendMessage(message);
     }
     lastSensorDataMessageSent = message;
+}
+
+void Communicator::resetOrigin()
+{
+    sensors->getMovementTracker()->resetOrigin();
+    
+    json.clear();
+    json["command"] = Messages::RESET_ORIGIN;
+    json["reply"] = true;
+    json[Messages::DEVICE_ID] = deviceId;
+    json["message"] = "Origin reset on " + deviceId;
+    String reply;
+    serializeJson(json, reply);
+    sendMessage(reply);
+}
+
+void Communicator::sendDistanceFromOrigin()
+{
+    Vector2D distance = sensors->getMovementTracker()->getDistanceFromOrigin();
+
+    json.clear();
+    json["command"] = Messages::READ_DISTANCE_FROM_ORIGIN;
+    json["reply"] = true;
+    json[Messages::DEVICE_ID] = deviceId;
+    json["xDistance"] = distance.getX();
+    json["yDistance"] = distance.getY();
+    String reply;
+    serializeJson(json, reply);
+    sendMessage(reply);
 }
