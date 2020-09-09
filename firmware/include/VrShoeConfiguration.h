@@ -10,6 +10,9 @@
 #include "./Sensors/Buttons/ButtonTypes.h"
 #include "./Sensors/Buttons/AdafruitMiniSoftTouchButton.h"
 #include "./Sensors/Sensors.h"
+#include "./Sensors/VescPair.h"
+#include "./Wheels/Rotacaster50mmWheel.h"
+#include "./Motors/Flipsky270kvMotor.h"
 
 class VrShoeConfiguration
 {

@@ -4,13 +4,13 @@
 class Vector2D
 {
     public:
-    Vector2D(int x, int y);
-    int getX();
-    int getY();
+    Vector2D(float x, float y);
+    float getX();
+    float getY();
 
     private:
-    int x;
-    int y;
+    float x;
+    float y;
 };
 
 #endif

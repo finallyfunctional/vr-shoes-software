@@ -22,7 +22,9 @@ void VrShoeConfiguration::initialize(Preferences preferences)
     frontButton->initialize();
     rearButton->initialize();
 
-    sensors = new Sensors(frontButton, rearButton);
+    VescPair* vescPair = new VescPair(&Serial1, &Serial2, Flipsky270kvMotor(), Rotacaster50mmWheel());
+
+    sensors = new Sensors(frontButton, rearButton, vescPair);
 
     communicator->initialize(preferences, sensors);
 }
