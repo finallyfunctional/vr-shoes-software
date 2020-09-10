@@ -29,4 +29,10 @@ public class CommunicatorLogger implements ICommunicatorObserver
     {
 
     }
+
+    @Override
+    public void distanceFromOriginRead(String deviceId, float forwardDistance, float sidewayDistance)
+    {
+
+    }
 }

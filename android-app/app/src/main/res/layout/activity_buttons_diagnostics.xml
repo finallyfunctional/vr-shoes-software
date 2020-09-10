@@ -15,7 +15,6 @@
             android:id="@+id/buttonsDiagnosticVrShoe1Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="VR Shoe 123456"
             android:textSize="36sp" />
 
         <TextView

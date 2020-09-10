@@ -58,6 +58,12 @@ public class ButtonsDiagnosticsActivity extends AppCompatActivity implements ICo
         });
     }
 
+    @Override
+    public void distanceFromOriginRead(String deviceId, float xDistance, float yDistance)
+    {
+
+    }
+
     private void setLabelsText(VrShoe vrShoe1)
     {
         vrShoe1Header.setText(vrShoe1.getDeviceId());

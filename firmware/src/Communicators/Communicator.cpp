@@ -120,8 +120,8 @@ void Communicator::sendDistanceFromOrigin()
     json["command"] = Messages::READ_DISTANCE_FROM_ORIGIN;
     json["reply"] = true;
     json[Messages::DEVICE_ID] = deviceId;
-    json["xDistance"] = distance.getX();
-    json["yDistance"] = distance.getY();
+    json["forwardDistance"] = distance.getX();
+    json["sidewaysDistance"] = distance.getY();
     String reply;
     serializeJson(json, reply);
     sendMessage(reply);

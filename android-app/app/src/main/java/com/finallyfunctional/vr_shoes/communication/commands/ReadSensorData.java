@@ -8,6 +8,8 @@ public class ReadSensorData
     public String deviceId;
     public boolean frontButtonPressed;
     public boolean rearButtonPressed;
+    public float forwardSpeed;
+    public float sidewaySpeed;
 
     public ReadSensorData()
     {

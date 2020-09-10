@@ -12,8 +12,29 @@ VescPair::VescPair(Stream* serialForForwardVesc, Stream* serialForSidewaysVesc, 
 
 void VescPair::update()
 {
-    forwardVesc.getVescValues();
-    sidewaysVesc.getVescValues();
+    if(!forwardVesc.getVescValues())
+    {
+        Serial.println("Forward VESC values not read!");
+    }
+    else
+    {
+        Serial.print("Forward Speed: ");
+        Serial.println(forwardVesc.data.rpm);
+        Serial.print("Forward Tachometer: ");
+        Serial.println(forwardVesc.data.tachometer);
+    }
+    if(!sidewaysVesc.getVescValues())
+    {
+        Serial.println("Sideway VESC values not read!");
+    }
+    else
+    {
+        Serial.print("Sideway Speed: ");
+        Serial.println(sidewaysVesc.data.rpm);
+        Serial.print("Sideway Tachometer: ");
+        Serial.println(sidewaysVesc.data.tachometer);
+    }
+    
 } 
 
 void VescPair::resetOrigin()

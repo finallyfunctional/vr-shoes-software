@@ -3,7 +3,9 @@ package com.finallyfunctional.vr_shoes.communication;
 import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.commands.CommandConstants;
 import com.finallyfunctional.vr_shoes.communication.commands.Ping;
+import com.finallyfunctional.vr_shoes.communication.commands.ReadDistanceFromOrigin;
 import com.finallyfunctional.vr_shoes.communication.commands.ReadSensorData;
+import com.finallyfunctional.vr_shoes.communication.commands.ResetOrigin;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -101,6 +103,11 @@ public abstract class Communicator
             case ReadSensorData.READ_SENSOR_DATA_COMMAND:
                 readSensorData(gson.fromJson(message, ReadSensorData.class));
                 break;
+            case ResetOrigin.RESET_ORIGIN_COMMAND:
+                break;
+            case ReadDistanceFromOrigin.READ_DISTANCE_FROM_ORIGIN_COMMAND:
+                readDistanceFromOrigin(gson.fromJson(message, ReadDistanceFromOrigin.class));
+                break;
         }
     }
 
@@ -109,10 +116,24 @@ public abstract class Communicator
         vrShoe1.setDeviceId(message.deviceId);
         vrShoe1.frontButtonPressed(message.frontButtonPressed);
         vrShoe1.rearButtonPressed(message.rearButtonPressed);
+        vrShoe1.setForwardSpeed(message.forwardSpeed);
+        vrShoe1.setSidewaySpeed(message.sidewaySpeed);
 
         for(ICommunicatorObserver observer : observers)
         {
             observer.sensorDataRead(vrShoe1);
+        }
+    }
+
+    private void readDistanceFromOrigin(ReadDistanceFromOrigin message)
+    {
+        if(!message.reply)
+        {
+            return;
+        }
+        for(ICommunicatorObserver observer : observers)
+        {
+            observer.distanceFromOriginRead(message.deviceId, message.forwardDirection, message.sidewaysDirection);
         }
     }
 
@@ -147,6 +168,18 @@ public abstract class Communicator
     public void readSensorDataFromShoes()
     {
         String json = gson.toJson(new ReadSensorData());
+        messagesToSend.add(json);
+    }
+
+    public void resetOrigin()
+    {
+        String json = gson.toJson(new ResetOrigin());
+        messagesToSend.add(json);
+    }
+
+    public void readDistanceFromOrigin()
+    {
+        String json = gson.toJson(new ReadDistanceFromOrigin());
         messagesToSend.add(json);
     }
 

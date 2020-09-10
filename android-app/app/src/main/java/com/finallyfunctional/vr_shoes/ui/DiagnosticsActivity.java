@@ -30,4 +30,10 @@ public class DiagnosticsActivity extends AppCompatActivity
         Intent intent = new Intent(this, ButtonsDiagnosticsActivity.class);
         startActivity(intent);
     }
+
+    public void movementBtnClick(View view)
+    {
+        Intent intent = new Intent(this, MovementDiagnosticsActivity.class);
+        startActivity(intent);
+    }
 }
