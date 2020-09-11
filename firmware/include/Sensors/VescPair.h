@@ -21,7 +21,7 @@ class VescPair : public MovementTracker
     private:
     float getSpeed(float erpm);
     float convertErpmToMrpm(float erpm);
-    float getLinearDistanceFromOrigin(float currentTachometerCounts, float tachometerCountOrigin);
+    float getLinearDistanceFromOrigin(long currentTachometerCounts, long tachometerCountOrigin);
 
     VescUart forwardVesc;
     VescUart sidewaysVesc;
@@ -31,6 +31,7 @@ class VescPair : public MovementTracker
     float polePairs;
     float tachometerCountsPerRovolution;
     float distanceTraveledPerRevolution;
+    float gearingRatio;
 };
 
 #endif

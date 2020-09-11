@@ -5,6 +5,7 @@ VescPair::VescPair(Stream* serialForForwardVesc, Stream* serialForSidewaysVesc, 
     forwardVesc.setSerialPort(serialForForwardVesc);
     sidewaysVesc.setSerialPort(serialForSidewaysVesc);
     
+    gearingRatio = motor.GEARING_RATIO;
     tachometerCountsPerRovolution = 3 * motor.POLES;
     polePairs = motor.POLES / 2;
     distanceTraveledPerRevolution = wheel.DIAMETER * PI;
@@ -12,29 +13,9 @@ VescPair::VescPair(Stream* serialForForwardVesc, Stream* serialForSidewaysVesc, 
 
 void VescPair::update()
 {
-    if(!forwardVesc.getVescValues())
-    {
-        Serial.println("Forward VESC values not read!");
-    }
-    else
-    {
-        Serial.print("Forward Speed: ");
-        Serial.println(forwardVesc.data.rpm);
-        Serial.print("Forward Tachometer: ");
-        Serial.println(forwardVesc.data.tachometer);
-    }
-    if(!sidewaysVesc.getVescValues())
-    {
-        Serial.println("Sideway VESC values not read!");
-    }
-    else
-    {
-        Serial.print("Sideway Speed: ");
-        Serial.println(sidewaysVesc.data.rpm);
-        Serial.print("Sideway Tachometer: ");
-        Serial.println(sidewaysVesc.data.tachometer);
-    }
-    
+    forwardVesc.getVescValues();
+    sidewaysVesc.getVescValues();
+    getDistanceFromOrigin();
 } 
 
 void VescPair::resetOrigin()
@@ -52,7 +33,7 @@ Vector2D VescPair::getSpeed()
 float VescPair::getSpeed(float erpm)
 {
     float rps = convertErpmToMrpm(erpm) / 60;
-    return distanceTraveledPerRevolution * rps;
+    return distanceTraveledPerRevolution * rps / gearingRatio;
 }
 
 float VescPair::convertErpmToMrpm(float erpm)
@@ -68,11 +49,11 @@ Vector2D VescPair::getDistanceFromOrigin()
     );
 }
 
-float VescPair::getLinearDistanceFromOrigin(float currentTachometerCounts, float tachometerCountOrigin)
+float VescPair::getLinearDistanceFromOrigin(long currentTachometerCounts, long tachometerCountOrigin)
 {
-    float tachometerCounts = fabs(currentTachometerCounts - tachometerCountOrigin);
-    float revolutions = tachometerCounts / tachometerCountsPerRovolution;
-    return distanceTraveledPerRevolution * revolutions;
+    long tachometerCounts = labs(currentTachometerCounts - tachometerCountOrigin);
+    float revolutions = (float) (tachometerCounts) / tachometerCountsPerRovolution;
+    return (distanceTraveledPerRevolution * revolutions) / gearingRatio;
 }
 
 float VescPair::getOrientation()
