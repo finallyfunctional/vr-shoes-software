@@ -1,7 +1,7 @@
 #include "../include/VrShoeConfiguration.h"
 
-const char* VrShoeConfiguration::COMMUNICATOR_TYPE_KEY = "communicator-type";
-const char* VrShoeConfiguration::BUTTONS_TYPE_KEY = "buttons-type";
+const char* VrShoeConfiguration::COMMUNICATOR_TYPE_KEY = "comm-type";
+const char* VrShoeConfiguration::BUTTONS_TYPE_KEY = "btns-type";
 
 void VrShoeConfiguration::initialize(Preferences preferences)
 {
@@ -22,7 +22,7 @@ void VrShoeConfiguration::initialize(Preferences preferences)
     frontButton->initialize();
     rearButton->initialize();
 
-    VescPair* vescPair = new VescPair(&Serial1, &Serial2, Flipsky270kvMotor(), Rotacaster50mmWheel());
+    VescPair* vescPair = new VescPair(&Serial2, &Serial1, Flipsky270kvMotor(), Rotacaster50mmWheel());
 
     sensors = new Sensors(frontButton, rearButton, vescPair);
 
