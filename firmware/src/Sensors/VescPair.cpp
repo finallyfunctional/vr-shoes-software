@@ -15,7 +15,6 @@ void VescPair::update()
 {
     forwardVesc.getVescValues();
     sidewaysVesc.getVescValues();
-    getDistanceFromOrigin();
 } 
 
 void VescPair::resetOrigin()
