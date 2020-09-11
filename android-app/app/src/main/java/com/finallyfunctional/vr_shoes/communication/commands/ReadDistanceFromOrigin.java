@@ -7,8 +7,8 @@ public class ReadDistanceFromOrigin
     public String command;
     public boolean reply;
     public String deviceId;
-    public float forwardDirection;
-    public float sidewaysDirection;
+    public float forwardDistance;
+    public float sidewaysDistance;
 
     public ReadDistanceFromOrigin()
     {

@@ -42,8 +42,7 @@ public class ButtonsDiagnosticsActivity extends AppCompatActivity implements ICo
 
     public void BackBtnClicked(View view)
     {
-        Intent intent = new Intent(this, DiagnosticsActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     @Override

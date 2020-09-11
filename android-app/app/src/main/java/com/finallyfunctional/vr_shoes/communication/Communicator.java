@@ -133,7 +133,7 @@ public abstract class Communicator
         }
         for(ICommunicatorObserver observer : observers)
         {
-            observer.distanceFromOriginRead(message.deviceId, message.forwardDirection, message.sidewaysDirection);
+            observer.distanceFromOriginRead(message.deviceId, message.forwardDistance, message.sidewaysDistance);
         }
     }
 

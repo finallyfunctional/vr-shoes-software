@@ -13,8 +13,6 @@ import com.finallyfunctional.vr_shoes.logging.monitor.IMonitorLogObserver;
 import com.finallyfunctional.vr_shoes.logging.monitor.MonitorLog;
 import com.finallyfunctional.vr_shoes.logging.monitor.VrShoesMonitor;
 
-import java.io.IOException;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MonitorActivity extends AppCompatActivity implements IMonitorLogObserver
@@ -68,8 +66,7 @@ public class MonitorActivity extends AppCompatActivity implements IMonitorLogObs
 
     public void backBtnClicked(View view)
     {
-        Intent intent = new Intent(this, DiagnosticsActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     public void pingBtnClicked(View view)

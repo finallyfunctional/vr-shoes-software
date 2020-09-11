@@ -53,7 +53,7 @@ public class MovementDiagnosticsActivity extends AppCompatActivity implements IC
                     try
                     {
                         communicator.readDistanceFromOrigin();
-                        Thread.sleep(50);
+                        Thread.sleep(100);
                     }
                     catch (InterruptedException e)
                     {
@@ -135,7 +135,6 @@ public class MovementDiagnosticsActivity extends AppCompatActivity implements IC
 
     public void backBtnClicked(View view)
     {
-        Intent intent = new Intent(this, DiagnosticsActivity.class);
-        startActivity(intent);
+        finish();
     }
 }
