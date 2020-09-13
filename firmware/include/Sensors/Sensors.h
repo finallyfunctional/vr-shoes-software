@@ -4,22 +4,25 @@
 #include <Arduino.h>
 #include "../Sensors/Buttons/Button.h"
 #include "./Sensors/MovementTracker.h"
+#include "./Sensors/SpeedController.h"
 #include "../Motors/Motor.h"
 #include "../Wheels/Wheel.h"
 
 class Sensors
 {
     public:
-    Sensors(Button* frontButton, Button* rearButton, MovementTracker* movementTracker);
+    Sensors(Button* frontButton, Button* rearButton, MovementTracker* movementTracker, SpeedController* speedController);
     void updateSensors();
     bool isFrontButtonPressed();
     bool isRearButtonPressed();
     MovementTracker* getMovementTracker();
+    SpeedController* getSpeedController();
 
     private:
     Button* frontButton;
     Button* rearButton;
     MovementTracker* movementTracker;
+    SpeedController* speedController;
 };
 
 #endif

@@ -31,5 +31,12 @@
             android:layout_height="wrap_content"
             android:onClick="movementBtnClick"
             android:text="@string/movement" />
+
+        <Button
+            android:id="@+id/diagnosticsManualControlBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="manualControlBtnClick"
+            android:text="@string/manual_control" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

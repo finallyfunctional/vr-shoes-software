@@ -21,4 +21,11 @@
     <string name="forward_speed">Forward Speed (m/s): </string>
     <string name="sideway_speed">Sideway Speed (m/s): </string>
     <string name="reset_origin">Reset Origin</string>
+    <string name="device_id">Device ID</string>
+    <string name="set_rpm">Set RPM</string>
+    <string name="forward">Forward</string>
+    <string name="backward">Backward</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="manual_control">Manual Control</string>
 </resources>

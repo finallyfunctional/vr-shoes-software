@@ -10,6 +10,7 @@ class Messages
     static const String READ_SENSOR_DATA;
     static const String RESET_ORIGIN;
     static const String READ_DISTANCE_FROM_ORIGIN;
+    static const String SET_RPM;
 
     static const String DEVICE_ID;
 };

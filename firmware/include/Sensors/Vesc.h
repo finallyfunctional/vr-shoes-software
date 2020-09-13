@@ -15,9 +15,11 @@ class Vesc
     float getSpeed();
     float getDistanceFromOrigin();
     void resetOrigin();
+    void setRpm(float rpm);
 
     private:
     float convertErpmToMrpm(float erpm);
+    float convertMrpmToErpm(float mrpm);
 
     VescUart vescUart;
     float originTachometer;
@@ -25,6 +27,11 @@ class Vesc
     float tachometerCountsPerRovolution;
     float distanceTraveledPerRevolution;
     float gearingRatio; 
+    float desiredRpm;
+    Timer safetyTimer;
+    Timer performanceTimer;
+
+    const double moveStep = 0.02;
 };
 
 #endif

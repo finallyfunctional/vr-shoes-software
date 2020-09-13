@@ -15,6 +15,13 @@ class Communicator
     void update();
 
     private:
+    void ping();
+    void sendSensorData(bool force);
+    void resetOrigin();
+    void sendDistanceFromOrigin();
+    void setRpm();
+    void sendReply();
+
     static const char* DEVICE_ID_KEY;
     static const String DEVICE_ID_PREFIX;
 
@@ -28,10 +35,6 @@ class Communicator
     virtual void processMessages() = 0;
     void handleMessage(String message);
     virtual void sendMessage(String message) = 0;
-    void ping();
-    void sendSensorData(bool force);
-    void resetOrigin();
-    void sendDistanceFromOrigin();
 
     String deviceId;
     String lastSensorDataMessageSent;

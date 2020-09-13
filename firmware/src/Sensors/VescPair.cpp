@@ -30,3 +30,9 @@ Vector2D VescPair::getDistanceFromOrigin()
         sidewaysVesc->getDistanceFromOrigin()
     );
 }
+
+void VescPair::setRpm(float forwardRpm, float sidewayRpm)
+{
+    forwardVesc->setRpm(forwardRpm);
+    sidewaysVesc->setRpm(sidewayRpm);
+}

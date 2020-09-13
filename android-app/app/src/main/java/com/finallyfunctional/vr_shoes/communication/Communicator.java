@@ -6,6 +6,7 @@ import com.finallyfunctional.vr_shoes.communication.commands.Ping;
 import com.finallyfunctional.vr_shoes.communication.commands.ReadDistanceFromOrigin;
 import com.finallyfunctional.vr_shoes.communication.commands.ReadSensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.ResetOrigin;
+import com.finallyfunctional.vr_shoes.communication.commands.SetRpm;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -180,6 +181,15 @@ public abstract class Communicator
     public void readDistanceFromOrigin()
     {
         String json = gson.toJson(new ReadDistanceFromOrigin());
+        messagesToSend.add(json);
+    }
+
+    public void setRpm(float forwardRpm, float sidewayRpm)
+    {
+        SetRpm command = new SetRpm();
+        command.forwardRpm = forwardRpm;
+        command.sidewayRpm = sidewayRpm;
+        String json = gson.toJson(command);
         messagesToSend.add(json);
     }
 

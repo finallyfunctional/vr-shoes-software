@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MovementDiagnosticsActivity"></activity>
+        <activity android:name=".ui.ManualControlActivity"></activity>
+        <activity android:name=".ui.MovementDiagnosticsActivity" />
         <activity android:name=".ui.ButtonsDiagnosticsActivity" />
         <activity android:name=".ui.MonitorActivity" />
         <activity android:name=".ui.DiagnosticsActivity" />
@@ -22,8 +23,8 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
 </manifest>

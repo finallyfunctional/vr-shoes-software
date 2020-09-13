@@ -1,10 +1,11 @@
 #include "../../include/Sensors/Sensors.h"
 
-Sensors::Sensors(Button* frontButton, Button* rearButton, MovementTracker* movementTracker)
+Sensors::Sensors(Button* frontButton, Button* rearButton, MovementTracker* movementTracker, SpeedController* speedController)
 {
     this->frontButton = frontButton;
     this->rearButton = rearButton;
     this->movementTracker = movementTracker;
+    this->speedController = speedController;
 }
 
 void Sensors::updateSensors()
@@ -25,4 +26,9 @@ bool Sensors::isRearButtonPressed()
 MovementTracker* Sensors::getMovementTracker()
 {
     return movementTracker;
+}
+
+SpeedController* Sensors::getSpeedController()
+{
+    return speedController;
 }

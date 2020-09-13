@@ -36,4 +36,10 @@ public class DiagnosticsActivity extends AppCompatActivity
         Intent intent = new Intent(this, MovementDiagnosticsActivity.class);
         startActivity(intent);
     }
+
+    public void manualControlBtnClick(View view)
+    {
+        Intent intent = new Intent(this, ManualControlActivity.class);
+        startActivity(intent);
+    }
 }

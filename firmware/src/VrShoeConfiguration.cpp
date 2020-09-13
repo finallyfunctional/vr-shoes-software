@@ -26,7 +26,7 @@ void VrShoeConfiguration::initialize(Preferences preferences)
     Vesc* sidewaysVesc = new Vesc(&Serial1, Flipsky270kvMotor(), Rotacaster50mmWheel());
     VescPair* vescPair = new VescPair(forwardVesc, sidewaysVesc);
 
-    sensors = new Sensors(frontButton, rearButton, vescPair);
+    sensors = new Sensors(frontButton, rearButton, vescPair, vescPair);
 
     communicator->initialize(preferences, sensors);
 }

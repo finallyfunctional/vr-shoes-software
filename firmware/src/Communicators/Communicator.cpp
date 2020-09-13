@@ -53,6 +53,10 @@ void Communicator::handleMessage(String message)
     {
         sendDistanceFromOrigin();
     }
+    else if(commandId.equals(Messages::SET_RPM))
+    {
+        setRpm();
+    }
     else 
     {
         json.clear();
@@ -65,6 +69,13 @@ void Communicator::handleMessage(String message)
     json.clear();
 }
 
+void Communicator::sendReply()
+{
+    String reply;
+    serializeJson(json, reply);
+    sendMessage(reply);
+}
+
 void Communicator::ping()
 {
     json.clear();
@@ -72,9 +83,7 @@ void Communicator::ping()
     json["reply"] = true;
     json[Messages::DEVICE_ID] = deviceId;
     json["message"] = "Ping recieved on " + deviceId;
-    String reply;
-    serializeJson(json, reply);
-    sendMessage(reply);
+    sendReply();
 }
 
 void Communicator::sendSensorData(bool force)
@@ -107,9 +116,7 @@ void Communicator::resetOrigin()
     json["reply"] = true;
     json[Messages::DEVICE_ID] = deviceId;
     json["message"] = "Origin reset on " + deviceId;
-    String reply;
-    serializeJson(json, reply);
-    sendMessage(reply);
+    sendReply();
 }
 
 void Communicator::sendDistanceFromOrigin()
@@ -122,7 +129,20 @@ void Communicator::sendDistanceFromOrigin()
     json[Messages::DEVICE_ID] = deviceId;
     json["forwardDistance"] = distance.getX();
     json["sidewaysDistance"] = distance.getY();
-    String reply;
-    serializeJson(json, reply);
-    sendMessage(reply);
+    sendReply();
+}
+
+void Communicator::setRpm()
+{
+    float forwardRpm = json["forwardRpm"];
+    float sidewayRpm = json["sidewayRpm"];
+
+    sensors->getSpeedController()->setRpm(forwardRpm, sidewayRpm);
+
+    json.clear();
+    json["command"] = Messages::SET_RPM;
+    json["reply"] = true;
+    json[Messages::DEVICE_ID] = deviceId;
+    json["message"] = "rpm set";
+    sendReply();
 }
