@@ -11,6 +11,7 @@
 #include "./Sensors/Buttons/AdafruitMiniSoftTouchButton.h"
 #include "./Sensors/Sensors.h"
 #include "./Sensors/VescPair.h"
+#include "./Sensors/Vesc.h"
 #include "./Wheels/Rotacaster50mmWheel.h"
 #include "./Motors/Flipsky270kvMotor.h"
 
