@@ -1,6 +1,6 @@
 #include "../../include/Sensors/Vesc.h"
 
-Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(1000)), performanceTimer(Timer(0))
+Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(1000))
 {
     vescUart.setSerialPort(serialForVesc);
 
@@ -8,29 +8,27 @@ Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(
     tachometerCountsPerRovolution = 3 * motor.POLES;
     polePairs = motor.POLES / 2;
     distanceTraveledPerRevolution = wheel.DIAMETER * PI;
+    reading = true;
 }
 
 void Vesc::update()
 {
-    performanceTimer.start();
-    if(!vescUart.getVescValues())
+    if(reading)
     {
-        Serial.println("Could not connect to VESC!");
+        if(!vescUart.getVescValues())
+        {
+            Serial.println("Could not connect to VESC!");
+            return;
+        }
+        reading = false;
         return;
     }
-    Serial.print("Reading values took ");
-    Serial.println(performanceTimer.getElapsedTime());
     if(safetyTimer.timeIsUp() || desiredRpm == 0)
     {
-        Serial.println("Setting current to 0");
-        performanceTimer.start();
         vescUart.setCurrent(0);
-        Serial.print("Setting current took ");
-        Serial.println(performanceTimer.getElapsedTime());
     }
     else if(vescUart.data.rpm == desiredRpm)
     {
-        Serial.println("Current RPM matches desired RPM");
         vescUart.setDuty(vescUart.data.dutyCycleNow);
     }
     else
@@ -56,8 +54,7 @@ void Vesc::update()
         Serial.println(newDuty);
         vescUart.setDuty(newDuty);
     }
-    
-    
+    reading = true;
 }
 
 void Vesc::resetOrigin()

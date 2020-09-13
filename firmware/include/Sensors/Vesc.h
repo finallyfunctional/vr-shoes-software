@@ -28,8 +28,8 @@ class Vesc
     float distanceTraveledPerRevolution;
     float gearingRatio; 
     float desiredRpm;
+    bool reading;
     Timer safetyTimer;
-    Timer performanceTimer;
 
     const double moveStep = 0.02;
 };
