@@ -27,13 +27,14 @@ public abstract class Communicator
     public static char MESSAGE_TERMINATOR = '\n';
     public static final int MESSAGE_TERMINATOR_ASCII = 10;
 
-    public Communicator()
+    public Communicator(String deviceId)
     {
         gson = new Gson();
         observers = new ArrayList<>();
         recievedMessages = new PriorityQueue<>();
         messagesToSend = new PriorityQueue<>();
         vrShoe = new VrShoe();
+        vrShoe.setDeviceId(deviceId);
     }
 
     public void addObserver(ICommunicatorObserver observer)

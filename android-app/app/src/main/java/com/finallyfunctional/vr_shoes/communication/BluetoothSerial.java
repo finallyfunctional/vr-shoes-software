@@ -19,6 +19,7 @@ public class BluetoothSerial extends Communicator
 
     public BluetoothSerial(BluetoothDevice device) throws IOException
     {
+        super(device.getName());
         inputBuffer = new byte[1024];
         setupStreams(device);
     }

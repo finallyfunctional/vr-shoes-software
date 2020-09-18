@@ -32,6 +32,27 @@
             android:textSize="24sp"
             android:layout_weight="1"/>
 
+        <TextView
+            android:id="@+id/buttonsDiagnosticVrShoe2Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/buttonsDiagnosticVrShoe2FrontBtnPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/front_button_pressed"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/buttonsDiagnosticVrShoe2RearBtnPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/rear_button_pressed"
+            android:textSize="24sp" />
+
         <Button
             android:id="@+id/buttonsDiagnosticsBackBtn"
             android:layout_width="match_parent"
