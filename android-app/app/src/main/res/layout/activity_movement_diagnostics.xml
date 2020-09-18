@@ -46,10 +46,51 @@
             android:textSize="24sp" />
 
         <Button
-            android:id="@+id/movementDiagnosticsResetOriginBtn"
+            android:id="@+id/movementDiagnosticsVrShoe1ResetOriginBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="resetOriginBtnClicked"
+            android:onClick="resetOriginVrShoe1BtnClicked"
+            android:text="@string/reset_origin" />
+
+        <TextView
+            android:id="@+id/movementDiagnosticVrShoe2Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/movementDiagnosticVrShoe2ForwardDistanceLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/forward_distance"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/movementDiagnosticVrShoe2SidewaysDistanceLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sideway_distance"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/movementDiagnosticVrShoe2ForwardSpeedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/forward_speed"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/movementDiagnosticVrShoe2SidewaySpeedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sideway_speed"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/movementDiagnosticsVrShoe2ResetOriginBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="resetOriginVrShoe2BtnClicked"
             android:text="@string/reset_origin" />
 
         <TextView

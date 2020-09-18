@@ -2,6 +2,7 @@ package com.finallyfunctional.vr_shoes.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -12,35 +13,35 @@ import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
 import com.finallyfunctional.vr_shoes.communication.ICommunicatorObserver;
 
-public class MovementDiagnosticsActivity extends AppCompatActivity implements ICommunicatorObserver
+public class MovementDiagnosticsActivity extends AppCompatActivity
 {
-    private TextView vrShoe1Header;
-    private TextView vrShoe1ForwardDistance;
-    private TextView vrShoe1SidewayDistance;
-    private TextView vrShoe1ForwardSpeed;
-    private TextView vrShoe1SidewaySpeed;
     private Thread updateDistanceLoop;
     private boolean updateDistance;
+    private MovementDiagnosticsForShoe vrShoe1Diagnostics, vrShoe2Diagnostics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movement_diagnostics);
-        vrShoe1Header = findViewById(R.id.movementDiagnosticVrShoe1Header);
-        vrShoe1ForwardDistance = findViewById(R.id.movementDiagnosticVrShoe1ForwardDistanceLabel);
-        vrShoe1SidewayDistance = findViewById(R.id.movementDiagnosticVrShoe1SidewaysDistanceLabel);
-        vrShoe1ForwardSpeed = findViewById(R.id.movementDiagnosticVrShoe1ForwardSpeedLabel);
-        vrShoe1SidewaySpeed = findViewById(R.id.movementDiagnosticVrShoe1SidewaySpeedLabel);
+        TextView vrShoe1Header = findViewById(R.id.movementDiagnosticVrShoe1Header);
+        TextView vrShoe1ForwardDistance = findViewById(R.id.movementDiagnosticVrShoe1ForwardDistanceLabel);
+        TextView vrShoe1SidewayDistance = findViewById(R.id.movementDiagnosticVrShoe1SidewaysDistanceLabel);
+        TextView vrShoe1ForwardSpeed = findViewById(R.id.movementDiagnosticVrShoe1ForwardSpeedLabel);
+        TextView vrShoe1SidewaySpeed = findViewById(R.id.movementDiagnosticVrShoe1SidewaySpeedLabel);
+        TextView vrShoe2Header = findViewById(R.id.movementDiagnosticVrShoe2Header);
+        TextView vrShoe2ForwardDistance = findViewById(R.id.movementDiagnosticVrShoe2ForwardDistanceLabel);
+        TextView vrShoe2SidewayDistance = findViewById(R.id.movementDiagnosticVrShoe2SidewaysDistanceLabel);
+        TextView vrShoe2ForwardSpeed = findViewById(R.id.movementDiagnosticVrShoe2ForwardSpeedLabel);
+        TextView vrShoe2SidewaySpeed = findViewById(R.id.movementDiagnosticVrShoe2SidewaySpeedLabel);
 
-        final Communicator communicator = CommunicationInitializer.getCommunicator1();
-        communicator.addObserver(this);
-        VrShoe vrShoe1 = communicator.getVrShoe();
-        setDeviceIdText(vrShoe1.getDeviceId());
-        setDistanceText(0, 0);
-        setSpeedText(vrShoe1.getForwardSpeed(), vrShoe1.getSidewaySpeed());
+        vrShoe1Diagnostics = new MovementDiagnosticsForShoe(vrShoe1Header, vrShoe1ForwardDistance,
+                vrShoe1SidewayDistance, vrShoe1ForwardSpeed, vrShoe1SidewaySpeed,
+                CommunicationInitializer.getCommunicator1(), this);
+        vrShoe2Diagnostics = new MovementDiagnosticsForShoe(vrShoe2Header, vrShoe2ForwardDistance,
+                vrShoe2SidewayDistance, vrShoe2ForwardSpeed, vrShoe2SidewaySpeed,
+                CommunicationInitializer.getCommunicator2(), this);
 
-        communicator.resetOrigin();
         updateDistance = true;
         updateDistanceLoop = new Thread(new Runnable()
         {
@@ -51,7 +52,8 @@ public class MovementDiagnosticsActivity extends AppCompatActivity implements IC
                 {
                     try
                     {
-                        communicator.readDistanceFromOrigin();
+                        vrShoe1Diagnostics.readDistanceFromOrigin();
+                        vrShoe2Diagnostics.readDistanceFromOrigin();
                         Thread.sleep(100);
                     }
                     catch (InterruptedException e)
@@ -70,70 +72,123 @@ public class MovementDiagnosticsActivity extends AppCompatActivity implements IC
     {
         super.onDestroy();
         updateDistance = false;
-        CommunicationInitializer.getCommunicator1().removeObserver(this);
+        vrShoe1Diagnostics.destroy();
+        vrShoe2Diagnostics.destroy();
     }
 
-    private void setDeviceIdText(String deviceId)
+    public void resetOriginVrShoe1BtnClicked(View view)
     {
-        vrShoe1Header.setText(deviceId);
+        vrShoe1Diagnostics.resetOrigin();
     }
 
-    private void setDistanceText(float forwardDistance, float sidewayDistance)
+    public void resetOriginVrShoe2BtnClicked(View view)
     {
-        vrShoe1ForwardDistance.setText(getString(R.string.forward_distance) + forwardDistance);
-        vrShoe1SidewayDistance.setText(getString(R.string.sideway_distance) + sidewayDistance);
-    }
-
-    private void setSpeedText(float forwardSpeed, float sidewaySpeed)
-    {
-        vrShoe1ForwardSpeed.setText(getString(R.string.forward_speed) + forwardSpeed);
-        vrShoe1SidewaySpeed.setText(getString(R.string.sideway_speed) + sidewaySpeed);
-    }
-
-    @Override
-    public void messageRead(String message)
-    {
-
-    }
-
-    @Override
-    public void messageWritten(String message)
-    {
-
-    }
-
-    @Override
-    public void sensorDataRead(final VrShoe vrShoe1)
-    {
-        this.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                setDeviceIdText(vrShoe1.getDeviceId());
-                setSpeedText(vrShoe1.getForwardSpeed(), vrShoe1.getSidewaySpeed());
-            }
-        });
-    }
-
-    @Override
-    public void distanceFromOriginRead(String deviceId, final float forwardDistance, final float sidewayDistance)
-    {
-        this.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                setDistanceText(forwardDistance, sidewayDistance);
-            }
-        });
-    }
-
-    public void resetOriginBtnClicked(View view)
-    {
-        CommunicationInitializer.getCommunicator1().resetOrigin();
+        vrShoe2Diagnostics.resetOrigin();
     }
 
     public void backBtnClicked(View view)
     {
         finish();
+    }
+
+    private class MovementDiagnosticsForShoe implements ICommunicatorObserver
+    {
+        private TextView header;
+        private TextView forwardDistance;
+        private TextView sidewayDistance;
+        private TextView forwardSpeed;
+        private TextView sidewaySpeed;
+        private Communicator communicator;
+        private Activity activity;
+
+        public MovementDiagnosticsForShoe(TextView header, TextView forwardDistance,
+                                          TextView sidewayDistance, TextView forwardSpeed,
+                                          TextView sidewaySpeed, Communicator communicator,
+                                          Activity activity)
+        {
+            this.header = header;
+            this.forwardDistance = forwardDistance;
+            this.sidewayDistance = sidewayDistance;
+            this.forwardSpeed = forwardSpeed;
+            this.sidewaySpeed = sidewaySpeed;
+            this.communicator = communicator;
+            this.activity = activity;
+
+            communicator.addObserver(this);
+
+            setDeviceIdText(communicator.getVrShoe().getDeviceId());
+            setDistanceText(0, 0);
+            setSpeedText(0, 0);
+            resetOrigin();
+        }
+
+        public void destroy()
+        {
+            communicator.removeObserver(this);
+        }
+
+        public void readDistanceFromOrigin()
+        {
+            communicator.readDistanceFromOrigin();
+        }
+
+        private void resetOrigin()
+        {
+            communicator.resetOrigin();
+        }
+
+        private void setDeviceIdText(String deviceId)
+        {
+            header.setText(deviceId);
+        }
+
+        private void setDistanceText(float forwardDistance, float sidewayDistance)
+        {
+            this.forwardDistance.setText(getString(R.string.forward_distance) + forwardDistance);
+            this.sidewayDistance.setText(getString(R.string.sideway_distance) + sidewayDistance);
+        }
+
+        private void setSpeedText(float forwardSpeed, float sidewaySpeed)
+        {
+            this.forwardSpeed.setText(getString(R.string.forward_speed) + forwardSpeed);
+            this.sidewaySpeed.setText(getString(R.string.sideway_speed) + sidewaySpeed);
+        }
+
+        @Override
+        public void messageRead(String message)
+        {
+
+        }
+
+        @Override
+        public void messageWritten(String message)
+        {
+
+        }
+
+        @Override
+        public void sensorDataRead(final VrShoe vrShoe)
+        {
+            activity.runOnUiThread(new Runnable()
+            {
+                public void run()
+                {
+                    setDeviceIdText(vrShoe.getDeviceId());
+                    setSpeedText(vrShoe.getForwardSpeed(), vrShoe.getSidewaySpeed());
+                }
+            });
+        }
+
+        @Override
+        public void distanceFromOriginRead(String deviceId, final float forwardDistance, final float sidewayDistance)
+        {
+            activity.runOnUiThread(new Runnable()
+            {
+                public void run()
+                {
+                    setDistanceText(forwardDistance, sidewayDistance);
+                }
+            });
+        }
     }
 }

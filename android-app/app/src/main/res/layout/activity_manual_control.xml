@@ -12,14 +12,14 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/manualControlVrShoeDeviceIdLabel"
+            android:id="@+id/manualControlVrShoe1DeviceIdLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/device_id"
             android:textSize="24sp" />
 
         <EditText
-            android:id="@+id/manualControlRpmEditText"
+            android:id="@+id/manualControlVrShoe1RpmEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -28,25 +28,65 @@
             android:hint="@string/set_rpm"/>
 
         <Button
-            android:id="@+id/manualControlForwardBtn"
+            android:id="@+id/manualControlVrShoe1ForwardBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/forward" />
 
         <Button
-            android:id="@+id/manualControlBackwardBtn"
+            android:id="@+id/manualControlVrShoe1BackwardBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/backward" />
 
         <Button
-            android:id="@+id/manualControlLeftBtn"
+            android:id="@+id/manualControlVrShoe1LeftBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/left" />
 
         <Button
-            android:id="@+id/manualControlRightBtn"
+            android:id="@+id/manualControlVrShoe1RightBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/right" />
+
+        <TextView
+            android:id="@+id/manualControlVrShoe2DeviceIdLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/device_id"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/manualControlVrShoe2RpmEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/set_rpm"
+            android:ems="10"
+            android:hint="@string/set_rpm"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/manualControlVrShoe2ForwardBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/forward" />
+
+        <Button
+            android:id="@+id/manualControlVrShoe2BackwardBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/backward" />
+
+        <Button
+            android:id="@+id/manualControlVrShoe2LeftBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/left" />
+
+        <Button
+            android:id="@+id/manualControlVrShoe2RightBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/right" />
