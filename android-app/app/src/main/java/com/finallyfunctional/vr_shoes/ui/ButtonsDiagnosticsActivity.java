@@ -2,7 +2,6 @@ package com.finallyfunctional.vr_shoes.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -28,16 +27,16 @@ public class ButtonsDiagnosticsActivity extends AppCompatActivity implements ICo
         vrShoe1FrontButtonPressed = findViewById(R.id.buttonsDiagnosticVrShoe1FrontBtnPressedLabel);
         vrShoe1RearButtonPressed = findViewById(R.id.buttonsDiagnosticVrShoe1RearBtnPressedLabel);
 
-        Communicator communicator = CommunicationInitializer.getCommunicator();
+        Communicator communicator = CommunicationInitializer.getCommunicator1();
         communicator.addObserver(this);
-        setLabelsText(communicator.getVrShoe1());
+        setLabelsText(communicator.getVrShoe());
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        CommunicationInitializer.getCommunicator().removeObserver(this);
+        CommunicationInitializer.getCommunicator1().removeObserver(this);
     }
 
     public void BackBtnClicked(View view)

@@ -50,7 +50,7 @@ public class PairVrShoesActivity extends AppCompatActivity
 
     private void checkForPairedVrShoes()
     {
-        if(getVrShoeNames().size() > 0) //TODO Change this to greater than 1 when I need 2 VR shoes
+        if(getVrShoeNames().size() > 1)
         {
             return;
         }
@@ -69,7 +69,7 @@ public class PairVrShoesActivity extends AppCompatActivity
     private void initializeList()
     {
         list = findViewById(R.id.pairVrShoesList);
-        list.setChoiceMode(ListView.CHOICE_MODE_SINGLE); //TODO change to multiple when I'm ready to use two shoes
+        list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice,  getVrShoeNames());
         list.setAdapter(listAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -98,9 +98,7 @@ public class PairVrShoesActivity extends AppCompatActivity
 
     private void listItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        CheckedTextView checkedView = (CheckedTextView) view;
-        okBtn.setEnabled(checkedView.isEnabled());
-        //TODO update when I need to pair 2 shoes
+        okBtn.setEnabled(list.getCheckedItemCount() == 2);
     }
 
     public void refreshBtnClicked(View view)
@@ -111,8 +109,22 @@ public class PairVrShoesActivity extends AppCompatActivity
 
     public void okBtnClicked(View view)
     {
-        String name = (String)list.getItemAtPosition(list.getCheckedItemPosition()); //TODO update this to handle multiple selections later
-        settings.storePairedVrShoe(name);
+        String deviceId1 = "";
+        String deviceId2 = "";
+        for(int i = 0; i < list.getCheckedItemCount(); i++)
+        {
+            if(deviceId1.equals(""))
+            {
+                deviceId1 = (String)list.getItemAtPosition(i);
+            }
+            else
+            {
+                deviceId2 = (String)list.getItemAtPosition(i);
+            }
+
+        }
+        settings.storePairedVrShoe1(deviceId1);
+        settings.storePairedVrShoe2(deviceId2);
         finish();
     }
 }

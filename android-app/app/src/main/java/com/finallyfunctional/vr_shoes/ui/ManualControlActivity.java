@@ -29,7 +29,7 @@ public class ManualControlActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_control);
-        communicator = CommunicationInitializer.getCommunicator();
+        communicator = CommunicationInitializer.getCommunicator1();
         forwardBtn = findViewById(R.id.manualControlForwardBtn);
         backwardBtn = findViewById(R.id.manualControlBackwardBtn);
         leftBtn = findViewById(R.id.manualControlLeftBtn);

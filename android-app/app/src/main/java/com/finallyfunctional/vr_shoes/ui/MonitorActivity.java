@@ -1,10 +1,8 @@
 package com.finallyfunctional.vr_shoes.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.finallyfunctional.vr_shoes.R;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
@@ -71,7 +69,7 @@ public class MonitorActivity extends AppCompatActivity implements IMonitorLogObs
 
     public void pingBtnClicked(View view)
     {
-        Communicator communicator = CommunicationInitializer.getCommunicator();
+        Communicator communicator = CommunicationInitializer.getCommunicator1();
         communicator.ping();
     }
 }

@@ -2,7 +2,6 @@ package com.finallyfunctional.vr_shoes.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -34,9 +33,9 @@ public class MovementDiagnosticsActivity extends AppCompatActivity implements IC
         vrShoe1ForwardSpeed = findViewById(R.id.movementDiagnosticVrShoe1ForwardSpeedLabel);
         vrShoe1SidewaySpeed = findViewById(R.id.movementDiagnosticVrShoe1SidewaySpeedLabel);
 
-        final Communicator communicator = CommunicationInitializer.getCommunicator();
+        final Communicator communicator = CommunicationInitializer.getCommunicator1();
         communicator.addObserver(this);
-        VrShoe vrShoe1 = communicator.getVrShoe1();
+        VrShoe vrShoe1 = communicator.getVrShoe();
         setDeviceIdText(vrShoe1.getDeviceId());
         setDistanceText(0, 0);
         setSpeedText(vrShoe1.getForwardSpeed(), vrShoe1.getSidewaySpeed());
@@ -71,7 +70,7 @@ public class MovementDiagnosticsActivity extends AppCompatActivity implements IC
     {
         super.onDestroy();
         updateDistance = false;
-        CommunicationInitializer.getCommunicator().removeObserver(this);
+        CommunicationInitializer.getCommunicator1().removeObserver(this);
     }
 
     private void setDeviceIdText(String deviceId)
@@ -130,7 +129,7 @@ public class MovementDiagnosticsActivity extends AppCompatActivity implements IC
 
     public void resetOriginBtnClicked(View view)
     {
-        CommunicationInitializer.getCommunicator().resetOrigin();
+        CommunicationInitializer.getCommunicator1().resetOrigin();
     }
 
     public void backBtnClicked(View view)

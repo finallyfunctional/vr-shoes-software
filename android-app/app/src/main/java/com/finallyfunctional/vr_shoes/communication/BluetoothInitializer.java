@@ -16,14 +16,13 @@ import java.util.Set;
 public class BluetoothInitializer extends CommunicationInitializer
 {
     private BluetoothAdapter btAdapter;
-    private Settings settings;
 
-    public BluetoothInitializer(Settings settings)
+    protected BluetoothInitializer(Settings settings)
     {
-        this.settings = settings;
+        super(settings);
     }
 
-    public void setup() throws
+    public Communicator setup(String deviceId) throws
             IOException,
             CommunicationNotSupportedException,
             CommunicationNotEnabledException,
@@ -38,20 +37,15 @@ public class BluetoothInitializer extends CommunicationInitializer
         {
             throw new CommunicationNotEnabledException(BluetoothAdapter.ACTION_REQUEST_ENABLE, R.string.bt_enabled_msg);
         }
-        communicator = pairDevices();
+        return pairDevices(deviceId);
     }
 
-    private Communicator pairDevices() throws IOException, ConfigurationWithOtherActivityNeededException
+    private Communicator pairDevices(String deviceId) throws IOException, ConfigurationWithOtherActivityNeededException
     {
-        String vrShoeId = settings.getPairedVrShoe();
-        if(settings.getPairedVrShoe() == "")
-        {
-            throw new ConfigurationWithOtherActivityNeededException(PairVrShoesActivity.class);
-        }
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         for(BluetoothDevice device : pairedDevices)
         {
-            if(device.getName().equals(vrShoeId))
+            if(device.getName().equals(deviceId))
             {
                 Communicator communicator = new BluetoothSerial(device);
                 return communicator;

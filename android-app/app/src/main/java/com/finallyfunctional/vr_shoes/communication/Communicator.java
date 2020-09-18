@@ -22,7 +22,7 @@ public abstract class Communicator
     private Queue<String> messagesToSend;
     private Gson gson;
     private boolean keepLoopAlive;
-    private VrShoe vrShoe1;
+    private VrShoe vrShoe;
 
     public static char MESSAGE_TERMINATOR = '\n';
     public static final int MESSAGE_TERMINATOR_ASCII = 10;
@@ -33,7 +33,7 @@ public abstract class Communicator
         observers = new ArrayList<>();
         recievedMessages = new PriorityQueue<>();
         messagesToSend = new PriorityQueue<>();
-        vrShoe1 = new VrShoe();
+        vrShoe = new VrShoe();
     }
 
     public void addObserver(ICommunicatorObserver observer)
@@ -114,15 +114,15 @@ public abstract class Communicator
 
     private void readSensorData(ReadSensorData message)
     {
-        vrShoe1.setDeviceId(message.deviceId);
-        vrShoe1.frontButtonPressed(message.frontButtonPressed);
-        vrShoe1.rearButtonPressed(message.rearButtonPressed);
-        vrShoe1.setForwardSpeed(message.forwardSpeed);
-        vrShoe1.setSidewaySpeed(message.sidewaySpeed);
+        vrShoe.setDeviceId(message.deviceId);
+        vrShoe.frontButtonPressed(message.frontButtonPressed);
+        vrShoe.rearButtonPressed(message.rearButtonPressed);
+        vrShoe.setForwardSpeed(message.forwardSpeed);
+        vrShoe.setSidewaySpeed(message.sidewaySpeed);
 
         for(ICommunicatorObserver observer : observers)
         {
-            observer.sensorDataRead(vrShoe1);
+            observer.sensorDataRead(vrShoe);
         }
     }
 
@@ -193,9 +193,9 @@ public abstract class Communicator
         messagesToSend.add(json);
     }
 
-    public VrShoe getVrShoe1()
+    public VrShoe getVrShoe()
     {
-        return vrShoe1;
+        return vrShoe;
     }
 
     protected abstract void readMessagesIntoQueue() throws IOException;
