@@ -4,7 +4,6 @@ import com.finallyfunctional.vr_shoes.logging.IVrShoesAppLogger;
 import com.finallyfunctional.vr_shoes.logging.VrShoesLogcatLogger;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class VrShoesAggregateLogger implements IVrShoesAppLogger
 {

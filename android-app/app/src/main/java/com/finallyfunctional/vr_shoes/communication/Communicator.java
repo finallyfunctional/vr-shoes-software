@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -66,6 +67,11 @@ public abstract class Communicator
                         ex.printStackTrace();
                         //TODO handle the error
                     }
+                    catch(NoSuchElementException ex)
+                    {
+                        ex.printStackTrace();
+                        //TODO handle the error
+                    }
                 }
             }
         });
@@ -80,11 +86,11 @@ public abstract class Communicator
     private void loop() throws IOException
     {
         readMessagesIntoQueue();
-        while(recievedMessages.size() > 0)
+        while(!recievedMessages.isEmpty())
         {
             handleRecievedMessage(recievedMessages.remove());
         }
-        while(messagesToSend.size() > 0)
+        while(!messagesToSend.isEmpty())
         {
             writeMessage(messagesToSend.remove());
         }

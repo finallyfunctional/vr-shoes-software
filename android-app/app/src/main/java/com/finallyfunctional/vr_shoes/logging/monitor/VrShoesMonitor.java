@@ -1,7 +1,6 @@
 package com.finallyfunctional.vr_shoes.logging.monitor;
 
 import com.finallyfunctional.vr_shoes.logging.IVrShoesAppLogger;
-import com.finallyfunctional.vr_shoes.logging.VrShoesLogcatLogger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

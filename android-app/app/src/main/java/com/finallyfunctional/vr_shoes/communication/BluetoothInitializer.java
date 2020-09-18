@@ -17,7 +17,7 @@ public class BluetoothInitializer extends CommunicationInitializer
 {
     private BluetoothAdapter btAdapter;
 
-    protected BluetoothInitializer(Settings settings)
+    public BluetoothInitializer(Settings settings)
     {
         super(settings);
     }
