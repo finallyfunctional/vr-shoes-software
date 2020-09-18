@@ -8,12 +8,11 @@
 TaskHandle_t communicationTask;
 VrShoeConfiguration config;
 Preferences preferences;
-const int LOOP_TIMOUT = 30;
-Timer loopTimer(LOOP_TIMOUT);
+Timer loopTimer(85);
 
 void communicationLoop(void * parameters)
 {
-  Timer timer = Timer(LOOP_TIMOUT);
+  Timer timer = Timer(30);
   while(true)
   {
     timer.start();
@@ -53,10 +52,10 @@ void loop()
 
   loopTimer.start();
   config.getSensors()->updateSensors();
-  // if(loopTimer.timeIsUp())
-  // {
-  //   Serial.print("Main loop timeout. Loop took ");
-  //   Serial.print(loopTimer.getElapsedTime());
-  //   Serial.println("ms");
-  // }
+  if(loopTimer.timeIsUp())
+  {
+    Serial.print("Main loop timeout. Loop took ");
+    Serial.print(loopTimer.getElapsedTime());
+    Serial.println("ms");
+  }
 }

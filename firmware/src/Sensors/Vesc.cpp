@@ -8,19 +8,13 @@ Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(
     tachometerCountsPerRovolution = 3 * motor.POLES;
     polePairs = motor.POLES / 2;
     distanceTraveledPerRevolution = wheel.DIAMETER * PI;
-    reading = true;
 }
 
 void Vesc::update()
 {
-    if(reading)
+    if(!vescUart.getVescValues())
     {
-        if(!vescUart.getVescValues())
-        {
-            Serial.println("Could not connect to VESC!");
-            return;
-        }
-        reading = false;
+        Serial.println("Could not connect to VESC!");
         return;
     }
     if(safetyTimer.timeIsUp() || desiredRpm == 0)
@@ -54,7 +48,6 @@ void Vesc::update()
         Serial.println(newDuty);
         vescUart.setDuty(newDuty);
     }
-    reading = true;
 }
 
 void Vesc::resetOrigin()
