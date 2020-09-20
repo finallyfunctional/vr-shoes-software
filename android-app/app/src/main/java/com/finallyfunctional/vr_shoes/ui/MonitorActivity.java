@@ -69,9 +69,20 @@ public class MonitorActivity extends AppCompatActivity implements IMonitorLogObs
 
     public void pingBtnClicked(View view)
     {
-        Communicator communicator1 = CommunicationInitializer.getCommunicator1();
-        communicator1.ping();
-        Communicator communicator2 = CommunicationInitializer.getCommunicator2();
-        communicator2.ping();
+        Communicator communicator = CommunicationInitializer.getCommunicator();
+        communicator.ping(communicator.getVrShoe1());
+        communicator.ping(communicator.getVrShoe2());
+    }
+
+    public void clearBtnClicked(View view)
+    {
+        monitor.clearLogs();
+        this.runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                updateTextView();
+            }
+        });
     }
 }

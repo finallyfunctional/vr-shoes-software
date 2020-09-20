@@ -13,8 +13,6 @@ import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
 import com.finallyfunctional.vr_shoes.communication.ICommunicatorObserver;
 
-import org.w3c.dom.Text;
-
 public class ButtonsDiagnosticsActivity extends AppCompatActivity
 {
     private ButtonDiagnosticsForShoe diagnosticsForShoe1, diagnosticsForShoe2;
@@ -31,12 +29,13 @@ public class ButtonsDiagnosticsActivity extends AppCompatActivity
         TextView vrShoe2FrontButtonPressed = findViewById(R.id.buttonsDiagnosticVrShoe2FrontBtnPressedLabel);
         TextView vrShoe2RearButtonPressed = findViewById(R.id.buttonsDiagnosticVrShoe2RearBtnPressedLabel);
 
+        Communicator communicator = CommunicationInitializer.getCommunicator();
         diagnosticsForShoe1 = new ButtonDiagnosticsForShoe(this,
-                CommunicationInitializer.getCommunicator1(), vrShoe1Header,
-                vrShoe1FrontButtonPressed, vrShoe1RearButtonPressed);
+                communicator, vrShoe1Header, vrShoe1FrontButtonPressed,
+                vrShoe1RearButtonPressed, communicator.getVrShoe1());
         diagnosticsForShoe2 = new ButtonDiagnosticsForShoe(this,
-                CommunicationInitializer.getCommunicator2(), vrShoe2Header,
-                vrShoe2FrontButtonPressed, vrShoe2RearButtonPressed);
+                communicator, vrShoe2Header, vrShoe2FrontButtonPressed,
+                vrShoe2RearButtonPressed, communicator.getVrShoe2());
     }
 
     @Override
@@ -55,22 +54,23 @@ public class ButtonsDiagnosticsActivity extends AppCompatActivity
     private class ButtonDiagnosticsForShoe implements ICommunicatorObserver
     {
         private TextView header, frontButton, rearButton;
-        private VrShoe vrShoe;
         private Activity activity;
         private Communicator communicator;
+        private String vrShoeId;
 
         public ButtonDiagnosticsForShoe(Activity activity, Communicator communicator,
-                                        TextView header, TextView frontButton, TextView rearButton)
+                                        TextView header, TextView frontButton, TextView rearButton,
+                                        VrShoe vrShoe)
         {
             this.activity = activity;
             this.communicator = communicator;
-            this.vrShoe = communicator.getVrShoe();
             this.header = header;
             this.frontButton = frontButton;
             this.rearButton = rearButton;
+            this.vrShoeId = vrShoe.getDeviceId();
 
             communicator.addObserver(this);
-            setLabelsText();
+            setLabelsText(vrShoe);
         }
 
         public void destroy()
@@ -85,25 +85,28 @@ public class ButtonsDiagnosticsActivity extends AppCompatActivity
         }
 
         @Override
-        public void messageWritten(String message)
+        public void messageWritten(VrShoe vrShoe, String message)
         {
 
         }
 
         @Override
-        public void sensorDataRead(VrShoe vrShoe1)
+        public void sensorDataRead(final VrShoe vrShoe)
         {
-            activity.runOnUiThread(new Runnable()
+            if(vrShoe.getDeviceId().equals(vrShoeId))
             {
-                @Override
-                public void run()
+                activity.runOnUiThread(new Runnable()
                 {
-                    setLabelsText();
-                }
-            });
+                    @Override
+                    public void run()
+                    {
+                        setLabelsText(vrShoe);
+                    }
+                });
+            }
         }
 
-        private void setLabelsText()
+        private void setLabelsText(VrShoe vrShoe)
         {
             header.setText(vrShoe.getDeviceId());
             frontButton.setText(getString(R.string.front_button_pressed) + " : " + vrShoe.isFrontButtonPressed());
@@ -111,7 +114,7 @@ public class ButtonsDiagnosticsActivity extends AppCompatActivity
         }
 
         @Override
-        public void distanceFromOriginRead(String deviceId, float forwardDistance, float sidewayDistance)
+        public void distanceFromOriginRead(VrShoe vrShoe,  float forwardDistance, float sidewayDistance)
         {
 
         }

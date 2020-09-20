@@ -11,6 +11,7 @@ class Timer
     void start();
     bool timeIsUp();
     unsigned long getElapsedTime();
+    void printElapsedTime();
 
     private:
 

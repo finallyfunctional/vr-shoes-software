@@ -1,18 +1,19 @@
 package com.finallyfunctional.vr_shoes.communication.commands;
 
-public class ReadSensorData
+public class SensorData
 {
-    public static final String READ_SENSOR_DATA_COMMAND = "readSensorData";
+    public static final String SENSOR_DATA_COMMAND = "sensorData";
 
     public String command;
     public String deviceId;
+    public boolean get;
     public boolean frontButtonPressed;
     public boolean rearButtonPressed;
     public float forwardSpeed;
     public float sidewaySpeed;
 
-    public ReadSensorData()
+    public SensorData()
     {
-        command = READ_SENSOR_DATA_COMMAND;
+        command = SENSOR_DATA_COMMAND;
     }
 }

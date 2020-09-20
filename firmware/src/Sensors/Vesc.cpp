@@ -8,6 +8,9 @@ Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(
     tachometerCountsPerRovolution = 3 * motor.POLES;
     polePairs = motor.POLES / 2;
     distanceTraveledPerRevolution = wheel.DIAMETER * PI;
+    maxErpm = convertMrpmToErpm(motor.MAX_RPM);
+    pidLoop = Pid();
+    pidLoop.tune(0, 0, 0);
 }
 
 void Vesc::update()
@@ -15,39 +18,56 @@ void Vesc::update()
     if(!vescUart.getVescValues())
     {
         Serial.println("Could not connect to VESC!");
-        return;
     }
-    if(safetyTimer.timeIsUp() || desiredRpm == 0)
+    else if(safetyTimer.timeIsUp() || desiredRpm == 0)
     {
         vescUart.setCurrent(0);
     }
-    else if(vescUart.data.rpm == desiredRpm)
+    else
     {
-        vescUart.setDuty(vescUart.data.dutyCycleNow);
+        updateSpeedUsingSimpleStepping();
+    }
+}
+
+void Vesc::updateSpeedUsingPidLoop()
+{
+    float nextRpm = pidLoop.compute(vescUart.data.rpm, desiredRpm);
+    float newDuty = convertErpmToDutyCycle(nextRpm);
+    if(newDuty > 1)
+    {
+        newDuty = 1;
+    }
+    else if(newDuty < -1)
+    {
+       newDuty = -1;
+    }
+    Serial.print("setting duty to ");
+    Serial.println(newDuty);
+    vescUart.setDuty(newDuty);
+}
+
+void Vesc::updateSpeedUsingSimpleStepping()
+{
+    float newDuty = 0;
+    if(vescUart.data.rpm < desiredRpm)
+    {
+        newDuty = vescUart.data.dutyCycleNow + moveStep;
+        if(newDuty > 1)
+        {
+            newDuty = 1;
+        }
     }
     else
     {
-        float newDuty = 0;
-        if(vescUart.data.rpm < desiredRpm)
+        newDuty = vescUart.data.dutyCycleNow - moveStep;
+        if(newDuty < -1)
         {
-            newDuty = vescUart.data.dutyCycleNow + moveStep;
-            if(newDuty > 1)
-            {
-                newDuty = 1;
-            }
+            newDuty = -1;
         }
-        else
-        {
-            newDuty = vescUart.data.dutyCycleNow - moveStep;
-            if(newDuty < -1)
-            {
-                newDuty = -1;
-            }
-        }
-        Serial.print("setting duty to ");
-        Serial.println(newDuty);
-        vescUart.setDuty(newDuty);
     }
+    Serial.print("setting duty to ");
+    Serial.println(newDuty);
+    vescUart.setDuty(newDuty);
 }
 
 void Vesc::resetOrigin()
@@ -57,7 +77,7 @@ void Vesc::resetOrigin()
 
 void Vesc::setRpm(float rpm)
 {
-    desiredRpm = rpm;
+    desiredRpm = convertMrpmToErpm(rpm) * gearingRatio;
     safetyTimer.start();
 }
 
@@ -75,6 +95,11 @@ float Vesc::convertErpmToMrpm(float erpm)
 float Vesc::convertMrpmToErpm(float mrpm)
 {
     return mrpm * polePairs;
+}
+
+float Vesc::convertErpmToDutyCycle(float erpm)
+{
+    return erpm / maxErpm;
 }
 
 float Vesc::getDistanceFromOrigin()

@@ -7,6 +7,7 @@ public class SetRpm
     public String command;
     public float forwardRpm;
     public float sidewayRpm;
+    public String to;
 
     public boolean reply;
     public String message;

@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Preferences.h>
+#include "../include/VrShoeGlobals.h"
 #include "../include/VrShoeConfiguration.h"
 #include "../include/Timer.h"
 #include "soc/timer_group_struct.h"
@@ -7,7 +8,7 @@
 
 TaskHandle_t communicationTask;
 VrShoeConfiguration config;
-Preferences preferences;
+Preferences VrShoePreferences;
 Timer loopTimer(85);
 
 void communicationLoop(void * parameters)
@@ -31,8 +32,8 @@ void setup()
   Serial.begin(9600);
   Serial1.begin(921600, SERIAL_8N1, 26, 27);
   Serial2.begin(921600, SERIAL_8N1, 16, 17);
-  preferences.begin("VR-Shoe");
-  config.initialize(preferences);
+  VrShoePreferences.begin("VR-Shoe");
+  config.initialize();
 
   xTaskCreatePinnedToCore(
     communicationLoop,
@@ -49,7 +50,8 @@ void loop()
   TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
   TIMERG0.wdt_feed=1;
   TIMERG0.wdt_wprotect=0;
-
+  
+  yield();
   loopTimer.start();
   config.getSensors()->updateSensors();
   if(loopTimer.timeIsUp())

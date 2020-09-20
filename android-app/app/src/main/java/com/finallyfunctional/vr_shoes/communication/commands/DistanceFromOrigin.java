@@ -1,17 +1,18 @@
 package com.finallyfunctional.vr_shoes.communication.commands;
 
-public class ReadDistanceFromOrigin
+public class DistanceFromOrigin
 {
-    public static final String READ_DISTANCE_FROM_ORIGIN_COMMAND = "readDistanceFromOrigin";
+    public static final String DISTANCE_FROM_ORIGIN_COMMAND = "distanceFromOrigin";
 
     public String command;
+    public String to;
     public boolean reply;
     public String deviceId;
     public float forwardDistance;
     public float sidewaysDistance;
 
-    public ReadDistanceFromOrigin()
+    public DistanceFromOrigin()
     {
-        command = READ_DISTANCE_FROM_ORIGIN_COMMAND;
+        command = DISTANCE_FROM_ORIGIN_COMMAND;
     }
 }

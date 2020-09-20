@@ -28,4 +28,7 @@
     <string name="left">Left</string>
     <string name="right">Right</string>
     <string name="manual_control">Manual Control</string>
+    <string name="shoes_pairing_failed">Shoes failed to pair with each other</string>
+    <string name="communication_error">A communication error has occurred</string>
+    <string name="clear">Clear</string>
 </resources>

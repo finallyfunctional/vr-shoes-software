@@ -2,7 +2,6 @@ package com.finallyfunctional.vr_shoes.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.finallyfunctional.vr_shoes.R;
+import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
 
@@ -40,12 +40,13 @@ public class ManualControlActivity extends AppCompatActivity
         EditText rpmVrShoe2Edit = findViewById(R.id.manualControlVrShoe2RpmEditText);
         TextView deviceIdVrShoe2Text = findViewById(R.id.manualControlVrShoe2DeviceIdLabel);
 
-        vrShoe1Control = new ManualControlForShoe(CommunicationInitializer.getCommunicator1(),
-                forwardVrShoe1Btn, backwardVrShoe1Btn, rightVrShoe1Btn, leftVrShoe1Btn, rpmVrShoe1Edit,
-                deviceIdVrShoe1Text);
-        vrShoe2Control = new ManualControlForShoe(CommunicationInitializer.getCommunicator2(),
-                forwardVrShoe2Btn, backwardVrShoe2Btn, rightVrShoe2Btn, leftVrShoe2Btn, rpmVrShoe2Edit,
-                deviceIdVrShoe2Text);
+        Communicator communicator = CommunicationInitializer.getCommunicator();
+        vrShoe1Control = new ManualControlForShoe(communicator, forwardVrShoe1Btn, backwardVrShoe1Btn,
+                rightVrShoe1Btn, leftVrShoe1Btn, rpmVrShoe1Edit, deviceIdVrShoe1Text,
+                communicator.getVrShoe1());
+        vrShoe2Control = new ManualControlForShoe(communicator, forwardVrShoe2Btn, backwardVrShoe2Btn,
+                rightVrShoe2Btn, leftVrShoe2Btn, rpmVrShoe2Edit, deviceIdVrShoe2Text,
+                communicator.getVrShoe2());
     }
 
     @Override
@@ -65,23 +66,24 @@ public class ManualControlActivity extends AppCompatActivity
     {
         private Communicator communicator;
         private Button forwardBtn, backwardBtn, leftBtn, rightBtn;
-
+        private VrShoe vrShoe;
         private float rpm;
         private Timer timer;
 
         public ManualControlForShoe(Communicator communicator, Button forwardBtn,
                                     Button backwardBtn, Button leftBtn, Button rightBtn,
-                                    EditText rpmEdit, TextView deviceIdText)
+                                    EditText rpmEdit, TextView deviceIdText, VrShoe vrShoe)
         {
             this.communicator = communicator;
             this.forwardBtn = forwardBtn;
             this.backwardBtn = backwardBtn;
             this.leftBtn = leftBtn;
             this.rightBtn = rightBtn;
+            this.vrShoe = vrShoe;
 
-            rpmEdit.setText("2000");
-            rpm = 2000;
-            deviceIdText.setText(communicator.getVrShoe().getDeviceId());
+            rpmEdit.setText("500");
+            rpm = 500;
+            deviceIdText.setText(vrShoe.getDeviceId());
 
             rpmEdit.addTextChangedListener(new TextWatcher()
             {
@@ -144,7 +146,7 @@ public class ManualControlActivity extends AppCompatActivity
             {
                 sidewaysRpm = rpm * -1;
             }
-            communicator.setRpm(forwardRpm, sidewaysRpm);
+            communicator.setRpm(forwardRpm, sidewaysRpm, vrShoe);
         }
     }
 }

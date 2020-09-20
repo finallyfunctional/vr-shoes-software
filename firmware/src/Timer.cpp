@@ -21,3 +21,11 @@ unsigned long Timer::getElapsedTime()
     unsigned long current = millis();
     return current - startTime;
 }
+
+void Timer::printElapsedTime()
+{
+    unsigned long elapsedTime = millis() - startTime;
+    Serial.print("Elapsed time - ");
+    Serial.print(elapsedTime);
+    Serial.println("ms");
+}

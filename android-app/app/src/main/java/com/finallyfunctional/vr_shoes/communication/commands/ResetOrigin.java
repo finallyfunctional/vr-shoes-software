@@ -5,6 +5,7 @@ public class ResetOrigin
     public static final String RESET_ORIGIN_COMMAND = "resetOrigin";
 
     public String command;
+    public String to;
 
     public ResetOrigin()
     {

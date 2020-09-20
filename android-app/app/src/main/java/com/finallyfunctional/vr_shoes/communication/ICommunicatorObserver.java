@@ -5,7 +5,7 @@ import com.finallyfunctional.vr_shoes.VrShoe;
 public interface ICommunicatorObserver
 {
     void messageRead(String message);
-    void messageWritten(String message);
+    void messageWritten(VrShoe vrShoe, String message);
     void sensorDataRead(VrShoe vrShoe1);
-    void distanceFromOriginRead(String deviceId, float forwardDistance, float sidewayDistance);
+    void distanceFromOriginRead(VrShoe vrShoe, float forwardDistance, float sidewayDistance);
 }

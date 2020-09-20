@@ -5,18 +5,19 @@ import com.finallyfunctional.vr_shoes.logging.IVrShoesAppLogger;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class VrShoesMonitor implements IVrShoesAppLogger
 {
     private static VrShoesMonitor logger;
     private static final int MAX_MESSAGES = 500;
 
-    private LinkedList<MonitorLog> messages;
+    private ConcurrentLinkedQueue<MonitorLog> messages;
     private ArrayList<IMonitorLogObserver> observers;
 
     private VrShoesMonitor()
     {
-        messages = new LinkedList<>();
+        messages = new ConcurrentLinkedQueue<>();
         observers = new ArrayList<>();
     }
 
@@ -44,14 +45,19 @@ public class VrShoesMonitor implements IVrShoesAppLogger
         return logger;
     }
 
-    public List<MonitorLog> getLogs()
+    public ConcurrentLinkedQueue<MonitorLog> getLogs()
     {
         return messages;
     }
 
+    public void clearLogs()
+    {
+        messages.clear();
+    }
+
     private void maintainListMaximum()
     {
-        while(messages.size() > MAX_MESSAGES)
+        while(messages.size() > MAX_MESSAGES && !messages.isEmpty())
         {
             messages.remove();
         }

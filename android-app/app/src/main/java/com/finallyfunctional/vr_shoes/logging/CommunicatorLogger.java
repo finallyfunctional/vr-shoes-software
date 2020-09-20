@@ -19,7 +19,7 @@ public class CommunicatorLogger implements ICommunicatorObserver
     }
 
     @Override
-    public void messageWritten(String message)
+    public void messageWritten(VrShoe vrShoe, String message)
     {
         logger.verbose(CommunicatorLogger.class.toString(), "Message Written: " + message);
     }
@@ -31,7 +31,7 @@ public class CommunicatorLogger implements ICommunicatorObserver
     }
 
     @Override
-    public void distanceFromOriginRead(String deviceId, float forwardDistance, float sidewayDistance)
+    public void distanceFromOriginRead(VrShoe vrShoe, float forwardDistance, float sidewayDistance)
     {
 
     }

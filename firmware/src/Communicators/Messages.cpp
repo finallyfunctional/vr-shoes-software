@@ -1,8 +1,9 @@
 #include "../../include/Communicators/Messages.h"
 
 const String Messages::PING = "ping";
-const String Messages::READ_SENSOR_DATA = "readSensorData";
-const String Messages::DEVICE_ID = "deviceId";
+const String Messages::SET_COMMUNICATION_MODE = "setCommunicationMode";
+const String Messages::SENSOR_DATA = "sensorData";
 const String Messages::RESET_ORIGIN = "resetOrigin";
-const String Messages::READ_DISTANCE_FROM_ORIGIN = "readDistanceFromOrigin";
+const String Messages::DISTANCE_FROM_ORIGIN = "distanceFromOrigin";
 const String Messages::SET_RPM = "setRpm";
+const String Messages::OTHER_SHOE_ID = "otherShoeId";

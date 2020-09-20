@@ -2,34 +2,33 @@ package com.finallyfunctional.vr_shoes.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.finallyfunctional.vr_shoes.R;
 import com.finallyfunctional.vr_shoes.Settings;
-import com.finallyfunctional.vr_shoes.communication.Communicator;
-import com.finallyfunctional.vr_shoes.communication.BluetoothInitializer;
+import com.finallyfunctional.vr_shoes.communication.bluetooth.BluetoothInitializer;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotEnabledException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotSupportedException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.ConfigurationWithOtherActivityNeededException;
-import com.finallyfunctional.vr_shoes.logging.VrShoesLogcatLogger;
 import com.finallyfunctional.vr_shoes.logging.monitor.VrShoesAggregateLogger;
-import com.finallyfunctional.vr_shoes.logging.monitor.VrShoesMonitor;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity
 {
     private CommunicationInitializer communicationInitializer;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressBar = findViewById(R.id.mainProgressBar);
         communicationInitializer = new BluetoothInitializer(new Settings(this));
         VrShoesAggregateLogger.initialize();
     }
@@ -40,16 +39,25 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         try
         {
+            ProgressBarUtility.showProgressBar(progressBar, this);
             communicationInitializer.initialize();
-
+            ProgressBarUtility.hideProgressBar(progressBar, MainActivity.this);
             //TODO going straight to diagnostics now. Later I'll implement the main activity.
-            Intent intent = new Intent(this, DiagnosticsActivity.class);
+            Intent intent = new Intent(MainActivity.this, DiagnosticsActivity.class);
             startActivity(intent);
         }
         catch (IOException ex)
         {
             ex.printStackTrace();
-            //TODO handle error
+            DialogUtility.showOkayDialog(this, getString(R.string.communication_error), new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    finish();
+                    System.exit(0);
+                }
+            });
         }
         catch (CommunicationNotSupportedException ex)
         {

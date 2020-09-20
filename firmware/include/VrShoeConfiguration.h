@@ -14,11 +14,13 @@
 #include "./Sensors/Vesc.h"
 #include "./Wheels/Rotacaster50mmWheel.h"
 #include "./Motors/Flipsky270kvMotor.h"
+#include "./Sensors/RemoteVrShoe.h"
+#include "./VrShoeGlobals.h"
 
 class VrShoeConfiguration
 {
     public:
-    void initialize(Preferences preferences);
+    void initialize();
     Communicator* getCommunicator();
     Sensors* getSensors();
 

@@ -6,6 +6,7 @@
 #include "../Motors/Motor.h"
 #include "../Wheels/Wheel.h"
 #include "../Timer.h"
+#include "../Pid.h"
 
 class Vesc
 {
@@ -20,7 +21,12 @@ class Vesc
     private:
     float convertErpmToMrpm(float erpm);
     float convertMrpmToErpm(float mrpm);
+    float convertErpmToDutyCycle(float erpm);
 
+    void updateSpeedUsingPidLoop();
+    void updateSpeedUsingSimpleStepping();
+
+    Pid pidLoop;
     VescUart vescUart;
     float originTachometer;
     float polePairs;
@@ -28,6 +34,7 @@ class Vesc
     float distanceTraveledPerRevolution;
     float gearingRatio; 
     float desiredRpm;
+    float maxErpm;
     Timer safetyTimer;
 
     const double moveStep = 0.02;

@@ -1,44 +1,36 @@
-package com.finallyfunctional.vr_shoes.communication;
+package com.finallyfunctional.vr_shoes.communication.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
+import com.finallyfunctional.vr_shoes.communication.Communicator;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.UUID;
 
-public class BluetoothSerial extends Communicator
+public abstract class BluetoothSerial extends Communicator
 {
-    private OutputStream btOutputStream;
-    private InputStream btInputStream;
-    byte[] inputBuffer;
-    int inputBufferIndex;
-
     private static final String BT_SERIAL_PORT_SERVICE_ID = "00001101-0000-1000-8000-00805F9B34FB";
 
-    public BluetoothSerial(BluetoothDevice device) throws IOException
+    public BluetoothSerial(String deviceId1, String deviceId2)
     {
-        super(device.getName());
-        inputBuffer = new byte[1024];
-        setupStreams(device);
+        super(deviceId1, deviceId2);
     }
 
-    private void setupStreams(BluetoothDevice device) throws IOException
+    protected BluetoothSocket setupSocket(BluetoothDevice device) throws IOException
     {
         UUID uuid = UUID.fromString(BT_SERIAL_PORT_SERVICE_ID);
         BluetoothSocket btSocket = device.createRfcommSocketToServiceRecord(uuid);
         btSocket.connect();
-        btOutputStream = btSocket.getOutputStream();
-        btInputStream = btSocket.getInputStream();
+        return btSocket;
     }
 
-    protected void readMessagesIntoQueue() throws IOException
+    protected int readMessagesIntoQueue(InputStream btInputStream, int inputBufferIndex, byte[] inputBuffer) throws IOException
     {
         int bytesAvailable = btInputStream.available();
         if(bytesAvailable == 0)
         {
-            return;
+            return inputBufferIndex;
         }
         byte[] packetBytes = new byte[bytesAvailable];
         btInputStream.read(packetBytes);
@@ -57,10 +49,6 @@ public class BluetoothSerial extends Communicator
                 inputBuffer[inputBufferIndex++] = b;
             }
         }
-    }
-
-    protected void writeMessageImplementation(String message) throws IOException
-    {
-        btOutputStream.write(message.getBytes());
+        return inputBufferIndex;
     }
 }

@@ -12,8 +12,7 @@ import java.io.IOException;
 
 public abstract class CommunicationInitializer
 {
-    protected static Communicator communicator1;
-    protected static Communicator communicator2;
+    protected static Communicator communicator;
     protected Settings settings;
 
     protected CommunicationInitializer(Settings settings)
@@ -21,7 +20,7 @@ public abstract class CommunicationInitializer
         this.settings = settings;
     }
 
-    protected abstract Communicator setup(String deviceId) throws
+    protected abstract void setup(String deviceId1, String deviceId2) throws
             IOException,
             CommunicationNotSupportedException,
             CommunicationNotEnabledException,
@@ -34,33 +33,35 @@ public abstract class CommunicationInitializer
             CommunicationNotEnabledException,
             ConfigurationWithOtherActivityNeededException
     {
+        if(communicator != null)
+        {
+            return; //already initialized
+        }
         String deviceId1 = settings.getPairedVrShoe1();
         String deviceId2 = settings.getPairedVrShoe2();
-        communicator1 = initializeCommunicator(deviceId1);
-        communicator2 = initializeCommunicator(deviceId2);
+        initializeCommunicator(deviceId1, deviceId2);
     }
 
-    private Communicator initializeCommunicator(String deviceId)
+    private void initializeCommunicator(String shoe1Id, String shoe2Id)
             throws ConfigurationWithOtherActivityNeededException,
             CommunicationNotEnabledException,
             IOException,
             CommunicationNotSupportedException
     {
-        if(deviceId == null || deviceId.equals(""))
+        if(shoe1Id == null || shoe1Id.equals("") || shoe2Id == null || shoe2Id.equals(""))
         {
             throw new ConfigurationWithOtherActivityNeededException(PairVrShoesActivity.class);
         }
-        Communicator communicator = setup(deviceId);
+        setup(shoe1Id, shoe2Id);
         communicator.addObserver(new CommunicatorLogger(VrShoesAggregateLogger.getLogger()));
         communicator.start();
+        communicator.sendOtherShoeId(communicator.getVrShoe1(), communicator.getVrShoe2());
+        communicator.sendOtherShoeId(communicator.getVrShoe2(), communicator.getVrShoe1());
         communicator.readSensorDataFromShoes();
+    }
+
+    public static Communicator getCommunicator()
+    {
         return communicator;
     }
-
-    public static Communicator getCommunicator1()
-    {
-        return communicator1;
-    }
-
-    public static Communicator getCommunicator2() {return communicator2;}
 }

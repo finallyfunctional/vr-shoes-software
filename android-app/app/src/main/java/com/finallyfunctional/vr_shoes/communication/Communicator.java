@@ -1,16 +1,21 @@
 package com.finallyfunctional.vr_shoes.communication;
 
+import android.util.Pair;
+
 import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.commands.CommandConstants;
+import com.finallyfunctional.vr_shoes.communication.commands.OtherShoeId;
 import com.finallyfunctional.vr_shoes.communication.commands.Ping;
-import com.finallyfunctional.vr_shoes.communication.commands.ReadDistanceFromOrigin;
-import com.finallyfunctional.vr_shoes.communication.commands.ReadSensorData;
+import com.finallyfunctional.vr_shoes.communication.commands.DistanceFromOrigin;
+import com.finallyfunctional.vr_shoes.communication.commands.SensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.ResetOrigin;
+import com.finallyfunctional.vr_shoes.communication.commands.SetCommunicationMode;
 import com.finallyfunctional.vr_shoes.communication.commands.SetRpm;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
@@ -20,22 +25,24 @@ public abstract class Communicator
 {
     private ArrayList<ICommunicatorObserver> observers;
     private Queue<String> recievedMessages;
-    private Queue<String> messagesToSend;
+    private Queue<Pair<VrShoe, String>> messagesToSend;
     private Gson gson;
     private boolean keepLoopAlive;
-    private VrShoe vrShoe;
+    private VrShoe vrShoe1, vrShoe2;
 
     public static char MESSAGE_TERMINATOR = '\n';
     public static final int MESSAGE_TERMINATOR_ASCII = 10;
 
-    public Communicator(String deviceId)
+    public Communicator(String deviceId1, String deviceId2)
     {
         gson = new Gson();
         observers = new ArrayList<>();
-        recievedMessages = new PriorityQueue<>();
-        messagesToSend = new PriorityQueue<>();
-        vrShoe = new VrShoe();
-        vrShoe.setDeviceId(deviceId);
+        recievedMessages = new LinkedList<>();
+        messagesToSend = new LinkedList<>();
+        vrShoe1 = new VrShoe();
+        vrShoe1.setDeviceId(deviceId1);
+        vrShoe2 = new VrShoe();
+        vrShoe2.setDeviceId(deviceId2);
     }
 
     public void addObserver(ICommunicatorObserver observer)
@@ -92,15 +99,36 @@ public abstract class Communicator
         }
         while(!messagesToSend.isEmpty())
         {
-            writeMessage(messagesToSend.remove());
+            Pair<VrShoe, String> pair = messagesToSend.remove();
+            writeMessage(pair.first, pair.second);
         }
     }
 
-    private void handleRecievedMessage(String message)
+    private void handleRecievedMessage(String message) throws IOException
     {
         Map map = gson.fromJson(message, Map.class);
+        if(map == null)
+        {
+            return;
+        }
         String command = (String) map.get(CommandConstants.COMMAND);
-        if(command == null)
+        String shoeId = (String) map.get(CommandConstants.SHOE_ID);
+        if(command == null || shoeId == null)
+        {
+            return;
+        }
+        VrShoe thisVrShoe, otherVrShoe;
+        if(shoeId.equals(vrShoe1.getDeviceId()))
+        {
+            thisVrShoe = vrShoe1;
+            otherVrShoe = vrShoe2;
+        }
+        else if(shoeId.equals(vrShoe2.getDeviceId()))
+        {
+            thisVrShoe = vrShoe2;
+            otherVrShoe = vrShoe1;
+        }
+        else
         {
             return;
         }
@@ -108,32 +136,37 @@ public abstract class Communicator
         {
             case Ping.PING_COMMAND:
                 break;
-            case ReadSensorData.READ_SENSOR_DATA_COMMAND:
-                readSensorData(gson.fromJson(message, ReadSensorData.class));
+            case SensorData.SENSOR_DATA_COMMAND:
+                readSensorData(message, thisVrShoe, otherVrShoe);
                 break;
             case ResetOrigin.RESET_ORIGIN_COMMAND:
                 break;
-            case ReadDistanceFromOrigin.READ_DISTANCE_FROM_ORIGIN_COMMAND:
-                readDistanceFromOrigin(gson.fromJson(message, ReadDistanceFromOrigin.class));
+            case DistanceFromOrigin.DISTANCE_FROM_ORIGIN_COMMAND:
+                readDistanceFromOrigin(thisVrShoe, gson.fromJson(message, DistanceFromOrigin.class));
                 break;
         }
     }
 
-    private void readSensorData(ReadSensorData message)
+    private void readSensorData(String message, VrShoe thisVrShoe, VrShoe otherVrShoe) throws IOException
     {
-        vrShoe.setDeviceId(message.deviceId);
-        vrShoe.frontButtonPressed(message.frontButtonPressed);
-        vrShoe.rearButtonPressed(message.rearButtonPressed);
-        vrShoe.setForwardSpeed(message.forwardSpeed);
-        vrShoe.setSidewaySpeed(message.sidewaySpeed);
+        SensorData messageObj = gson.fromJson(message, SensorData.class);
+        thisVrShoe.frontButtonPressed(messageObj.frontButtonPressed);
+        thisVrShoe.rearButtonPressed(messageObj.rearButtonPressed);
+        thisVrShoe.setForwardSpeed(messageObj.forwardSpeed);
+        thisVrShoe.setSidewaySpeed(messageObj.sidewaySpeed);
+
+        if(forwardSensorDataToOtherShoe())
+        {
+            writeMessage(otherVrShoe, message);
+        }
 
         for(ICommunicatorObserver observer : observers)
         {
-            observer.sensorDataRead(vrShoe);
+            observer.sensorDataRead(thisVrShoe);
         }
     }
 
-    private void readDistanceFromOrigin(ReadDistanceFromOrigin message)
+    private void readDistanceFromOrigin(VrShoe vrShoe, DistanceFromOrigin message)
     {
         if(!message.reply)
         {
@@ -141,20 +174,20 @@ public abstract class Communicator
         }
         for(ICommunicatorObserver observer : observers)
         {
-            observer.distanceFromOriginRead(message.deviceId, message.forwardDistance, message.sidewaysDistance);
+            observer.distanceFromOriginRead(vrShoe, message.forwardDistance, message.sidewaysDistance);
         }
     }
 
-    private void writeMessage(String message) throws IOException
+    private void writeMessage(VrShoe vrShoe, String message) throws IOException
     {
         if(message.charAt(message.length() - 1) != MESSAGE_TERMINATOR)
         {
             message += MESSAGE_TERMINATOR;
         }
-        writeMessageImplementation(message);
+        writeMessageImplementation(vrShoe, message);
         for(ICommunicatorObserver observer : observers)
         {
-            observer.messageWritten(message);
+            observer.messageWritten(vrShoe, message);
         }
     }
 
@@ -167,44 +200,76 @@ public abstract class Communicator
         }
     }
 
-    public void ping()
+    public void ping(VrShoe vrShoe)
     {
-        String json = gson.toJson(new Ping());
-        messagesToSend.add(json);
+        Ping pingCommand = new Ping();
+        pingCommand.to = vrShoe.getDeviceId();
+        String json = gson.toJson(pingCommand);
+        messagesToSend.add(new Pair<>(vrShoe, json));
     }
 
     public void readSensorDataFromShoes()
     {
-        String json = gson.toJson(new ReadSensorData());
-        messagesToSend.add(json);
+        readSensorDataFromShoe(vrShoe1);
+        readSensorDataFromShoe(vrShoe2);
     }
 
-    public void resetOrigin()
+    private void readSensorDataFromShoe(VrShoe vrShoe)
     {
-        String json = gson.toJson(new ResetOrigin());
-        messagesToSend.add(json);
+        SensorData command = new SensorData();
+        command.deviceId = vrShoe.getDeviceId();
+        command.get = true;
+        String json = gson.toJson(command);
+        messagesToSend.add(new Pair<>(vrShoe, json));
     }
 
-    public void readDistanceFromOrigin()
+    public void resetOrigin(VrShoe vrShoe)
     {
-        String json = gson.toJson(new ReadDistanceFromOrigin());
-        messagesToSend.add(json);
+        ResetOrigin command = new ResetOrigin();
+        command.to = vrShoe.getDeviceId();
+        String json = gson.toJson(command);
+        messagesToSend.add(new Pair<>(vrShoe, json));
     }
 
-    public void setRpm(float forwardRpm, float sidewayRpm)
+    public void readDistanceFromOrigin(VrShoe vrShoe)
+    {
+        DistanceFromOrigin command = new DistanceFromOrigin();
+        command.to = vrShoe.getDeviceId();
+        String json = gson.toJson(command);
+        messagesToSend.add(new Pair<>(vrShoe, json));
+    }
+
+    public void setRpm(float forwardRpm, float sidewayRpm, VrShoe vrShoe)
     {
         SetRpm command = new SetRpm();
         command.forwardRpm = forwardRpm;
         command.sidewayRpm = sidewayRpm;
+        command.to = vrShoe.getDeviceId();
         String json = gson.toJson(command);
-        messagesToSend.add(json);
+        messagesToSend.add(new Pair<>(vrShoe, json));
     }
 
-    public VrShoe getVrShoe()
+    public void setCommunicationMode(VrShoe vrShoe, SetCommunicationMode command)
     {
-        return vrShoe;
+        String json = gson.toJson(command);
+        messagesToSend.add(new Pair<>(vrShoe, json));
     }
+
+    public void sendOtherShoeId(VrShoe thisShoe, VrShoe otherShoe)
+    {
+        OtherShoeId command = new OtherShoeId();
+        command.otherShoeId = otherShoe.getDeviceId();
+        messagesToSend.add(new Pair<>(thisShoe, gson.toJson(command)));
+    }
+
+    public VrShoe getVrShoe1()
+    {
+        return vrShoe1;
+    }
+
+    public VrShoe getVrShoe2() {return vrShoe2;}
 
     protected abstract void readMessagesIntoQueue() throws IOException;
-    protected abstract void writeMessageImplementation(String message) throws IOException;
+    protected abstract void writeMessageImplementation(VrShoe vrShoe, String message) throws IOException;
+    protected abstract boolean forwardSensorDataToOtherShoe();
 }

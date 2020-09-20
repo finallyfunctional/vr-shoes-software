@@ -8,6 +8,7 @@ class Motor
     public:
     static const int POLES;
     static const float GEARING_RATIO;
+    static const int MAX_RPM;
 };
 
 #endif

@@ -5,6 +5,7 @@ public class Ping
     public static final String PING_COMMAND = "ping";
 
     public String command;
+    public String to;
 
     public Ping()
     {
