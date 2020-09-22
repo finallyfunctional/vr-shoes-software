@@ -11,13 +11,14 @@ VrShoeConfiguration config;
 Preferences VrShoePreferences;
 Timer loopTimer(85);
 
-void communicationLoop(void * parameters)
+void core0Loop(void * parameters)
 {
   Timer timer = Timer(30);
   while(true)
   {
     timer.start();
     config.getCommunicator()->update();
+    config.getShoeController()->update();
     if(timer.timeIsUp())
     {
       Serial.print("Communication loop timout. Loop took ");
@@ -36,8 +37,8 @@ void setup()
   config.initialize();
 
   xTaskCreatePinnedToCore(
-    communicationLoop,
-    "communicationLoop",
+    core0Loop,
+    "core0Loop",
     10000,
     NULL,
     1,

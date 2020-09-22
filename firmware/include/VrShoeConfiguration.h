@@ -16,6 +16,8 @@
 #include "./Motors/Flipsky270kvMotor.h"
 #include "./Sensors/RemoteVrShoe.h"
 #include "./VrShoeGlobals.h"
+#include "./AutoShoeControllers/AutoShoeController.h"
+#include "./AutoShoeControllers/OmniPoweredWalking.h"
 
 class VrShoeConfiguration
 {
@@ -23,10 +25,12 @@ class VrShoeConfiguration
     void initialize();
     Communicator* getCommunicator();
     Sensors* getSensors();
+    AutoShoeController* getShoeController();
 
     private:
     Communicator* communicator;
     Sensors* sensors;
+    AutoShoeController* shoeController;
 
     static const char* COMMUNICATOR_TYPE_KEY;
     static const char* BUTTONS_TYPE_KEY;
