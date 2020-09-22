@@ -153,8 +153,8 @@ void Communicator::getSensorData()
     json[MessageKeys::SHOE_ID] = shoeId;
 
     Vector2D speed = sensors->getMovementTracker()->getSpeed();
-    json[MessageKeys::FORWARD_SPEED] = speed.getX();
-    json[MessageKeys::SIDEWAY_SPEED] = speed.getY();
+    json[MessageKeys::FORWARD_SPEED] = printf("%.2f", speed.getX());
+    json[MessageKeys::SIDEWAY_SPEED] = printf("%.2f", speed.getY());
 }
 
 int Communicator::resetOrigin()
@@ -177,8 +177,8 @@ int Communicator::sendDistanceFromOrigin()
     json[MessageKeys::COMMAND] = Messages::DISTANCE_FROM_ORIGIN;
     json[MessageKeys::REPLY] = true;
     json[MessageKeys::SHOE_ID] = shoeId;
-    json[MessageKeys::FORWARD_DISTANCE] = distance.getX();
-    json[MessageKeys::SIDEWAY_DISTANCE] = distance.getY();
+    json[MessageKeys::FORWARD_DISTANCE] = printf("%.2f", distance.getX());
+    json[MessageKeys::SIDEWAY_DISTANCE] = printf("%.2f", distance.getY());
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
