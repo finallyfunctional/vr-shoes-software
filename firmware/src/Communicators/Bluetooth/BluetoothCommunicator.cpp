@@ -1,7 +1,7 @@
 #include "../../../include/Communicators/Bluetooth/BluetoothCommunicator.h"
 
-const String BluetoothCommunicator::BLUETOOTH_MASTER_MODE  = "btMasterMode";
-const String BluetoothCommunicator::BLUETOOTH_SLAVE_MODE  = "btSlaveMode";
+const String BluetoothCommunicator::BLUETOOTH_MASTER_MODE  = "m";
+const String BluetoothCommunicator::BLUETOOTH_SLAVE_MODE  = "s";
 const char* BluetoothCommunicator::OTHER_SHOE_ID_KEY = "remote-id";
 const char* BluetoothCommunicator::BT_MODE_KEY = "bt-mode";
 
@@ -41,15 +41,11 @@ void BluetoothCommunicator::initializeCommunication()
 
 int BluetoothCommunicator::setCommunicationMode()
 {
-    String mode = json["mode"].as<String>();
-    Serial.print("Mode: ");
-    Serial.println(mode);
+    String mode = json[MessageKeys::MODE].as<String>();
     if(mode.equals(BLUETOOTH_MASTER_MODE))
     {     
         Serial.println("Changing to master mode");
-        String otherShoeId = json["otherShoeId"].as<String>();
-        Serial.print("Other Shoe ID: ");
-        Serial.println(otherShoeId);
+        String otherShoeId = json[MessageKeys::OTHER_SHOE_ID].as<String>();
         VrShoePreferences.putString(OTHER_SHOE_ID_KEY, otherShoeId);
         VrShoePreferences.putString(BT_MODE_KEY, BLUETOOTH_MASTER_MODE);
         endBtSerial();
@@ -57,6 +53,7 @@ int BluetoothCommunicator::setCommunicationMode()
     }
     else if(mode.equals(BLUETOOTH_SLAVE_MODE))
     {
+        Serial.println("Changing to slave mode");
         VrShoePreferences.putString(BT_MODE_KEY, BLUETOOTH_SLAVE_MODE);
         VrShoePreferences.remove(OTHER_SHOE_ID_KEY);
         endBtSerial();
@@ -114,20 +111,20 @@ void BluetoothCommunicator::processMessages()
 bool BluetoothCommunicator::shouldForwardMessage()
 {
     return !isMaster && 
-    (json["reply"].as<bool>() || 
-    (!json["to"].isNull() && !json["to"].as<String>().equals(shoeId)));
+    (json[MessageKeys::REPLY].as<bool>() || 
+    (!json[MessageKeys::DESTINATION].isNull() && !json[MessageKeys::DESTINATION].as<String>().equals(shoeId)));
 }
 
 int BluetoothCommunicator::handleImplementationSpecificMessage(String commandId)
 {
     if(isMaster && commandId.equals(BluetoothMessages::BT_CONNECT_TO))
     {
-        String remoteName = json["remoteName"];
+        String remoteName = json[MessageKeys::REMOTE_NAME];
         json.clear();
-        json["command"] = BluetoothMessages::BT_CONNECT_TO;
-        json["reply"] = true;
+        json[MessageKeys::COMMAND] = BluetoothMessages::BT_CONNECT_TO;
+        json[MessageKeys::REPLY] = true;
         json[MessageKeys::SHOE_ID] = shoeId;
-        json["success"] = serialBt.connect(remoteName);
+        json[MessageKeys::SUCCESS] = serialBt.connect(remoteName);
         return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
     }
     return ResponseCodes::BAD_REQUEST;

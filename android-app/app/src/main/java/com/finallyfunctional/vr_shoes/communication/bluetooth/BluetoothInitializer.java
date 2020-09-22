@@ -96,9 +96,9 @@ public class BluetoothInitializer extends CommunicationInitializer
 
         setupSerial.start();
         SetCommunicationMode command = new SetCommunicationMode();
-        command.to = masterShoeId;
-        command.mode = SetCommunicationMode.BT_MASTER_MODE;
-        command.otherShoeId = slaveShoe.getName();
+        command.d = masterShoeId;
+        command.m = SetCommunicationMode.BT_MASTER_MODE;
+        command.oi = slaveShoe.getName();
         setupSerial.setCommunicationMode(masterVrShoe, command);
         setupSerial.stop();
         settings.saveMasterVrShoe(masterShoeId);

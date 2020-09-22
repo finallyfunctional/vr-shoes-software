@@ -42,13 +42,12 @@ int Communicator::handleRecievedMessage(String message)
     DeserializationError error = deserializeJson(json, message);
     if (error) 
     {
-        json["error"] = 400;
-        json["message"] = "Could not parse message - " + message;
+        json[MessageKeys::ERROR] = ResponseCodes::BAD_REQUEST;
         String reply;
         serializeJson(json, reply);
         return ResponseCodes::BAD_REQUEST;
     }
-    String commandId = json["command"].as<String>();
+    String commandId = json[MessageKeys::COMMAND].as<String>();
     if(shouldForwardMessage())
     {
         return ResponseCodes::FORWARD_MESSAGE;
@@ -59,7 +58,7 @@ int Communicator::handleRecievedMessage(String message)
     }
     else if(commandId.equals(Messages::SENSOR_DATA))
     {
-        if(!json["get"].isNull() && json["get"].as<bool>())
+        if(!json[MessageKeys::GET].isNull() && json[MessageKeys::GET].as<bool>())
         {
             return replyWithSensorData();
         }
@@ -97,28 +96,26 @@ int Communicator::handleRecievedMessage(String message)
             return implResponse;
         }
         json.clear();
-        json["error"] = 400;
-        json["message"] = "Unknown command - " + commandId;
+        json[MessageKeys::ERROR] = ResponseCodes::UNKNOWN_REQUEST;
         String reply;
         serializeJson(json, reply);
-        return ResponseCodes::BAD_REQUEST;
     }
+    return ResponseCodes::UNKNOWN_REQUEST;
 }
 
 int Communicator::ping()
 {
     json.clear();
-    json["command"] = Messages::PING;
-    json["reply"] = true;
+    json[MessageKeys::COMMAND] = Messages::PING;
+    json[MessageKeys::REPLY] = true;
     json[MessageKeys::SHOE_ID] = shoeId;
-    json["message"] = "Ping recieved on " + shoeId;
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
 
 int Communicator::replyWithSensorData()
 {
     getSensorData();
-    json["reply"] = true;
+    json[MessageKeys::REPLY] = true;
     String message;
     serializeJson(json, message);
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
@@ -131,7 +128,7 @@ void Communicator::sendSensorDataIfStale(String sendingToshoeId)
     serializeJson(json, message);
     if(!message.equals(lastSensorDataMessageSent))
     {
-        json["to"] = sendingToshoeId;
+        json[MessageKeys::DESTINATION] = sendingToshoeId;
         sendMessageTo(sendingToshoeId);
         lastSensorDataMessageSent = message;
         sendSensorDataTimer->start();
@@ -140,24 +137,24 @@ void Communicator::sendSensorDataIfStale(String sendingToshoeId)
 
 int Communicator::recieveSensorData()
 {
-    sensors->getRemoteVrShoe()->frontButtonPressed = json["frontButtonPressed"];
-    sensors->getRemoteVrShoe()->rearButtonPressed = json["rearButtonPressed"];
-    sensors->getRemoteVrShoe()->forwardSpeed = json["forwardSpeed"];
-    sensors->getRemoteVrShoe()->sidewaySpeed = json["sidewaySpeed"];
+    sensors->getRemoteVrShoe()->frontButtonPressed = json[MessageKeys::FRONT_BUTTON_PRESSED];
+    sensors->getRemoteVrShoe()->rearButtonPressed = json[MessageKeys::REAR_BUTTON_PRESSED];
+    sensors->getRemoteVrShoe()->forwardSpeed = json[MessageKeys::FORWARD_SPEED];
+    sensors->getRemoteVrShoe()->sidewaySpeed = json[MessageKeys::SIDEWAY_SPEED];
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }
 
 void Communicator::getSensorData()
 {
     json.clear();
-    json["command"] = Messages::SENSOR_DATA;
-    json["frontButtonPressed"] = sensors->isFrontButtonPressed();
-    json["rearButtonPressed"] = sensors->isRearButtonPressed();
+    json[MessageKeys::COMMAND] = Messages::SENSOR_DATA;
+    json[MessageKeys::FRONT_BUTTON_PRESSED] = sensors->isFrontButtonPressed();
+    json[MessageKeys::REAR_BUTTON_PRESSED] = sensors->isRearButtonPressed();
     json[MessageKeys::SHOE_ID] = shoeId;
 
     Vector2D speed = sensors->getMovementTracker()->getSpeed();
-    json["forwardSpeed"] = speed.getX();
-    json["sidewaySpeed"] = speed.getY();
+    json[MessageKeys::FORWARD_SPEED] = speed.getX();
+    json[MessageKeys::SIDEWAY_SPEED] = speed.getY();
 }
 
 int Communicator::resetOrigin()
@@ -165,10 +162,9 @@ int Communicator::resetOrigin()
     sensors->getMovementTracker()->resetOrigin();
 
     json.clear();
-    json["command"] = Messages::RESET_ORIGIN;
-    json["reply"] = true;
+    json[MessageKeys::COMMAND] = Messages::RESET_ORIGIN;
+    json[MessageKeys::REPLY] = true;
     json[MessageKeys::SHOE_ID] = shoeId;
-    json["message"] = "Origin reset on " + shoeId;
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
@@ -178,34 +174,33 @@ int Communicator::sendDistanceFromOrigin()
     Vector2D distance = sensors->getMovementTracker()->getDistanceFromOrigin();
 
     json.clear();
-    json["command"] = Messages::DISTANCE_FROM_ORIGIN;
-    json["reply"] = true;
+    json[MessageKeys::COMMAND] = Messages::DISTANCE_FROM_ORIGIN;
+    json[MessageKeys::REPLY] = true;
     json[MessageKeys::SHOE_ID] = shoeId;
-    json["forwardDistance"] = distance.getX();
-    json["sidewaysDistance"] = distance.getY();
+    json[MessageKeys::FORWARD_DISTANCE] = distance.getX();
+    json[MessageKeys::SIDEWAY_DISTANCE] = distance.getY();
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
 
 int Communicator::setRpm()
 {
-    float forwardRpm = json["forwardRpm"];
-    float sidewayRpm = json["sidewayRpm"];
+    float forwardRpm = json[MessageKeys::FORWARD_RPM];
+    float sidewayRpm = json[MessageKeys::SIDEWAY_RPM];
 
     sensors->getSpeedController()->setRpm(forwardRpm, sidewayRpm);
 
     json.clear();
-    json["command"] = Messages::SET_RPM;
-    json["reply"] = true;
+    json[MessageKeys::COMMAND] = Messages::SET_RPM;
+    json[MessageKeys::REPLY] = true;
     json[MessageKeys::SHOE_ID] = shoeId;
-    json["message"] = "rpm set";
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
 
 int Communicator::setOtherShoeId()
 {
-    String otherShoeId = json["otherShoeId"];
+    String otherShoeId = json[MessageKeys::OTHER_SHOE_ID];
     sensors->getRemoteVrShoe()->shoeId = otherShoeId;
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }

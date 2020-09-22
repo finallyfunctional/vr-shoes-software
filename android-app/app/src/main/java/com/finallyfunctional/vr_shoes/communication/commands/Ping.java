@@ -2,13 +2,13 @@ package com.finallyfunctional.vr_shoes.communication.commands;
 
 public class Ping
 {
-    public static final String PING_COMMAND = "ping";
+    public static final String PING_COMMAND = "p";
 
-    public String command;
-    public String to;
+    public String c; //command
+    public String d; //destination
 
     public Ping()
     {
-        command = PING_COMMAND;
+        c = PING_COMMAND;
     }
 }

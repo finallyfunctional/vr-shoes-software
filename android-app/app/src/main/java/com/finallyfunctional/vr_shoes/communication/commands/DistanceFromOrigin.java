@@ -2,17 +2,17 @@ package com.finallyfunctional.vr_shoes.communication.commands;
 
 public class DistanceFromOrigin
 {
-    public static final String DISTANCE_FROM_ORIGIN_COMMAND = "distanceFromOrigin";
+    public static final String DISTANCE_FROM_ORIGIN_COMMAND = "do";
 
-    public String command;
-    public String to;
-    public boolean reply;
-    public String deviceId;
-    public float forwardDistance;
-    public float sidewaysDistance;
+    public String c; //command
+    public String d; //destination
+    public boolean r; //reply
+    public String id; //shoe ID
+    public float fd; //forward distance
+    public float sd; //sideways distance
 
     public DistanceFromOrigin()
     {
-        command = DISTANCE_FROM_ORIGIN_COMMAND;
+        c = DISTANCE_FROM_ORIGIN_COMMAND;
     }
 }
