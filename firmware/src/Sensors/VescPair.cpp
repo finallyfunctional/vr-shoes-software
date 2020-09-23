@@ -36,3 +36,19 @@ void VescPair::setRpm(float forwardRpm, float sidewayRpm)
     forwardVesc->setRpm(forwardRpm);
     sidewaysVesc->setRpm(sidewayRpm);
 }
+
+void VescPair::inverseForwardDirection()
+{
+    forwardVesc->inverseDirection();
+}
+
+void VescPair::inverseSidewayDirection()
+{
+    sidewaysVesc->inverseDirection();
+}
+
+void VescPair::resetDirections()
+{
+    forwardVesc->resetDirection();
+    sidewaysVesc->resetDirection();
+}

@@ -18,3 +18,4 @@ const String MessageKeys::SUCCESS = "s";
 const String MessageKeys::GET = "g";
 const String MessageKeys::ERROR = "e";
 const String MessageKeys::MODE = "m";
+const String MessageKeys::SIDE = "si";

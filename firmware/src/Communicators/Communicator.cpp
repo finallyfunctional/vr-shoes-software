@@ -86,7 +86,18 @@ int Communicator::handleRecievedMessage(String message)
     }
     else if(commandId.equals(Messages::OTHER_SHOE_ID))
     {
-        setOtherShoeId();
+        return setOtherShoeId();
+    }
+    else if(commandId.equals(Messages::SHOE_SIDE))
+    {
+        if(!json[MessageKeys::GET].isNull() && json[MessageKeys::GET].as<bool>())
+        {
+            return getShoeSide();
+        }
+        else 
+        {
+            return setShoeSide();
+        }
     }
     else
     {
@@ -137,6 +148,12 @@ void Communicator::sendSensorDataIfStale(String sendingToshoeId)
 
 int Communicator::recieveSensorData()
 {
+    String otherShoeId = json[MessageKeys::SHOE_ID];
+    String destination = json[MessageKeys::DESTINATION];
+    if(!destination.equals(shoeId) || !sensors->getRemoteVrShoe()->shoeId.equals(otherShoeId))
+    {
+        return ResponseCodes::BAD_REQUEST;
+    }
     sensors->getRemoteVrShoe()->frontButtonPressed = json[MessageKeys::FRONT_BUTTON_PRESSED];
     sensors->getRemoteVrShoe()->rearButtonPressed = json[MessageKeys::REAR_BUTTON_PRESSED];
     sensors->getRemoteVrShoe()->forwardSpeed = json[MessageKeys::FORWARD_SPEED];
@@ -153,8 +170,13 @@ void Communicator::getSensorData()
     json[MessageKeys::SHOE_ID] = shoeId;
 
     Vector2D speed = sensors->getMovementTracker()->getSpeed();
-    json[MessageKeys::FORWARD_SPEED] = printf("%.2f", speed.getX());
-    json[MessageKeys::SIDEWAY_SPEED] = printf("%.2f", speed.getY());
+    json[MessageKeys::FORWARD_SPEED] = roundFloatToTwoDecimalPlaces(speed.getX());
+    json[MessageKeys::SIDEWAY_SPEED] = roundFloatToTwoDecimalPlaces(speed.getY());
+}
+
+float Communicator::roundFloatToTwoDecimalPlaces(float number)
+{
+    return (float)(roundf(number * 100) / 100);
 }
 
 int Communicator::resetOrigin()
@@ -177,8 +199,8 @@ int Communicator::sendDistanceFromOrigin()
     json[MessageKeys::COMMAND] = Messages::DISTANCE_FROM_ORIGIN;
     json[MessageKeys::REPLY] = true;
     json[MessageKeys::SHOE_ID] = shoeId;
-    json[MessageKeys::FORWARD_DISTANCE] = printf("%.2f", distance.getX());
-    json[MessageKeys::SIDEWAY_DISTANCE] = printf("%.2f", distance.getY());
+    json[MessageKeys::FORWARD_DISTANCE] = roundFloatToTwoDecimalPlaces(distance.getX());
+    json[MessageKeys::SIDEWAY_DISTANCE] = roundFloatToTwoDecimalPlaces(distance.getY());
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
@@ -203,4 +225,37 @@ int Communicator::setOtherShoeId()
     String otherShoeId = json[MessageKeys::OTHER_SHOE_ID];
     sensors->getRemoteVrShoe()->shoeId = otherShoeId;
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+}
+
+int Communicator::setShoeSide()
+{
+    int shoeSide = json[MessageKeys::SIDE];
+    if(shoeSide == ShoeSides::LEFT)
+    {
+        VrShoePreferences.putInt(ShoeSides::SHOE_SIDE_KEY, shoeSide);
+        sensors->getSpeedController()->inverseForwardDirection();
+        sensors->getSpeedController()->inverseSidewayDirection();
+        return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+    }
+    else if(shoeSide == ShoeSides::RIGHT)
+    {
+        VrShoePreferences.putInt(ShoeSides::SHOE_SIDE_KEY, shoeSide);
+        sensors->getSpeedController()->resetDirections();
+        return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+    }
+    else 
+    {
+        return ResponseCodes::BAD_REQUEST;
+    }
+}
+
+int Communicator::getShoeSide()
+{
+    int shoeSide = VrShoePreferences.getInt(ShoeSides::SHOE_SIDE_KEY, ShoeSides::UNSPECIFIED);
+    json.clear();
+    json[MessageKeys::COMMAND] = Messages::SHOE_SIDE;
+    json[MessageKeys::REPLY] = true;
+    json[MessageKeys::SIDE] = shoeSide;
+    json[MessageKeys::SHOE_ID] = shoeId;
+    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }

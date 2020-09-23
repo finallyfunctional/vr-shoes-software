@@ -11,6 +11,7 @@ import com.finallyfunctional.vr_shoes.communication.commands.ResetOrigin;
 import com.finallyfunctional.vr_shoes.communication.commands.SensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.SetCommunicationMode;
 import com.finallyfunctional.vr_shoes.communication.commands.SetRpm;
+import com.finallyfunctional.vr_shoes.communication.commands.ShoeSide;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -133,30 +134,29 @@ public abstract class Communicator
         }
         switch (command)
         {
-            case Ping.PING_COMMAND:
-                break;
             case SensorData.SENSOR_DATA_COMMAND:
-                readSensorData(message, thisVrShoe, otherVrShoe);
-                break;
-            case ResetOrigin.RESET_ORIGIN_COMMAND:
+                readSensorData(gson.fromJson(message, SensorData.class), thisVrShoe, otherVrShoe);
                 break;
             case DistanceFromOrigin.DISTANCE_FROM_ORIGIN_COMMAND:
                 readDistanceFromOrigin(thisVrShoe, gson.fromJson(message, DistanceFromOrigin.class));
                 break;
+            case ShoeSide.SHOE_SIDE_COMMAND:
+                readShoeSide(thisVrShoe, gson.fromJson(message, ShoeSide.class));
         }
     }
 
-    private void readSensorData(String message, VrShoe thisVrShoe, VrShoe otherVrShoe) throws IOException
+    private void readSensorData(SensorData message, VrShoe thisVrShoe, VrShoe otherVrShoe) throws IOException
     {
-        SensorData messageObj = gson.fromJson(message, SensorData.class);
-        thisVrShoe.frontButtonPressed(messageObj.fb);
-        thisVrShoe.rearButtonPressed(messageObj.rb);
-        thisVrShoe.setForwardSpeed(messageObj.fs);
-        thisVrShoe.setSidewaySpeed(messageObj.ss);
+        thisVrShoe.frontButtonPressed(message.fb);
+        thisVrShoe.rearButtonPressed(message.rb);
+        thisVrShoe.setForwardSpeed(message.fs);
+        thisVrShoe.setSidewaySpeed(message.ss);
 
         if(forwardSensorDataToOtherShoe())
         {
-            writeMessage(otherVrShoe, message);
+            message.d = otherVrShoe.getDeviceId();
+            message.r = false;
+            writeMessage(otherVrShoe, gson.toJson(message));
         }
 
         for(ICommunicatorObserver observer : observers)
@@ -175,6 +175,11 @@ public abstract class Communicator
         {
             observer.distanceFromOriginRead(vrShoe, message.fd, message.sd);
         }
+    }
+
+    private void readShoeSide(VrShoe shoe, ShoeSide shoeSide)
+    {
+        shoe.setSide(shoeSide.si);
     }
 
     private void writeMessage(VrShoe vrShoe, String message) throws IOException
@@ -218,6 +223,7 @@ public abstract class Communicator
         SensorData command = new SensorData();
         command.id = vrShoe.getDeviceId();
         command.g = true;
+        command.d = vrShoe.getDeviceId();
         String json = gson.toJson(command);
         messagesToSend.add(new Pair<>(vrShoe, json));
     }
@@ -259,6 +265,27 @@ public abstract class Communicator
         OtherShoeId command = new OtherShoeId();
         command.oi = otherShoe.getDeviceId();
         messagesToSend.add(new Pair<>(thisShoe, gson.toJson(command)));
+    }
+
+    public void setShoeSide(VrShoe shoe, int side)
+    {
+        if(side != ShoeSide.LEFT_SIDE && side != ShoeSide.RIGHT_SIDE)
+        {
+            throw new IllegalArgumentException();
+        }
+        shoe.setSide(side);
+        ShoeSide command = new ShoeSide();
+        command.si = side;
+        command.d = shoe.getDeviceId();
+        messagesToSend.add(new Pair<>(shoe, gson.toJson(command)));
+    }
+
+    public void getShoeSide(VrShoe vrShoe)
+    {
+        ShoeSide command = new ShoeSide();
+        command.g = true;
+        command.d = vrShoe.getDeviceId();
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
     }
 
     public VrShoe getVrShoe1()

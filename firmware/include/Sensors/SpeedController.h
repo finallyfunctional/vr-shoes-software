@@ -7,6 +7,9 @@ class SpeedController
 {
     public:
     virtual void setRpm(float forwardRpm, float sidewayRpm) = 0;
+    virtual void inverseForwardDirection();
+    virtual void inverseSidewayDirection();
+    virtual void resetDirections();
 };
 
 #endif

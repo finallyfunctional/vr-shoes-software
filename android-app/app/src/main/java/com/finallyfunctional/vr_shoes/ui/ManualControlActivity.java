@@ -1,7 +1,5 @@
 package com.finallyfunctional.vr_shoes.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +15,8 @@ import com.finallyfunctional.vr_shoes.communication.Communicator;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class ManualControlActivity extends AppCompatActivity
 {
@@ -132,19 +132,19 @@ public class ManualControlActivity extends AppCompatActivity
             float sidewaysRpm = 0;
             if(forwardBtn.isPressed())
             {
-                forwardRpm = rpm * -1;
+                forwardRpm = rpm;
             }
             else if(backwardBtn.isPressed())
             {
-                forwardRpm = rpm;
+                forwardRpm = rpm * -1;
             }
             if(leftBtn.isPressed())
             {
-                sidewaysRpm = rpm;
+                sidewaysRpm = rpm * -1;
             }
             else if(rightBtn.isPressed())
             {
-                sidewaysRpm = rpm * -1;
+                sidewaysRpm = rpm;
             }
             communicator.setRpm(forwardRpm, sidewaysRpm, vrShoe);
         }

@@ -7,3 +7,4 @@ const String Messages::RESET_ORIGIN = "ro";
 const String Messages::DISTANCE_FROM_ORIGIN = "do";
 const String Messages::SET_RPM = "sr";
 const String Messages::OTHER_SHOE_ID = "oi";
+const String Messages::SHOE_SIDE = "ss";

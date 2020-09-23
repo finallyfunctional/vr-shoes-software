@@ -11,6 +11,7 @@
 #include "./ResponseCodes.h"
 #include "./MessageKeys.h"
 #include "../Timer.h"
+#include "../ShoeSides.h"
 
 class Communicator
 {
@@ -28,6 +29,9 @@ class Communicator
     int sendDistanceFromOrigin();
     int setRpm();
     int setOtherShoeId();
+    int setShoeSide();
+    int getShoeSide();
+    float roundFloatToTwoDecimalPlaces(float number);
 
     static const char* SHOE_ID_KEY;
     static const String DEVICE_ID_PREFIX;

@@ -38,5 +38,18 @@
             android:layout_height="wrap_content"
             android:onClick="manualControlBtnClick"
             android:text="@string/manual_control" />
+
+        <TextView
+            android:id="@+id/diagnosticsSpacer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/diagnosticsBackBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="backBtnClicked"
+            android:text="@string/back" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

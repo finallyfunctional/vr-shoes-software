@@ -6,6 +6,8 @@ public class SensorData
 
     public String c; //command
     public String id; //shoe ID
+    public String d; //destination
+    public boolean r; //reply
     public boolean g; //get
     public boolean fb; //front button pressed
     public boolean rb; //rear button pressed

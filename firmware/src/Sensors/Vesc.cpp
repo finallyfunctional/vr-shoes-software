@@ -4,6 +4,7 @@ Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(
 {
     vescUart.setSerialPort(serialForVesc);
 
+    directionInverter = 1;
     gearingRatio = motor.GEARING_RATIO;
     tachometerCountsPerRovolution = 3 * motor.POLES;
     polePairs = motor.POLES / 2;
@@ -49,6 +50,21 @@ void Vesc::updateSpeedUsingPidLoop()
 void Vesc::updateSpeedUsingSimpleStepping()
 {
     float newDuty = 0;
+    int difference = fabs((vescUart.data.rpm - desiredRpm) / desiredRpm) * 100;
+    double moveStep;
+    if(difference > 50)
+    {
+        moveStep = simpleLargeMoveStep;
+    }
+    else if(difference > 5)
+    {
+        moveStep = simpleMediumMoveStep;
+    }
+    else 
+    {
+        moveStep = simpleSmallMoveStep;
+    }
+    
     if(vescUart.data.rpm < desiredRpm)
     {
         newDuty = vescUart.data.dutyCycleNow + moveStep;
@@ -65,8 +81,6 @@ void Vesc::updateSpeedUsingSimpleStepping()
             newDuty = -1;
         }
     }
-    Serial.print("setting duty to ");
-    Serial.println(newDuty);
     vescUart.setDuty(newDuty);
 }
 
@@ -77,14 +91,14 @@ void Vesc::resetOrigin()
 
 void Vesc::setRpm(float rpm)
 {
-    desiredRpm = convertMrpmToErpm(rpm) * gearingRatio;
+    desiredRpm = convertMrpmToErpm(rpm) * gearingRatio * directionInverter;
     safetyTimer.start();
 }
 
 float Vesc::getSpeed()
 {
     float rps = convertErpmToMrpm(vescUart.data.rpm) / 60;
-    return distanceTraveledPerRevolution * rps / gearingRatio;
+    return distanceTraveledPerRevolution * rps * directionInverter / gearingRatio;
 }
 
 float Vesc::convertErpmToMrpm(float erpm)
@@ -106,5 +120,15 @@ float Vesc::getDistanceFromOrigin()
 {
     long tachometerCounts = labs(vescUart.data.tachometer - originTachometer);
     float revolutions = (float) (tachometerCounts) / tachometerCountsPerRovolution;
-    return (distanceTraveledPerRevolution * revolutions) / gearingRatio;
+    return (distanceTraveledPerRevolution * revolutions * directionInverter) / gearingRatio;
+}
+
+void Vesc::inverseDirection()
+{
+    directionInverter = -1;
+}
+
+void Vesc::resetDirection()
+{
+    directionInverter = 1;
 }

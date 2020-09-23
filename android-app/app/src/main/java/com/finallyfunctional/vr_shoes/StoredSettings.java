@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 import com.finallyfunctional.vr_shoes.communication.CommunicationModes;
 
-public class Settings
+public class StoredSettings
 {
     private static SharedPreferences pref;
 
@@ -15,7 +15,7 @@ public class Settings
     private static String MASTER_VR_SHOE = "master-vr-shoe";
     private static String COMMUNICATION_MODE = "communication-mode";
 
-    public Settings(Context context)
+    public StoredSettings(Context context)
     {
         if(pref == null)
         {

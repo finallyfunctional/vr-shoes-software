@@ -1,13 +1,12 @@
 package com.finallyfunctional.vr_shoes.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.finallyfunctional.vr_shoes.R;
-import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class DiagnosticsActivity extends AppCompatActivity
 {
@@ -41,5 +40,10 @@ public class DiagnosticsActivity extends AppCompatActivity
     {
         Intent intent = new Intent(this, ManualControlActivity.class);
         startActivity(intent);
+    }
+
+    public void backBtnClicked(View view)
+    {
+        finish();
     }
 }

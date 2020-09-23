@@ -1,6 +1,6 @@
 package com.finallyfunctional.vr_shoes.communication;
 
-import com.finallyfunctional.vr_shoes.Settings;
+import com.finallyfunctional.vr_shoes.StoredSettings;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotEnabledException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotSupportedException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.ConfigurationWithOtherActivityNeededException;
@@ -13,9 +13,9 @@ import java.io.IOException;
 public abstract class CommunicationInitializer
 {
     protected static Communicator communicator;
-    protected Settings settings;
+    protected StoredSettings settings;
 
-    protected CommunicationInitializer(Settings settings)
+    protected CommunicationInitializer(StoredSettings settings)
     {
         this.settings = settings;
     }
@@ -58,6 +58,8 @@ public abstract class CommunicationInitializer
         communicator.sendOtherShoeId(communicator.getVrShoe1(), communicator.getVrShoe2());
         communicator.sendOtherShoeId(communicator.getVrShoe2(), communicator.getVrShoe1());
         communicator.readSensorDataFromShoes();
+        communicator.getShoeSide(communicator.getVrShoe1());
+        communicator.getShoeSide(communicator.getVrShoe2());
     }
 
     public static Communicator getCommunicator()

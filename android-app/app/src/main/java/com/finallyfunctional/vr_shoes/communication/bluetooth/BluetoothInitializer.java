@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
 import com.finallyfunctional.vr_shoes.R;
-import com.finallyfunctional.vr_shoes.Settings;
+import com.finallyfunctional.vr_shoes.StoredSettings;
 import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.CommunicationModes;
@@ -23,7 +23,7 @@ public class BluetoothInitializer extends CommunicationInitializer
     private BluetoothAdapter btAdapter;
     private BluetoothDevice shoe1, shoe2;
 
-    public BluetoothInitializer(Settings settings)
+    public BluetoothInitializer(StoredSettings settings)
     {
         super(settings);
     }

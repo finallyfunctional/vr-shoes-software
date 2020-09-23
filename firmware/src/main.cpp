@@ -9,7 +9,7 @@
 TaskHandle_t communicationTask;
 VrShoeConfiguration config;
 Preferences VrShoePreferences;
-Timer loopTimer(85);
+Timer loopTimer(50);
 
 void core0Loop(void * parameters)
 {
@@ -21,7 +21,7 @@ void core0Loop(void * parameters)
     config.getShoeController()->update();
     if(timer.timeIsUp())
     {
-      Serial.print("Communication loop timout. Loop took ");
+      Serial.print("Core 0 loop timout. Loop took ");
       Serial.print(timer.getElapsedTime());
       Serial.println("ms");
     }

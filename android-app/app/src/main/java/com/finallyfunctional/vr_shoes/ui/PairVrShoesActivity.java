@@ -10,13 +10,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.finallyfunctional.vr_shoes.R;
-import com.finallyfunctional.vr_shoes.Settings;
+import com.finallyfunctional.vr_shoes.StoredSettings;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -27,14 +24,14 @@ public class PairVrShoesActivity extends AppCompatActivity
     private ListView list;
     private ArrayAdapter<String> listAdapter;
     private Button okBtn;
-    private Settings settings;
+    private StoredSettings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pair_vr_shoes);
-        settings = new Settings(this);
+        settings = new StoredSettings(this);
         okBtn = findViewById(R.id.pairVrShoesOkBtn);
         okBtn.setEnabled(false);
         btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -88,7 +85,7 @@ public class PairVrShoesActivity extends AppCompatActivity
         ArrayList<String> deviceNames = new ArrayList<>();
         for(BluetoothDevice device : pairedDevices)
         {
-            if(device.getName().contains(Settings.VR_SHOE_DEVICE_ID_PREFIX))
+            if(device.getName().contains(StoredSettings.VR_SHOE_DEVICE_ID_PREFIX))
             {
                 deviceNames.add(device.getName());
             }

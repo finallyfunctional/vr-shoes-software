@@ -24,6 +24,7 @@ class MessageKeys
     static const String ERROR;
     static const String GET;
     static const String MODE;
+    static const String SIDE;
 };
 
 #endif

@@ -18,6 +18,7 @@
 #include "./VrShoeGlobals.h"
 #include "./AutoShoeControllers/AutoShoeController.h"
 #include "./AutoShoeControllers/OmniPoweredWalking.h"
+#include "./ShoeSides.h"
 
 class VrShoeConfiguration
 {

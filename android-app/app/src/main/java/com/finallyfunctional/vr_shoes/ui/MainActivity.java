@@ -1,22 +1,23 @@
 package com.finallyfunctional.vr_shoes.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.finallyfunctional.vr_shoes.R;
-import com.finallyfunctional.vr_shoes.Settings;
-import com.finallyfunctional.vr_shoes.communication.bluetooth.BluetoothInitializer;
+import com.finallyfunctional.vr_shoes.StoredSettings;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
+import com.finallyfunctional.vr_shoes.communication.bluetooth.BluetoothInitializer;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotEnabledException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotSupportedException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.ConfigurationWithOtherActivityNeededException;
 import com.finallyfunctional.vr_shoes.logging.monitor.VrShoesAggregateLogger;
 
 import java.io.IOException;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         progressBar = findViewById(R.id.mainProgressBar);
-        communicationInitializer = new BluetoothInitializer(new Settings(this));
+        communicationInitializer = new BluetoothInitializer(new StoredSettings(this));
         VrShoesAggregateLogger.initialize();
     }
 
@@ -42,9 +43,6 @@ public class MainActivity extends AppCompatActivity
             ProgressBarUtility.showProgressBar(progressBar, this);
             communicationInitializer.initialize();
             ProgressBarUtility.hideProgressBar(progressBar, MainActivity.this);
-            //TODO going straight to diagnostics now. Later I'll implement the main activity.
-            Intent intent = new Intent(MainActivity.this, DiagnosticsActivity.class);
-            startActivity(intent);
         }
         catch (IOException ex)
         {
@@ -98,4 +96,17 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    public void settingsBtnClicked(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void diagnosticsBtnClicked(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, DiagnosticsActivity.class);
+        startActivity(intent);
+    }
+
 }

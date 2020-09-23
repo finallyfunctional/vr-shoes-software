@@ -7,6 +7,7 @@ public class VrShoe
     private boolean rearButtonPressed;
     private float forwardSpeed;
     private float sidewaySpeed;
+    private int side;
 
     public String getDeviceId()
     {
@@ -56,5 +57,15 @@ public class VrShoe
     public float getSidewaySpeed()
     {
         return sidewaySpeed;
+    }
+
+    public void setSide(int side)
+    {
+        this.side = side;
+    }
+
+    public int getSide()
+    {
+        return side;
     }
 }

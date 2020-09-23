@@ -17,6 +17,8 @@ class Vesc
     float getDistanceFromOrigin();
     void resetOrigin();
     void setRpm(float rpm);
+    void inverseDirection();
+    void resetDirection();
 
     private:
     float convertErpmToMrpm(float erpm);
@@ -36,8 +38,11 @@ class Vesc
     float desiredRpm;
     float maxErpm;
     Timer safetyTimer;
+    int directionInverter;
 
-    const double moveStep = 0.02;
+    const double simpleLargeMoveStep = 0.02;
+    const double simpleMediumMoveStep = 0.01;
+    const double simpleSmallMoveStep = 0.001;
 };
 
 #endif
