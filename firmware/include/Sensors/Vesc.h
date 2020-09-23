@@ -19,6 +19,7 @@ class Vesc
     void setRpm(float rpm);
     void inverseDirection();
     void resetDirection();
+    void tunePidLoop(float kp, float ki, float kd);
 
     private:
     float convertErpmToMrpm(float erpm);
@@ -40,8 +41,8 @@ class Vesc
     Timer safetyTimer;
     int directionInverter;
 
-    const double simpleLargeMoveStep = 0.02;
-    const double simpleMediumMoveStep = 0.01;
+    const double simpleLargeMoveStep = 0.005;
+    const double simpleMediumMoveStep = 0.003;
     const double simpleSmallMoveStep = 0.001;
 };
 

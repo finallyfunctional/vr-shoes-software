@@ -4,10 +4,15 @@ VescPair::VescPair(Vesc* forwardVesc, Vesc* sidewaysVesc)
 {
     this->forwardVesc = forwardVesc;
     this->sidewaysVesc = sidewaysVesc;
+    this->updateTimer = new Timer(50);
 }
 
 void VescPair::update()
 {
+    if(!updateTimer->timeIsUp())
+    {
+        return;
+    }
     forwardVesc->update();
     sidewaysVesc->update();
 }

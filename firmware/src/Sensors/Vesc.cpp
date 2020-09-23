@@ -132,3 +132,8 @@ void Vesc::resetDirection()
 {
     directionInverter = 1;
 }
+
+void Vesc::tunePidLoop(float kp, float ki, float kd)
+{
+    pidLoop.tune(kp, ki, kd);
+}

@@ -6,6 +6,7 @@
 #include "./Sensors/MovementTracker.h"
 #include "./Sensors/SpeedController.h"
 #include "./Vesc.h"
+#include "../Timer.h"
 
 class VescPair : public MovementTracker, public SpeedController
 {
@@ -21,9 +22,9 @@ class VescPair : public MovementTracker, public SpeedController
     void resetDirections();
 
     private:
-
     Vesc* forwardVesc;
     Vesc* sidewaysVesc;
+    Timer* updateTimer;
 };
 
 #endif
