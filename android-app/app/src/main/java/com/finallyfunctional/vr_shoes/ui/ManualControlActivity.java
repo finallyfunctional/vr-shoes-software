@@ -81,8 +81,8 @@ public class ManualControlActivity extends AppCompatActivity
             this.rightBtn = rightBtn;
             this.vrShoe = vrShoe;
 
-            rpmEdit.setText("500");
-            rpm = 500;
+            rpmEdit.setText("250");
+            rpm = 250;
             deviceIdText.setText(vrShoe.getDeviceId());
 
             rpmEdit.addTextChangedListener(new TextWatcher()
