@@ -9,6 +9,7 @@ Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(
     tachometerCountsPerRovolution = 3 * motor.POLES;
     polePairs = motor.POLES / 2;
     distanceTraveledPerRevolution = wheel.DIAMETER * PI;
+    triggerBrakeAtErpm = convertMrpmToErpm(TRIGGER_BRAKE_AT_MRPM) * gearingRatio;
     maxErpm = convertMrpmToErpm(motor.MAX_RPM);
     pidLoop = Pid();
     pidLoop.tune(0, 0, 0);
@@ -20,7 +21,11 @@ void Vesc::update()
     {
         Serial.println("Could not connect to VESC!");
     }
-    else if(safetyTimer.timeIsUp() || desiredRpm == 0)
+    else if(safetyTimer.timeIsUp() || mode == BRAKING_MODE)
+    {
+        handleBraking();
+    }
+    else if(desiredRpm == 0 && mode == MOVING_MODE)
     {
         vescUart.setCurrent(0);
     }
@@ -54,15 +59,15 @@ void Vesc::updateSpeedUsingSimpleStepping()
     double moveStep;
     if(difference > 50)
     {
-        moveStep = simpleLargeMoveStep;
+        moveStep = SIMPLE_LARGE_MOVE_STEP;
     }
     else if(difference > 5)
     {
-        moveStep = simpleMediumMoveStep;
+        moveStep = SIMPLE_MEDIUM_MOVE_STEP;
     }
     else 
     {
-        moveStep = simpleSmallMoveStep;
+        moveStep = SIMPLE_SMALL_MOVE_STEP;
     }
     
     if(vescUart.data.rpm < desiredRpm)
@@ -84,6 +89,33 @@ void Vesc::updateSpeedUsingSimpleStepping()
     vescUart.setDuty(newDuty);
 }
 
+void Vesc::handleBraking()
+{
+    double brakeCurrent = previousBrakeCurrent;
+    if(fabs(vescUart.data.rpm) < triggerBrakeAtErpm)
+    {
+        if(previousBrakeCurrent != 0)
+        {
+            vescUart.setCurrent(0);
+            return;
+        }
+        else if(previousBrakeCurrent > 0)
+        {
+            brakeCurrent -= DECREMENT_BRAKE_STEP;
+        }
+    }
+    else 
+    {
+        brakeCurrent += INCREMENT_BRAKE_STEP;
+        if(brakeCurrent > MAX_BRAKE_CURRENT)
+        {
+            brakeCurrent = MAX_BRAKE_CURRENT;
+        }
+    }
+    vescUart.setHandBrakeCurrent(brakeCurrent);
+    previousBrakeCurrent = brakeCurrent;
+}
+
 void Vesc::resetOrigin()
 {
     originTachometer = vescUart.data.tachometer;
@@ -92,6 +124,16 @@ void Vesc::resetOrigin()
 void Vesc::setRpm(float rpm)
 {
     desiredRpm = convertMrpmToErpm(rpm) * gearingRatio * directionInverter;
+    mode = MOVING_MODE;
+    previousBrakeCurrent = 0;
+    safetyTimer.start();
+}
+
+void Vesc::setSpeed(float speed)
+{
+    desiredRpm = convertMrpmToErpm((speed / distanceTraveledPerRevolution) * 60 * gearingRatio) * directionInverter;
+    mode = MOVING_MODE;
+    previousBrakeCurrent = 0;
     safetyTimer.start();
 }
 
@@ -136,4 +178,9 @@ void Vesc::resetDirection()
 void Vesc::tunePidLoop(float kp, float ki, float kd)
 {
     pidLoop.tune(kp, ki, kd);
+}
+
+void Vesc::brake()
+{
+    mode = BRAKING_MODE;
 }

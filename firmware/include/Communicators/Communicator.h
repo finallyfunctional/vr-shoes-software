@@ -12,11 +12,12 @@
 #include "./MessageKeys.h"
 #include "../Timer.h"
 #include "../ShoeSides.h"
+#include "../AutoShoeControllers/AutoShoeController.h"
 
 class Communicator
 {
     public:
-    void initialize(Sensors* sensors);
+    void initialize(Sensors* sensors, AutoShoeController* shoeController);
     void update();
 
     private:
@@ -32,6 +33,8 @@ class Communicator
     int setShoeSide();
     int getShoeSide();
     float roundFloatToTwoDecimalPlaces(float number);
+    int startAlgorithm();
+    int stopAlgorithm();
 
     static const char* SHOE_ID_KEY;
     static const String DEVICE_ID_PREFIX;
@@ -39,6 +42,7 @@ class Communicator
     protected:
 
     Sensors* sensors;
+    AutoShoeController* shoeController;
     Timer* sendSensorDataTimer;
 
     static const char MESSAGE_TERMINATOR;

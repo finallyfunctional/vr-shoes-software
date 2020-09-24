@@ -12,6 +12,8 @@ import com.finallyfunctional.vr_shoes.communication.commands.SensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.SetCommunicationMode;
 import com.finallyfunctional.vr_shoes.communication.commands.SetRpm;
 import com.finallyfunctional.vr_shoes.communication.commands.ShoeSide;
+import com.finallyfunctional.vr_shoes.communication.commands.StartAlgorithm;
+import com.finallyfunctional.vr_shoes.communication.commands.StopAlgorithm;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -284,6 +286,20 @@ public abstract class Communicator
     {
         ShoeSide command = new ShoeSide();
         command.g = true;
+        command.d = vrShoe.getDeviceId();
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+    }
+
+    public void startAlgorithm(VrShoe vrShoe)
+    {
+        StartAlgorithm command = new StartAlgorithm();
+        command.d = vrShoe.getDeviceId();
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+    }
+
+    public void stopAlgorithm(VrShoe vrShoe)
+    {
+        StopAlgorithm command = new StopAlgorithm();
         command.d = vrShoe.getDeviceId();
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
     }

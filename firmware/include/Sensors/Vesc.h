@@ -17,14 +17,17 @@ class Vesc
     float getDistanceFromOrigin();
     void resetOrigin();
     void setRpm(float rpm);
+    void setSpeed(float speed);
     void inverseDirection();
     void resetDirection();
     void tunePidLoop(float kp, float ki, float kd);
+    void brake();
 
     private:
     float convertErpmToMrpm(float erpm);
     float convertMrpmToErpm(float mrpm);
     float convertErpmToDutyCycle(float erpm);
+    void handleBraking();
 
     void updateSpeedUsingPidLoop();
     void updateSpeedUsingSimpleStepping();
@@ -40,10 +43,21 @@ class Vesc
     float maxErpm;
     Timer safetyTimer;
     int directionInverter;
+    int mode;
+    int triggerBrakeAtErpm;
+    double previousBrakeCurrent = 0;
 
-    const double simpleLargeMoveStep = 0.005;
-    const double simpleMediumMoveStep = 0.003;
-    const double simpleSmallMoveStep = 0.001;
+    const int MOVING_MODE = 1;
+    const int BRAKING_MODE = 2;
+
+    const double SIMPLE_LARGE_MOVE_STEP = 0.005;
+    const double SIMPLE_MEDIUM_MOVE_STEP = 0.003;
+    const double SIMPLE_SMALL_MOVE_STEP = 0.001;
+
+    const int TRIGGER_BRAKE_AT_MRPM = 10;
+    const int MAX_BRAKE_CURRENT = 12;
+    const int INCREMENT_BRAKE_STEP = 5;
+    const double DECREMENT_BRAKE_STEP = 0.2;
 };
 
 #endif

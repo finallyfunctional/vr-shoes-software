@@ -1,7 +1,17 @@
 #include "../../include/AutoShoeControllers/AutoShoeController.h"
 
-AutoShoeController::AutoShoeController(Sensors* sensors, Communicator* communicator)
+AutoShoeController::AutoShoeController(Sensors* sensors)
 {
-    this->communicator = communicator;
     this->sensors = sensors;
+    this->started = false;
+}
+
+void AutoShoeController::start()
+{
+    started = true;
+}
+
+void AutoShoeController::stop()
+{
+    started = false;
 }

@@ -34,9 +34,9 @@ void VrShoeConfiguration::initialize()
 
     sensors = new Sensors(frontButton, rearButton, vescPair, vescPair, new RemoteVrShoe());
 
-    shoeController = new OmniPoweredWalking(sensors, communicator);
+    shoeController = new OmniPoweredWalking(sensors);
 
-    communicator->initialize(sensors);
+    communicator->initialize(sensors, shoeController);
 }
 
 Communicator* VrShoeConfiguration::getCommunicator()

@@ -4,9 +4,10 @@ const String Communicator::DEVICE_ID_PREFIX = "VR-Shoe-";
 const char* Communicator::SHOE_ID_KEY = "device-id";
 const char Communicator::MESSAGE_TERMINATOR = '\n';
 
-void Communicator::initialize(Sensors* sensors)
+void Communicator::initialize(Sensors* sensors, AutoShoeController* shoeController)
 {
     this->sensors = sensors;
+    this->shoeController = shoeController;
     sendSensorDataTimer = new Timer(((unsigned long)100));
     sendSensorDataTimer->start();
     shoeId = VrShoePreferences.getString(SHOE_ID_KEY);
@@ -98,6 +99,14 @@ int Communicator::handleRecievedMessage(String message)
         {
             return setShoeSide();
         }
+    }
+    else if(commandId.equals(Messages::START_ALGORITHM))
+    {
+        return startAlgorithm();
+    }
+    else if(commandId.equals(Messages::STOP_ALGORITHM))
+    {
+        return stopAlgorithm();
     }
     else
     {
@@ -258,4 +267,16 @@ int Communicator::getShoeSide()
     json[MessageKeys::SIDE] = shoeSide;
     json[MessageKeys::SHOE_ID] = shoeId;
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
+}
+
+int Communicator::startAlgorithm()
+{
+    shoeController->start();
+    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+}
+
+int Communicator::stopAlgorithm()
+{
+    shoeController->stop();
+    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }

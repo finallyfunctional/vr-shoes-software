@@ -17,9 +17,13 @@ class VescPair : public MovementTracker, public SpeedController
     Vector2D getDistanceFromOrigin();
     void resetOrigin();
     void setRpm(float forwardRpm, float sidewayRpm);
+    void setForwardSpeed(float speed);
+    void setSidewaySpeed(float speed);
     void inverseForwardDirection();
     void inverseSidewayDirection();
     void resetDirections();
+    void brakeForwardsBackwards();
+    void brakeSideway();
 
     private:
     Vesc* forwardVesc;

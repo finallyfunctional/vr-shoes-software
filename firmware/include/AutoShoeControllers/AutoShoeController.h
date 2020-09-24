@@ -3,17 +3,18 @@
 
 #include <Arduino.h>
 #include "../Sensors/Sensors.h"
-#include "../Communicators/Communicator.h"
 
 class AutoShoeController
 {
     public:
-    AutoShoeController(Sensors* sensors, Communicator* communicator);
+    AutoShoeController(Sensors* sensors);
+    void start();
+    void stop();
     virtual void update() = 0;
 
     protected:
+    bool started;
     Sensors* sensors;
-    Communicator* communicator;
 };
 
 #endif

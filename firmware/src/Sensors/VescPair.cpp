@@ -5,6 +5,7 @@ VescPair::VescPair(Vesc* forwardVesc, Vesc* sidewaysVesc)
     this->forwardVesc = forwardVesc;
     this->sidewaysVesc = sidewaysVesc;
     this->updateTimer = new Timer(50);
+    updateTimer->start();
 }
 
 void VescPair::update()
@@ -13,6 +14,7 @@ void VescPair::update()
     {
         return;
     }
+    updateTimer->start();
     forwardVesc->update();
     sidewaysVesc->update();
 }
@@ -42,6 +44,16 @@ void VescPair::setRpm(float forwardRpm, float sidewayRpm)
     sidewaysVesc->setRpm(sidewayRpm);
 }
 
+void VescPair::setForwardSpeed(float speed)
+{
+    forwardVesc->setSpeed(speed);
+}
+
+void VescPair::setSidewaySpeed(float speed)
+{
+    sidewaysVesc->setSpeed(speed);
+}
+
 void VescPair::inverseForwardDirection()
 {
     forwardVesc->inverseDirection();
@@ -56,4 +68,14 @@ void VescPair::resetDirections()
 {
     forwardVesc->resetDirection();
     sidewaysVesc->resetDirection();
+}
+
+void VescPair::brakeForwardsBackwards()
+{
+    forwardVesc->brake();
+}
+
+void VescPair::brakeSideway()
+{
+    sidewaysVesc->brake();
 }

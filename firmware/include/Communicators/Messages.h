@@ -14,6 +14,8 @@ class Messages
     static const String SET_RPM;
     static const String OTHER_SHOE_ID;
     static const String SHOE_SIDE;
+    static const String START_ALGORITHM;
+    static const String STOP_ALGORITHM;
 };
 
 #endif

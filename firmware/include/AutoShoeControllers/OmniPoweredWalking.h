@@ -3,11 +3,13 @@
 
 #include <Arduino.h>
 #include "./AutoShoeController.h"
+#include "../Sensors/RemoteVrShoe.h"
+#include "../Sensors/SpeedController.h"
 
 class OmniPoweredWalking : public AutoShoeController
 {
     public:
-    OmniPoweredWalking(Sensors* sensors, Communicator* communicator);
+    OmniPoweredWalking(Sensors* sensors);
     void update();
 };
 
