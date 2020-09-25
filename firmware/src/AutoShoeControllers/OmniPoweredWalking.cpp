@@ -19,14 +19,14 @@ void OmniPoweredWalking::update()
     }
     else if(remoteShoe->frontButtonPressed || remoteShoe->rearButtonPressed) //both feet on shoes
     {
-        speedController->brakeForwardsBackwards();
-        speedController->brakeSideway();
+        //speedController->brakeForwardsBackwards();
+        //speedController->brakeSideway();
     }
     else //other foot in air
     {
         if(remoteShoe->forwardSpeed == 0) //hold position, brake
         {
-            speedController->brakeForwardsBackwards();
+            //speedController->brakeForwardsBackwards();
         }
         else //match speed, opposite direction
         {
@@ -34,7 +34,7 @@ void OmniPoweredWalking::update()
         }
         if(remoteShoe->sidewaySpeed == 0)
         {
-            speedController->brakeSideway();
+            //speedController->brakeSideway();
         }
         else
         {

@@ -13,6 +13,7 @@ Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(
     maxErpm = convertMrpmToErpm(motor.MAX_RPM);
     pidLoop = Pid();
     pidLoop.tune(0, 0, 0);
+    mode = MOVING_MODE;
 }
 
 void Vesc::update()
@@ -21,13 +22,13 @@ void Vesc::update()
     {
         Serial.println("Could not connect to VESC!");
     }
-    else if(safetyTimer.timeIsUp() || mode == BRAKING_MODE)
-    {
-        handleBraking();
-    }
-    else if(desiredRpm == 0 && mode == MOVING_MODE)
+    else if(desiredRpm == 0 || safetyTimer.timeIsUp())
     {
         vescUart.setCurrent(0);
+    }
+    else if(mode == BRAKING_MODE)
+    {
+        handleBraking();
     }
     else
     {

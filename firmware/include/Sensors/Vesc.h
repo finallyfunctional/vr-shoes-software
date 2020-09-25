@@ -50,8 +50,8 @@ class Vesc
     const int MOVING_MODE = 1;
     const int BRAKING_MODE = 2;
 
-    const double SIMPLE_LARGE_MOVE_STEP = 0.005;
-    const double SIMPLE_MEDIUM_MOVE_STEP = 0.003;
+    const double SIMPLE_LARGE_MOVE_STEP = 0.02;
+    const double SIMPLE_MEDIUM_MOVE_STEP = 0.01;
     const double SIMPLE_SMALL_MOVE_STEP = 0.001;
 
     const int TRIGGER_BRAKE_AT_MRPM = 10;
