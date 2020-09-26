@@ -79,3 +79,19 @@ void VescPair::brakeSideway()
 {
     sidewaysVesc->brake();
 }
+
+void VescPair::setDutyCycleBoost(float boost)
+{
+    forwardVesc->setDutyCycleBoost(boost);
+    sidewaysVesc->setDutyCycleBoost(boost);
+}
+
+Vector2D VescPair::getDesiredSpeed()
+{
+    return Vector2D(forwardVesc->getDesiredSpeed(), sidewaysVesc->getDesiredSpeed());
+}
+
+Vector2D VescPair::getCurrentDutyCycle()
+{
+    return Vector2D(forwardVesc->getCurrentDutyCycle(), sidewaysVesc->getCurrentDutyCycle());
+}

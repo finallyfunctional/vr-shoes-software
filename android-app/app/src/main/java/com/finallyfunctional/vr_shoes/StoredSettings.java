@@ -14,6 +14,7 @@ public class StoredSettings
     private static String PAIRED_VR_SHOE_2 = "paired-vr-shoe-2";
     private static String MASTER_VR_SHOE = "master-vr-shoe";
     private static String COMMUNICATION_MODE = "communication-mode";
+    private static String DUTY_CYCLE_BOOST = "duty-cycle-boost";
 
     public StoredSettings(Context context)
     {
@@ -29,6 +30,8 @@ public class StoredSettings
     }
 
     public String getPairedVrShoe2() {return pref.getString(PAIRED_VR_SHOE_2, "");}
+
+    public float getDutyCycleBoost() {return pref.getFloat(DUTY_CYCLE_BOOST, 0);}
 
     public String getMasterVrShoe() {return pref.getString(MASTER_VR_SHOE, "");}
 
@@ -59,6 +62,13 @@ public class StoredSettings
     {
         SharedPreferences.Editor editor = pref.edit();
         editor.putString(COMMUNICATION_MODE, communicationMode);
+        editor.apply();
+    }
+
+    public void saveDutyCycleBoost(float boost)
+    {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putFloat(DUTY_CYCLE_BOOST, boost);
         editor.apply();
     }
 }

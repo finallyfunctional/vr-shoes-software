@@ -10,3 +10,5 @@ const String Messages::OTHER_SHOE_ID = "oi";
 const String Messages::SHOE_SIDE = "ss";
 const String Messages::START_ALGORITHM = "sa";
 const String Messages::STOP_ALGORITHM = "soa";
+const String Messages::EXTRA_SENSOR_DATA = "esd";
+const String Messages::DUTY_CYCLE_BOOST = "dcb";

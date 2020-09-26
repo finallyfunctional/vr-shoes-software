@@ -8,7 +8,7 @@ void Communicator::initialize(Sensors* sensors, AutoShoeController* shoeControll
 {
     this->sensors = sensors;
     this->shoeController = shoeController;
-    sendSensorDataTimer = new Timer(((unsigned long)100));
+    sendSensorDataTimer = new Timer(((unsigned long)50));
     sendSensorDataTimer->start();
     shoeId = VrShoePreferences.getString(SHOE_ID_KEY);
     if(shoeId == NULL || shoeId.equals(""))
@@ -108,6 +108,14 @@ int Communicator::handleRecievedMessage(String message)
     {
         return stopAlgorithm();
     }
+    else if(commandId.equals(Messages::EXTRA_SENSOR_DATA))
+    {
+        return sendExtraSensorData();
+    }
+    else if(commandId.equals(Messages::DUTY_CYCLE_BOOST))
+    {
+        return setDutyCycleBoost();
+    }
     else
     {
         int implResponse = handleImplementationSpecificMessage(commandId);
@@ -134,7 +142,7 @@ int Communicator::ping()
 
 int Communicator::replyWithSensorData()
 {
-    getSensorData();
+    sendSensorData();
     json[MessageKeys::REPLY] = true;
     String message;
     serializeJson(json, message);
@@ -143,7 +151,7 @@ int Communicator::replyWithSensorData()
 
 void Communicator::sendSensorDataIfStale(String sendingToshoeId)
 {
-    getSensorData();
+    sendSensorData();
     String message;
     serializeJson(json, message);
     if(!message.equals(lastSensorDataMessageSent))
@@ -170,7 +178,7 @@ int Communicator::recieveSensorData()
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }
 
-void Communicator::getSensorData()
+void Communicator::sendSensorData()
 {
     json.clear();
     json[MessageKeys::COMMAND] = Messages::SENSOR_DATA;
@@ -278,5 +286,30 @@ int Communicator::startAlgorithm()
 int Communicator::stopAlgorithm()
 {
     shoeController->stop();
+    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+}
+
+int Communicator::sendExtraSensorData()
+{
+    json.clear();
+    json[MessageKeys::COMMAND] = Messages::EXTRA_SENSOR_DATA;
+    json[MessageKeys::SHOE_ID] = shoeId;
+    json[MessageKeys::REPLY] = true;
+
+    Vector2D desiredSpeed = sensors->getMovementTracker()->getDesiredSpeed();
+    json[MessageKeys::FORWARD_DESIRED_SPEED] = desiredSpeed.getX();
+    json[MessageKeys::SIDEWAY_DESIRED_SPEED] = desiredSpeed.getY();
+
+    Vector2D currentDutyCycle = sensors->getSpeedController()->getCurrentDutyCycle();
+    json[MessageKeys::FORWARD_DUTY_CYCLE] = currentDutyCycle.getX();
+    json[MessageKeys::SIDEWAY_DUTY_CYCLE] = currentDutyCycle.getY();
+
+    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
+}
+
+int Communicator::setDutyCycleBoost()
+{
+    float boost = json[MessageKeys::DUTY_CYCLE_BOOST];
+    sensors->getSpeedController()->setDutyCycleBoost(boost);
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }

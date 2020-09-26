@@ -11,6 +11,9 @@ class OmniPoweredWalking : public AutoShoeController
     public:
     OmniPoweredWalking(Sensors* sensors);
     void update();
+
+    private:
+    bool moving;
 };
 
 #endif

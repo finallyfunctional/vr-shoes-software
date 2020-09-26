@@ -11,6 +11,7 @@ class MovementTracker
     virtual void resetOrigin() = 0;
     virtual Vector2D getSpeed() = 0;
     virtual Vector2D getDistanceFromOrigin() = 0;
+    virtual Vector2D getDesiredSpeed() = 0;
 };
 
 #endif

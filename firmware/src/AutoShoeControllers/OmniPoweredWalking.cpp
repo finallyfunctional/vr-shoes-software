@@ -13,33 +13,32 @@ void OmniPoweredWalking::update()
     }
     RemoteVrShoe* remoteShoe = sensors->getRemoteVrShoe();
     SpeedController* speedController = sensors->getSpeedController();
-    if(!sensors->isFrontButtonPressed() && !sensors->isRearButtonPressed()) //foot in air
+    MovementTracker* movementTracker = sensors->getMovementTracker();
+    float speed = remoteShoe->forwardSpeed * -1;
+    float distanceFromOrigin = movementTracker->getDistanceFromOrigin().getX();
+
+    if(speed != 0 && 
+       (!remoteShoe->frontButtonPressed && !remoteShoe->rearButtonPressed) &&
+       (sensors->isFrontButtonPressed() && sensors->isRearButtonPressed()))
+    {
+        if(!moving)
+        {
+            if((speed < 0 && distanceFromOrigin > -0.15) ||
+               (speed > 0 && distanceFromOrigin < 0.15))
+            {
+                speedController->setForwardSpeed(speed);
+                moving = true;
+            }
+        }
+        else 
+        {
+            speedController->setForwardSpeed(speed);
+            moving = true;
+        }
+    }
+    else
     {
         speedController->setRpm(0, 0);
+        moving = false;
     }
-    else if(remoteShoe->frontButtonPressed || remoteShoe->rearButtonPressed) //both feet on shoes
-    {
-        //speedController->brakeForwardsBackwards();
-        //speedController->brakeSideway();
-    }
-    else //other foot in air
-    {
-        if(remoteShoe->forwardSpeed == 0) //hold position, brake
-        {
-            //speedController->brakeForwardsBackwards();
-        }
-        else //match speed, opposite direction
-        {
-            speedController->setForwardSpeed(remoteShoe->forwardSpeed * -1);
-        }
-        if(remoteShoe->sidewaySpeed == 0)
-        {
-            //speedController->brakeSideway();
-        }
-        else
-        {
-            speedController->setSidewaySpeed(remoteShoe->sidewaySpeed * -1);
-        }
-    }
-    
 }

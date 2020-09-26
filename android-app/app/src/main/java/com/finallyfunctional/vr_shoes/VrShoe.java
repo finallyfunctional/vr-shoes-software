@@ -8,6 +8,12 @@ public class VrShoe
     private float forwardSpeed;
     private float sidewaySpeed;
     private int side;
+    private float dutyCycleBoost;
+
+    private float forwardDesiredSpeed;
+    private float sidewayDesiredSpeed;
+    private float forwardDutyCycle;
+    private float sidewayDutyCycle;
 
     public String getDeviceId()
     {
@@ -68,4 +74,24 @@ public class VrShoe
     {
         return side;
     }
+
+    public void setDutyCycleBoost(float boost) {dutyCycleBoost = boost;}
+
+    public float getDutyCycleBoost() {return dutyCycleBoost;}
+
+    public void setForwardDesiredSpeed(float speed) {forwardDesiredSpeed = speed;}
+
+    public void setSidewayDesiredSpeed(float speed) {sidewayDesiredSpeed = speed;}
+
+    public float getForwardDesiredSpeed() {return forwardDesiredSpeed;}
+
+    public float getSidewayDesiredSpeed() {return sidewayDesiredSpeed;}
+
+    public void setForwardDutyCycle(float dutyCycle) {forwardDutyCycle = dutyCycle;}
+
+    public void setSidewayDutyCycle(float dutyCycle) {sidewayDutyCycle = dutyCycle;}
+
+    public float getForwardDutyCycle() {return forwardDutyCycle;}
+
+    public float getSidewayDutyCycle() {return sidewayDutyCycle;}
 }

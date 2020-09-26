@@ -5,6 +5,8 @@ import android.util.Pair;
 import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.commands.CommandConstants;
 import com.finallyfunctional.vr_shoes.communication.commands.DistanceFromOrigin;
+import com.finallyfunctional.vr_shoes.communication.commands.DutyCycleBoost;
+import com.finallyfunctional.vr_shoes.communication.commands.ExtraSensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.OtherShoeId;
 import com.finallyfunctional.vr_shoes.communication.commands.Ping;
 import com.finallyfunctional.vr_shoes.communication.commands.ResetOrigin;
@@ -144,6 +146,10 @@ public abstract class Communicator
                 break;
             case ShoeSide.SHOE_SIDE_COMMAND:
                 readShoeSide(thisVrShoe, gson.fromJson(message, ShoeSide.class));
+                break;
+            case ExtraSensorData.EXTRA_SENSOR_DATA_COMMAND:
+                readExtraSensorData(gson.fromJson(message, ExtraSensorData.class), thisVrShoe);
+                break;
         }
     }
 
@@ -165,6 +171,18 @@ public abstract class Communicator
         {
             observer.sensorDataRead(thisVrShoe);
         }
+    }
+
+    private void readExtraSensorData(ExtraSensorData message, VrShoe vrShoe)
+    {
+        if(!message.r)
+        {
+            return;
+        }
+        vrShoe.setForwardDesiredSpeed(message.fds);
+        vrShoe.setSidewayDesiredSpeed(message.sds);
+        vrShoe.setForwardDutyCycle(message.fdc);
+        vrShoe.setSidewayDutyCycle(message.sdc);
     }
 
     private void readDistanceFromOrigin(VrShoe vrShoe, DistanceFromOrigin message)
@@ -302,6 +320,22 @@ public abstract class Communicator
         StopAlgorithm command = new StopAlgorithm();
         command.d = vrShoe.getDeviceId();
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+    }
+
+    public void getExtraSensorData(VrShoe vrShoe)
+    {
+        ExtraSensorData command = new ExtraSensorData();
+        command.d = vrShoe.getDeviceId();
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+    }
+
+    public void setDutyCycleBoost(VrShoe vrShoe, float boost)
+    {
+        DutyCycleBoost command = new DutyCycleBoost();
+        command.d = vrShoe.getDeviceId();
+        command.dcb = boost;
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+        vrShoe.setDutyCycleBoost(boost);
     }
 
     public VrShoe getVrShoe1()

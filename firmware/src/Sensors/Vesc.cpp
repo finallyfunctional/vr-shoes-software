@@ -30,9 +30,25 @@ void Vesc::update()
     {
         handleBraking();
     }
-    else
+    else if(fabs(vescUart.data.dutyCycleNow) < dutyCycleBoost)
+    {
+        updateSpeedUsingBoost();
+    }
+    else 
     {
         updateSpeedUsingSimpleStepping();
+    }
+}
+
+void Vesc::updateSpeedUsingBoost()
+{
+    if(desiredRpm > 0)
+    {
+        vescUart.setDuty(dutyCycleBoost);
+    }
+    else 
+    {
+        vescUart.setDuty(dutyCycleBoost * -1);
     }
 }
 
@@ -48,8 +64,6 @@ void Vesc::updateSpeedUsingPidLoop()
     {
        newDuty = -1;
     }
-    Serial.print("setting duty to ");
-    Serial.println(newDuty);
     vescUart.setDuty(newDuty);
 }
 
@@ -140,6 +154,11 @@ void Vesc::setSpeed(float speed)
 
 float Vesc::getSpeed()
 {
+    return getSpeedFromErpm(vescUart.data.rpm);
+}
+
+float Vesc::getSpeedFromErpm(float erpm)
+{
     float rps = convertErpmToMrpm(vescUart.data.rpm) / 60;
     return distanceTraveledPerRevolution * rps * directionInverter / gearingRatio;
 }
@@ -161,7 +180,7 @@ float Vesc::convertErpmToDutyCycle(float erpm)
 
 float Vesc::getDistanceFromOrigin()
 {
-    long tachometerCounts = labs(vescUart.data.tachometer - originTachometer);
+    long tachometerCounts = vescUart.data.tachometer - originTachometer;
     float revolutions = (float) (tachometerCounts) / tachometerCountsPerRovolution;
     return (distanceTraveledPerRevolution * revolutions * directionInverter) / gearingRatio;
 }
@@ -184,4 +203,19 @@ void Vesc::tunePidLoop(float kp, float ki, float kd)
 void Vesc::brake()
 {
     mode = BRAKING_MODE;
+}
+
+float Vesc::getDesiredSpeed()
+{
+    return getSpeedFromErpm(desiredRpm);
+}
+
+float Vesc::getCurrentDutyCycle()
+{
+    return vescUart.data.dutyCycleNow;
+}
+
+void Vesc::setDutyCycleBoost(float boost)
+{
+    dutyCycleBoost = boost;
 }

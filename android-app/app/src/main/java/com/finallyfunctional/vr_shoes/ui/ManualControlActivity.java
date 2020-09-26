@@ -121,6 +121,7 @@ public class ManualControlActivity extends AppCompatActivity
             }, 0, 50);
         }
 
+
         public void destroy()
         {
             timer.cancel();

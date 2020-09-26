@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.WalkingTestActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ToggleButton
+            android:id="@+id/walkingTestStartBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_walking"
+            android:textOff="@string/not_walking"
+            android:textOn="@string/walking" />
+
+        <Button
+            android:id="@+id/walkingTestResetOriginBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="resetOriginBtnClicked"
+            android:text="@string/reset_origin" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/walkingTestDutyCycleBoostLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/duty_cycle_boost"
+                    android:textSize="24sp" />
+
+                <EditText
+                    android:id="@+id/walkingTestDutyCycleBoostText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/duty_cycle_boost"
+                    android:ems="10"
+                    android:hint="@string/duty_cycle_boost"
+                    android:inputType="numberDecimal" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <Spinner
+                    android:id="@+id/walkingTestVrShoeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/walkingTestCurrentForwardDutyCycleText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_forward_duty_cycle"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/walkingTestCurrentSidewayDutyCycleText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_sideway_duty_cycle"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/walkingTestForwardDistanceText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/forward_distance"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/walkingTestSidewayDistanceText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sideway_distance"
+                    android:textSize="24sp" />
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/walkingTestBackBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="backBtnClicked"
+            android:text="@string/back" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

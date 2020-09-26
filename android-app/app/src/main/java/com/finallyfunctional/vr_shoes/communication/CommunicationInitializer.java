@@ -1,6 +1,7 @@
 package com.finallyfunctional.vr_shoes.communication;
 
 import com.finallyfunctional.vr_shoes.StoredSettings;
+import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotEnabledException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotSupportedException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.ConfigurationWithOtherActivityNeededException;
@@ -55,11 +56,22 @@ public abstract class CommunicationInitializer
         setup(shoe1Id, shoe2Id);
         communicator.addObserver(new CommunicatorLogger(VrShoesAggregateLogger.getLogger()));
         communicator.start();
-        communicator.sendOtherShoeId(communicator.getVrShoe1(), communicator.getVrShoe2());
-        communicator.sendOtherShoeId(communicator.getVrShoe2(), communicator.getVrShoe1());
+        initializeShoes();
+    }
+
+    private void initializeShoes()
+    {
+        VrShoe vrShoe1 = communicator.getVrShoe1();
+        VrShoe vrShoe2 = communicator.getVrShoe2();
+        communicator.sendOtherShoeId(vrShoe1, vrShoe2);
+        communicator.sendOtherShoeId(vrShoe2, vrShoe1);
         communicator.readSensorDataFromShoes();
-        communicator.getShoeSide(communicator.getVrShoe1());
-        communicator.getShoeSide(communicator.getVrShoe2());
+        communicator.getShoeSide(vrShoe1);
+        communicator.getShoeSide(vrShoe2);
+
+        float boost = settings.getDutyCycleBoost();
+        communicator.setDutyCycleBoost(vrShoe1, boost);
+        communicator.setDutyCycleBoost(vrShoe2, boost);
     }
 
     public static Communicator getCommunicator()

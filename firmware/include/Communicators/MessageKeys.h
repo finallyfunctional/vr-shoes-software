@@ -25,6 +25,11 @@ class MessageKeys
     static const String GET;
     static const String MODE;
     static const String SIDE;
+    static const String FORWARD_DESIRED_SPEED;
+    static const String SIDEWAY_DESIRED_SPEED;
+    static const String FORWARD_DUTY_CYCLE;
+    static const String SIDEWAY_DUTY_CYCLE;
+    static const String DUTY_CYCLE_BOOST;
 };
 
 #endif

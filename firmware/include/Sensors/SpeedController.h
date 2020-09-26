@@ -2,6 +2,7 @@
 #define SpeedController_h
 
 #include <Arduino.h>
+#include "../Vector2D.h"
 
 class SpeedController
 {
@@ -14,6 +15,8 @@ class SpeedController
     virtual void resetDirections() = 0;
     virtual void brakeForwardsBackwards() = 0;
     virtual void brakeSideway() = 0;
+    virtual void setDutyCycleBoost(float boost) = 0;
+    virtual Vector2D getCurrentDutyCycle() = 0;
 };
 
 #endif

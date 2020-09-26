@@ -27,13 +27,12 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <ToggleButton
-            android:id="@+id/mainStartWalkingBtn"
+        <Button
+            android:id="@+id/mainWalkingTestBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/start_walking"
-            android:textOff="@string/not_walking"
-            android:textOn="@string/walking" />
+            android:onClick="walkingTestBtnClick"
+            android:text="@string/walking_test" />
 
         <TextView
             android:id="@+id/mainSpacer2"

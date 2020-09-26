@@ -15,6 +15,8 @@ class Vesc
     void update();
     float getSpeed();
     float getDistanceFromOrigin();
+    float getCurrentDutyCycle();
+    float getDesiredSpeed();
     void resetOrigin();
     void setRpm(float rpm);
     void setSpeed(float speed);
@@ -22,15 +24,18 @@ class Vesc
     void resetDirection();
     void tunePidLoop(float kp, float ki, float kd);
     void brake();
+    void setDutyCycleBoost(float boost);
 
     private:
     float convertErpmToMrpm(float erpm);
     float convertMrpmToErpm(float mrpm);
     float convertErpmToDutyCycle(float erpm);
+    float getSpeedFromErpm(float erpm);
     void handleBraking();
 
     void updateSpeedUsingPidLoop();
     void updateSpeedUsingSimpleStepping();
+    void updateSpeedUsingBoost();
 
     Pid pidLoop;
     VescUart vescUart;
@@ -46,6 +51,7 @@ class Vesc
     int mode;
     int triggerBrakeAtErpm;
     double previousBrakeCurrent = 0;
+    float dutyCycleBoost;
 
     const int MOVING_MODE = 1;
     const int BRAKING_MODE = 2;

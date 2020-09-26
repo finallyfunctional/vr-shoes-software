@@ -24,7 +24,7 @@ class Communicator
     int ping();
     int replyWithSensorData();
     void sendSensorDataIfStale(String sendingToDeviceId);
-    void getSensorData();
+    void sendSensorData();
     int recieveSensorData();
     int resetOrigin();
     int sendDistanceFromOrigin();
@@ -35,6 +35,8 @@ class Communicator
     float roundFloatToTwoDecimalPlaces(float number);
     int startAlgorithm();
     int stopAlgorithm();
+    int sendExtraSensorData();
+    int setDutyCycleBoost();
 
     static const char* SHOE_ID_KEY;
     static const String DEVICE_ID_PREFIX;

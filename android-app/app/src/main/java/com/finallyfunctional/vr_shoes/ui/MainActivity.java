@@ -5,13 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.finallyfunctional.vr_shoes.R;
 import com.finallyfunctional.vr_shoes.StoredSettings;
-import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
-import com.finallyfunctional.vr_shoes.communication.Communicator;
 import com.finallyfunctional.vr_shoes.communication.bluetooth.BluetoothInitializer;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotEnabledException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotSupportedException;
@@ -26,7 +23,6 @@ public class MainActivity extends AppCompatActivity
 {
     private CommunicationInitializer communicationInitializer;
     private ProgressBar progressBar;
-    private ToggleButton startWalkingBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -34,15 +30,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         progressBar = findViewById(R.id.mainProgressBar);
-        startWalkingBtn = findViewById(R.id.mainStartWalkingBtn);
-        startWalkingBtn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startWalkingBtnClicked();
-            }
-        });
         communicationInitializer = new BluetoothInitializer(new StoredSettings(this));
         VrShoesAggregateLogger.initialize();
     }
@@ -122,21 +109,10 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void startWalkingBtnClicked()
+    public void walkingTestBtnClick(View view)
     {
-        Communicator communicator = CommunicationInitializer.getCommunicator();
-        VrShoe vrShoe1 = communicator.getVrShoe1();
-        VrShoe vrShoe2 = communicator.getVrShoe2();
-        if(startWalkingBtn.isChecked())
-        {
-            communicator.startAlgorithm(vrShoe1);
-            communicator.startAlgorithm(vrShoe2);
-        }
-        else
-        {
-            communicator.stopAlgorithm(vrShoe1);
-            communicator.stopAlgorithm(vrShoe2);
-        }
+        Intent intent = new Intent(MainActivity.this, WalkingTestActivity.class);
+        startActivity(intent);
     }
 
 }

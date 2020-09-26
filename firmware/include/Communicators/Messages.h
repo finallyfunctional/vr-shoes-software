@@ -16,6 +16,8 @@ class Messages
     static const String SHOE_SIDE;
     static const String START_ALGORITHM;
     static const String STOP_ALGORITHM;
+    static const String EXTRA_SENSOR_DATA;
+    static const String DUTY_CYCLE_BOOST;
 };
 
 #endif
