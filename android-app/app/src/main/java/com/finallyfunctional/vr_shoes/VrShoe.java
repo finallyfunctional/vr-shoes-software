@@ -14,6 +14,8 @@ public class VrShoe
     private float sidewayDesiredSpeed;
     private float forwardDutyCycle;
     private float sidewayDutyCycle;
+    private float forwardDistanceFromOrigin;
+    private float sidewayDistanceFromOrigin;
 
     public String getDeviceId()
     {
@@ -94,4 +96,12 @@ public class VrShoe
     public float getForwardDutyCycle() {return forwardDutyCycle;}
 
     public float getSidewayDutyCycle() {return sidewayDutyCycle;}
+
+    public void setForwardDistanceFromOrigin(float distance) {forwardDistanceFromOrigin = distance;}
+
+    public void setSidewayDistanceFromOrigin(float distance) {sidewayDistanceFromOrigin = distance;}
+
+    public float getForwardDistanceFromOrigin() {return forwardDistanceFromOrigin;}
+
+    public float getSidewayDistanceFromOrigin() {return sidewayDistanceFromOrigin;}
 }

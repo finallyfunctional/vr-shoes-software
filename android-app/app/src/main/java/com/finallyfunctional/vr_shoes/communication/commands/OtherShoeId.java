@@ -5,7 +5,7 @@ public class OtherShoeId
     public static final String COMMAND_KEY = "oi";
 
     public String c; //command
-    public String oi; //other shoe ID
+    public String osi; //other shoe ID
 
     public OtherShoeId()
     {

@@ -5,6 +5,16 @@ OmniPoweredWalking::OmniPoweredWalking(Sensors* sensors) : AutoShoeController(se
     
 }
 
+void OmniPoweredWalking::start()
+{
+    AutoShoeController::start();
+    thisShoeState = 0;
+    prevRemoteFootState = 0;
+    remoteShoeLastPoweredDirection = 0;
+    compensateForForwardsArc = false;
+    compensateForBackwardsArc = false;
+}
+
 void OmniPoweredWalking::update()
 {
     if(!started)
@@ -13,32 +23,81 @@ void OmniPoweredWalking::update()
     }
     RemoteVrShoe* remoteShoe = sensors->getRemoteVrShoe();
     SpeedController* speedController = sensors->getSpeedController();
-    MovementTracker* movementTracker = sensors->getMovementTracker();
-    float speed = remoteShoe->forwardSpeed * -1;
-    float distanceFromOrigin = movementTracker->getDistanceFromOrigin().getX();
 
-    if(speed != 0 && 
-       (!remoteShoe->frontButtonPressed && !remoteShoe->rearButtonPressed) &&
-       (sensors->isFrontButtonPressed() && sensors->isRearButtonPressed()))
+    int remoteShoeState = remoteShoe->frontButtonPressed || remoteShoe->rearButtonPressed ?
+        POWERED : UNPOWERED;
+    int thisShoeState = sensors->isFrontButtonPressed() && sensors->isRearButtonPressed() ?
+        POWERED : UNPOWERED;
+
+    if(remoteShoeState == POWERED)
     {
-        if(!moving)
+        if(remoteShoe->forwardSpeed > 0)
         {
-            if((speed < 0 && distanceFromOrigin > -0.15) ||
-               (speed > 0 && distanceFromOrigin < 0.15))
-            {
-                speedController->setForwardSpeed(speed);
-                moving = true;
-            }
+            remoteShoeLastPoweredDirection = FORWARD;
         }
-        else 
+        else if(remoteShoe->forwardSpeed < 0)
         {
-            speedController->setForwardSpeed(speed);
-            moving = true;
+            remoteShoeLastPoweredDirection = BACKWARD;
         }
     }
-    else
+
+    if(prevRemoteFootState == POWERED && remoteShoeState == UNPOWERED)
+    {
+        setUpArcingCompensation(remoteShoe);
+    }
+
+    if(remoteShoeState == UNPOWERED && thisShoeState == POWERED && remoteShoe->forwardSpeed != 0)
+    {
+        if((!compensateForBackwardsArc || doneCompensatingForBackwardArcing(remoteShoe)) &&
+           (!compensateForForwardsArc || doneCompensatingForForwardArching(remoteShoe)))
+           {
+               speedController->setForwardSpeed(remoteShoe->forwardSpeed * -1);
+           }
+           else
+           {
+               speedController->setRpm(0, 0);
+           }
+    }
+    else 
     {
         speedController->setRpm(0, 0);
-        moving = false;
     }
+
+    prevRemoteFootState = remoteShoeState;
+}
+
+void OmniPoweredWalking::setUpArcingCompensation(RemoteVrShoe* remoteShoe)
+{
+        if(remoteShoeLastPoweredDirection == FORWARD)
+        {
+            forwardLimitForArcCompensation = remoteShoe->forwardDistanceFromOrigin + ARC_DISTANCE_COMPENSATION;
+            compensateForForwardsArc = true;
+            compensateForBackwardsArc = false;
+        }
+        else if(remoteShoeLastPoweredDirection == BACKWARD)
+        {
+            backwardLimitForArcCompensation =  remoteShoe->forwardDistanceFromOrigin - ARC_DISTANCE_COMPENSATION;
+            compensateForBackwardsArc = true;
+            compensateForForwardsArc = false;
+        }
+}
+
+bool OmniPoweredWalking::doneCompensatingForBackwardArcing(RemoteVrShoe* remoteShoe)
+{
+    if(remoteShoe->forwardSpeed > 0 || remoteShoe->forwardDistanceFromOrigin < backwardLimitForArcCompensation)
+    {
+        compensateForBackwardsArc = false;
+        return true;
+    }
+    return false;
+}
+
+bool OmniPoweredWalking::doneCompensatingForForwardArching(RemoteVrShoe* remoteShoe)
+{
+    if(remoteShoe->forwardSpeed < 0 || remoteShoe->forwardDistanceFromOrigin > forwardLimitForArcCompensation)
+    {
+        compensateForForwardsArc = false;
+        return true;
+    }
+    return false;
 }

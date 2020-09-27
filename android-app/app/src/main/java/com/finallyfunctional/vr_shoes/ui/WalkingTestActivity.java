@@ -16,14 +16,13 @@ import com.finallyfunctional.vr_shoes.StoredSettings;
 import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
-import com.finallyfunctional.vr_shoes.communication.ICommunicatorObserver;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class WalkingTestActivity extends AppCompatActivity implements ICommunicatorObserver
+public class WalkingTestActivity extends AppCompatActivity
 {
     private ToggleButton startWalkingBtn;
     private EditText dutyCycleBoostText;
@@ -105,7 +104,7 @@ public class WalkingTestActivity extends AppCompatActivity implements ICommunica
         });
 
         setDutyCycleText();
-        setDistanceText(0, 0);
+        setDistanceText();
 
         extraSensorDataTimer.scheduleAtFixedRate(new TimerTask()
         {
@@ -115,8 +114,6 @@ public class WalkingTestActivity extends AppCompatActivity implements ICommunica
                 update();
             }
         }, 0, 100);
-
-        communicator.addObserver(this);
     }
 
     @Override
@@ -125,7 +122,6 @@ public class WalkingTestActivity extends AppCompatActivity implements ICommunica
         super.onDestroy();
         extraSensorDataTimer.cancel();
         stopAlgorithm();
-        communicator.removeObserver(this);
     }
 
     public void backBtnClicked(View view)
@@ -143,8 +139,8 @@ public class WalkingTestActivity extends AppCompatActivity implements ICommunica
     private void update()
     {
         communicator.getExtraSensorData(vrShoe);
-        communicator.readDistanceFromOrigin(vrShoe);
         setDutyCycleText();
+        setDistanceText();
     }
 
     private void vrShoeSelected(String shoeId)
@@ -167,10 +163,10 @@ public class WalkingTestActivity extends AppCompatActivity implements ICommunica
         sidewayDutyCycleText.setText(getString(R.string.current_sideway_duty_cycle) + vrShoe.getSidewayDutyCycle());
     }
 
-    private void setDistanceText(float forwardDistance, float sidewayDistance)
+    private void setDistanceText()
     {
-        forwardDistanceText.setText(getString(R.string.forward_distance) + forwardDistance);
-        sidewayDistanceText.setText(getString(R.string.sideway_distance) + sidewayDistance);
+        forwardDistanceText.setText(getString(R.string.forward_distance) + vrShoe.getForwardDistanceFromOrigin());
+        sidewayDistanceText.setText(getString(R.string.sideway_distance) + vrShoe.getSidewayDistanceFromOrigin());
     }
 
     private void startWalkingBtnClicked()
@@ -198,40 +194,5 @@ public class WalkingTestActivity extends AppCompatActivity implements ICommunica
         settings.saveDutyCycleBoost(boost);
         communicator.setDutyCycleBoost(communicator.getVrShoe1(), boost);
         communicator.setDutyCycleBoost(communicator.getVrShoe2(), boost);
-    }
-
-
-    @Override
-    public void messageRead(String message)
-    {
-
-    }
-
-    @Override
-    public void messageWritten(VrShoe vrShoe, String message)
-    {
-
-    }
-
-    @Override
-    public void sensorDataRead(VrShoe vrShoe1)
-    {
-
-    }
-
-    @Override
-    public void distanceFromOriginRead(VrShoe vrShoe, final float forwardDistance, final float sidewayDistance)
-    {
-        if(vrShoe == this.vrShoe)
-        {
-            this.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setDistanceText(forwardDistance, sidewayDistance);
-                }
-            });
-        }
     }
 }

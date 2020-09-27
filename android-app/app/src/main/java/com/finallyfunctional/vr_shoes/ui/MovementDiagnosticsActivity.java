@@ -1,7 +1,5 @@
 package com.finallyfunctional.vr_shoes.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,12 +11,10 @@ import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
 import com.finallyfunctional.vr_shoes.communication.ICommunicatorObserver;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MovementDiagnosticsActivity extends AppCompatActivity
 {
-    private Timer timer;
     private MovementDiagnosticsForShoe vrShoe1Diagnostics, vrShoe2Diagnostics;
 
     @Override
@@ -44,17 +40,6 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
         vrShoe2Diagnostics = new MovementDiagnosticsForShoe(vrShoe2Header, vrShoe2ForwardDistance,
                 vrShoe2SidewayDistance, vrShoe2ForwardSpeed, vrShoe2SidewaySpeed,
                 communicator, this, communicator.getVrShoe2());
-
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                vrShoe1Diagnostics.readDistanceFromOrigin();
-                vrShoe2Diagnostics.readDistanceFromOrigin();
-            }
-        }, 0, 100);
     }
 
     @Override
@@ -63,7 +48,6 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
         super.onDestroy();
         vrShoe1Diagnostics.destroy();
         vrShoe2Diagnostics.destroy();
-        timer.cancel();
     }
 
     public void resetOriginVrShoe1BtnClicked(View view)
@@ -119,11 +103,6 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
             communicator.removeObserver(this);
         }
 
-        public void readDistanceFromOrigin()
-        {
-            communicator.readDistanceFromOrigin(vrShoe);
-        }
-
         private void resetOrigin()
         {
             communicator.resetOrigin(vrShoe);
@@ -169,21 +148,7 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
                     {
                         setDeviceIdText();
                         setSpeedText(vrShoe.getForwardSpeed(), vrShoe.getSidewaySpeed());
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void distanceFromOriginRead(VrShoe vrShoe,  final float forwardDistance, final float sidewayDistance)
-        {
-            if(vrShoe == this.vrShoe)
-            {
-                activity.runOnUiThread(new Runnable()
-                {
-                    public void run()
-                    {
-                        setDistanceText(forwardDistance, sidewayDistance);
+                        setDistanceText(vrShoe.getForwardDistanceFromOrigin(), vrShoe.getSidewayDistanceFromOrigin());
                     }
                 });
             }

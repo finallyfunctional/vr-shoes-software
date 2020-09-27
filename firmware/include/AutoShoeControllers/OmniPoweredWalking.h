@@ -11,9 +11,27 @@ class OmniPoweredWalking : public AutoShoeController
     public:
     OmniPoweredWalking(Sensors* sensors);
     void update();
-
+    void start();
+    
     private:
-    bool moving;
+    void setUpArcingCompensation(RemoteVrShoe* remoteShoe);
+    bool doneCompensatingForBackwardArcing(RemoteVrShoe* remoteShoe);
+    bool doneCompensatingForForwardArching(RemoteVrShoe* remoteShoe);
+
+    int thisShoeState;
+    int prevRemoteFootState;
+    const int POWERED = 1;
+    const int UNPOWERED = 2;
+
+    int remoteShoeLastPoweredDirection;
+    const int FORWARD = 1;
+    const int BACKWARD = -1;
+
+    bool compensateForBackwardsArc;
+    bool compensateForForwardsArc;
+    float backwardLimitForArcCompensation;
+    float forwardLimitForArcCompensation;
+    const float ARC_DISTANCE_COMPENSATION = 0.02;
 };
 
 #endif

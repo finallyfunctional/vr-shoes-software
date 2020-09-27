@@ -8,8 +8,8 @@ class AutoShoeController
 {
     public:
     AutoShoeController(Sensors* sensors);
-    void start();
-    void stop();
+    virtual void start();
+    virtual void stop();
     virtual void update() = 0;
 
     protected:

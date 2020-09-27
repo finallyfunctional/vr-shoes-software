@@ -29,10 +29,4 @@ public class CommunicatorLogger implements ICommunicatorObserver
     {
 
     }
-
-    @Override
-    public void distanceFromOriginRead(VrShoe vrShoe, float forwardDistance, float sidewayDistance)
-    {
-
-    }
 }

@@ -60,7 +60,7 @@ class Communicator
 
     String shoeId;
     String lastSensorDataMessageSent;
-    StaticJsonDocument<200> json;
+    StaticJsonDocument<500> json;
 };
 
 #endif

@@ -1,7 +1,5 @@
 package com.finallyfunctional.vr_shoes.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +10,8 @@ import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
 import com.finallyfunctional.vr_shoes.communication.ICommunicatorObserver;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class ButtonsDiagnosticsActivity extends AppCompatActivity
 {
@@ -111,12 +111,6 @@ public class ButtonsDiagnosticsActivity extends AppCompatActivity
             header.setText(vrShoe.getDeviceId());
             frontButton.setText(getString(R.string.front_button_pressed) + " : " + vrShoe.isFrontButtonPressed());
             rearButton.setText(getString(R.string.rear_button_pressed) + " : " + vrShoe.isRearButtonPressed());
-        }
-
-        @Override
-        public void distanceFromOriginRead(VrShoe vrShoe,  float forwardDistance, float sidewayDistance)
-        {
-
         }
     }
 }

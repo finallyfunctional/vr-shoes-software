@@ -4,7 +4,6 @@ import android.util.Pair;
 
 import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.commands.CommandConstants;
-import com.finallyfunctional.vr_shoes.communication.commands.DistanceFromOrigin;
 import com.finallyfunctional.vr_shoes.communication.commands.DutyCycleBoost;
 import com.finallyfunctional.vr_shoes.communication.commands.ExtraSensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.OtherShoeId;
@@ -99,7 +98,7 @@ public abstract class Communicator
         readMessagesIntoQueue();
         while(!recievedMessages.isEmpty())
         {
-            handleRecievedMessage(recievedMessages.remove());
+            handleReceivedMessage(recievedMessages.remove());
         }
         while(!messagesToSend.isEmpty())
         {
@@ -108,7 +107,7 @@ public abstract class Communicator
         }
     }
 
-    private void handleRecievedMessage(String message) throws IOException
+    private void handleReceivedMessage(String message) throws IOException
     {
         Map map = gson.fromJson(message, Map.class);
         if(map == null)
@@ -136,20 +135,25 @@ public abstract class Communicator
         {
             return;
         }
-        switch (command)
+
+        try
         {
-            case SensorData.SENSOR_DATA_COMMAND:
-                readSensorData(gson.fromJson(message, SensorData.class), thisVrShoe, otherVrShoe);
-                break;
-            case DistanceFromOrigin.DISTANCE_FROM_ORIGIN_COMMAND:
-                readDistanceFromOrigin(thisVrShoe, gson.fromJson(message, DistanceFromOrigin.class));
-                break;
-            case ShoeSide.SHOE_SIDE_COMMAND:
-                readShoeSide(thisVrShoe, gson.fromJson(message, ShoeSide.class));
-                break;
-            case ExtraSensorData.EXTRA_SENSOR_DATA_COMMAND:
-                readExtraSensorData(gson.fromJson(message, ExtraSensorData.class), thisVrShoe);
-                break;
+            switch (command)
+            {
+                case SensorData.SENSOR_DATA_COMMAND:
+                    readSensorData(gson.fromJson(message, SensorData.class), thisVrShoe, otherVrShoe);
+                    break;
+                case ShoeSide.SHOE_SIDE_COMMAND:
+                    readShoeSide(thisVrShoe, gson.fromJson(message, ShoeSide.class));
+                    break;
+                case ExtraSensorData.EXTRA_SENSOR_DATA_COMMAND:
+                    readExtraSensorData(gson.fromJson(message, ExtraSensorData.class), thisVrShoe);
+                    break;
+            }
+        }
+        catch(IllegalStateException ex)
+        {
+            ex.printStackTrace();
         }
     }
 
@@ -159,10 +163,11 @@ public abstract class Communicator
         thisVrShoe.rearButtonPressed(message.rb);
         thisVrShoe.setForwardSpeed(message.fs);
         thisVrShoe.setSidewaySpeed(message.ss);
+        thisVrShoe.setForwardDistanceFromOrigin(message.fd);
+        thisVrShoe.setSidewayDistanceFromOrigin(message.sid);
 
-        if(forwardSensorDataToOtherShoe())
+        if(forwardSensorDataToOtherShoe() && message.d != null && message.d.equals(otherVrShoe.getDeviceId()))
         {
-            message.d = otherVrShoe.getDeviceId();
             message.r = false;
             writeMessage(otherVrShoe, gson.toJson(message));
         }
@@ -183,18 +188,6 @@ public abstract class Communicator
         vrShoe.setSidewayDesiredSpeed(message.sds);
         vrShoe.setForwardDutyCycle(message.fdc);
         vrShoe.setSidewayDutyCycle(message.sdc);
-    }
-
-    private void readDistanceFromOrigin(VrShoe vrShoe, DistanceFromOrigin message)
-    {
-        if(!message.r)
-        {
-            return;
-        }
-        for(ICommunicatorObserver observer : observers)
-        {
-            observer.distanceFromOriginRead(vrShoe, message.fd, message.sd);
-        }
     }
 
     private void readShoeSide(VrShoe shoe, ShoeSide shoeSide)
@@ -256,14 +249,6 @@ public abstract class Communicator
         messagesToSend.add(new Pair<>(vrShoe, json));
     }
 
-    public void readDistanceFromOrigin(VrShoe vrShoe)
-    {
-        DistanceFromOrigin command = new DistanceFromOrigin();
-        command.d = vrShoe.getDeviceId();
-        String json = gson.toJson(command);
-        messagesToSend.add(new Pair<>(vrShoe, json));
-    }
-
     public void setRpm(float forwardRpm, float sidewayRpm, VrShoe vrShoe)
     {
         SetRpm command = new SetRpm();
@@ -283,7 +268,7 @@ public abstract class Communicator
     public void sendOtherShoeId(VrShoe thisShoe, VrShoe otherShoe)
     {
         OtherShoeId command = new OtherShoeId();
-        command.oi = otherShoe.getDeviceId();
+        command.osi = otherShoe.getDeviceId();
         messagesToSend.add(new Pair<>(thisShoe, gson.toJson(command)));
     }
 
