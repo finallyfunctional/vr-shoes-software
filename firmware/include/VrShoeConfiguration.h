@@ -19,6 +19,7 @@
 #include "./AutoShoeControllers/AutoShoeController.h"
 #include "./AutoShoeControllers/OmniPoweredWalking.h"
 #include "./ShoeSides.h"
+#include "./Sensors/PowerTracker.h"
 
 class VrShoeConfiguration
 {

@@ -30,6 +30,20 @@ class MessageKeys
     static const String FORWARD_DUTY_CYCLE;
     static const String SIDEWAY_DUTY_CYCLE;
     static const String DUTY_CYCLE_BOOST;
+    static const String KP;
+    static const String KI;
+    static const String KD;
+    static const String SIDEWAY_PEAK_CURRENT;
+    static const String SIDEWAY_CURRENT_NOW;
+    static const String SIDEWAY_AVERAGE_CURRENT;
+    static const String SIDEWAY_AMP_HOURS;
+    static const String SIDEWAY_AMP_HOURS_CHARGED;
+    static const String FORWARD_PEAK_CURRENT;
+    static const String FORWARD_CURRENT_NOW;
+    static const String FORWARD_AVERAGE_CURRENT;
+    static const String FORWARD_AMP_HOURS;
+    static const String FORWARD_AMP_HOURS_CHARGED;
+    static const String SPEED_MULTIPLER;
 };
 
 #endif

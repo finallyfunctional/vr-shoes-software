@@ -5,10 +5,12 @@
 #include "../Vector2D.h"
 #include "./Sensors/MovementTracker.h"
 #include "./Sensors/SpeedController.h"
+#include "./Sensors/PowerTracker.h"
 #include "./Vesc.h"
 #include "../Timer.h"
+#include "./PowerStatistics.h"
 
-class VescPair : public MovementTracker, public SpeedController
+class VescPair : public MovementTracker, public SpeedController, public PowerTracker
 {
     public:
     VescPair(Vesc* forwardVesc, Vesc* sidewaysVesc);
@@ -27,6 +29,9 @@ class VescPair : public MovementTracker, public SpeedController
     void brakeForwardsBackwards();
     void brakeSideway();
     void setDutyCycleBoost(float boost);
+    void tunePidLoop(float kp, float ki, float kd);
+    PowerStatistics getForwardCurrentStatistics();
+    PowerStatistics getSidewayCurrentStatistics();
 
     private:
     Vesc* forwardVesc;

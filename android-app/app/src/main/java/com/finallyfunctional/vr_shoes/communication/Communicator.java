@@ -13,8 +13,10 @@ import com.finallyfunctional.vr_shoes.communication.commands.SensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.SetCommunicationMode;
 import com.finallyfunctional.vr_shoes.communication.commands.SetRpm;
 import com.finallyfunctional.vr_shoes.communication.commands.ShoeSide;
+import com.finallyfunctional.vr_shoes.communication.commands.SpeedMultiplier;
 import com.finallyfunctional.vr_shoes.communication.commands.StartAlgorithm;
 import com.finallyfunctional.vr_shoes.communication.commands.StopAlgorithm;
+import com.finallyfunctional.vr_shoes.communication.commands.TunePidLoop;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -188,6 +190,18 @@ public abstract class Communicator
         vrShoe.setSidewayDesiredSpeed(message.sds);
         vrShoe.setForwardDutyCycle(message.fdc);
         vrShoe.setSidewayDutyCycle(message.sdc);
+
+        vrShoe.setSidewayPeakCurrent(message.spk);
+        vrShoe.setSidewayCurrentNow(message.scn);
+        vrShoe.setSidewayAverageCurrent(message.sac);
+        vrShoe.setSidewayAmpHours(message.sah);
+        vrShoe.setSidewayAmpCharged(message.sahc);
+
+        vrShoe.setForwardPeakCurrent(message.fpc);
+        vrShoe.setForwardCurrentNow(message.fcn);
+        vrShoe.setForwardAverageCurrent(message.fac);
+        vrShoe.setForwardAmpHours(message.fah);
+        vrShoe.setForwardAmpCharged(message.fahc);
     }
 
     private void readShoeSide(VrShoe shoe, ShoeSide shoeSide)
@@ -321,6 +335,24 @@ public abstract class Communicator
         command.dcb = boost;
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
         vrShoe.setDutyCycleBoost(boost);
+    }
+
+    public void tunePidLoop(VrShoe vrShoe, float kp, float ki, float kd)
+    {
+        TunePidLoop command = new TunePidLoop();
+        command.kp = kp;
+        command.ki = ki;
+        command.kd = kd;
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+        vrShoe.setPidParameters(kp, ki, kd);
+    }
+
+    public void setSpeedMultiplier(VrShoe vrShoe, float multiplier)
+    {
+        SpeedMultiplier command = new SpeedMultiplier();
+        command.spm = multiplier;
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+        vrShoe.setSpeedMultiplier(multiplier);
     }
 
     public VrShoe getVrShoe1()

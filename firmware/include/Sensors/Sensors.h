@@ -8,18 +8,20 @@
 #include "../Motors/Motor.h"
 #include "../Wheels/Wheel.h"
 #include "./Sensors/RemoteVrShoe.h"
+#include "./PowerTracker.h"
 
 class Sensors
 {
     public:
     Sensors(Button* frontButton, Button* rearButton, MovementTracker* movementTracker, SpeedController* speedController,
-            RemoteVrShoe* remoteVrShoe);
+            RemoteVrShoe* remoteVrShoe, PowerTracker* powerTracker);
     void updateSensors();
     bool isFrontButtonPressed();
     bool isRearButtonPressed();
     MovementTracker* getMovementTracker();
     SpeedController* getSpeedController();
     RemoteVrShoe* getRemoteVrShoe();
+    PowerTracker* getPowerTracker();
 
     private:
     Button* frontButton;
@@ -27,6 +29,7 @@ class Sensors
     MovementTracker* movementTracker;
     SpeedController* speedController;
     RemoteVrShoe* remoteVrShoe;
+    PowerTracker* powerTracker;
 };
 
 #endif

@@ -17,6 +17,8 @@ class Messages
     static const String STOP_ALGORITHM;
     static const String EXTRA_SENSOR_DATA;
     static const String DUTY_CYCLE_BOOST;
+    static const String TUNE_PID_LOOP;
+    static const String SPEED_MULTIPLIER;
 };
 
 #endif

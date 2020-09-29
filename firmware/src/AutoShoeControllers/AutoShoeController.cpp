@@ -4,6 +4,7 @@ AutoShoeController::AutoShoeController(Sensors* sensors)
 {
     this->sensors = sensors;
     this->started = false;
+    this->speedMultiplier = 1;
 }
 
 void AutoShoeController::start()
@@ -14,4 +15,14 @@ void AutoShoeController::start()
 void AutoShoeController::stop()
 {
     started = false;
+}
+
+void AutoShoeController::setSpeedMultiplier(float multipler)
+{
+    speedMultiplier = multipler;
+}
+
+float AutoShoeController::getSpeedMultiplier()
+{
+    return speedMultiplier;
 }

@@ -32,7 +32,7 @@ void VrShoeConfiguration::initialize()
         vescPair->inverseForwardDirection();
     }
 
-    sensors = new Sensors(frontButton, rearButton, vescPair, vescPair, new RemoteVrShoe());
+    sensors = new Sensors(frontButton, rearButton, vescPair, vescPair, new RemoteVrShoe(), vescPair);
 
     shoeController = new OmniPoweredWalking(sensors);
 

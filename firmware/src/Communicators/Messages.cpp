@@ -11,3 +11,5 @@ const String Messages::START_ALGORITHM = "sa";
 const String Messages::STOP_ALGORITHM = "soa";
 const String Messages::EXTRA_SENSOR_DATA = "esd";
 const String Messages::DUTY_CYCLE_BOOST = "dcb";
+const String Messages::TUNE_PID_LOOP = "tpl";
+const String Messages::SPEED_MULTIPLIER = "sm";

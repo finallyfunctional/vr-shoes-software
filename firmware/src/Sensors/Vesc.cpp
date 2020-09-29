@@ -14,6 +14,7 @@ Vesc::Vesc(Stream* serialForVesc, Motor motor, Wheel wheel) : safetyTimer(Timer(
     pidLoop = Pid();
     pidLoop.tune(0, 0, 0);
     mode = MOVING_MODE;
+    powerStats = PowerStatistics();
 }
 
 void Vesc::update()
@@ -38,6 +39,17 @@ void Vesc::update()
     {
         updateSpeedUsingSimpleStepping();
     }
+    updateStatistics();
+}
+
+void Vesc::updateStatistics()
+{
+    if(peakCurrent < vescUart.data.avgMotorCurrent)
+    {
+        peakCurrent = vescUart.data.avgMotorCurrent;
+    }
+    currentSum += vescUart.data.avgMotorCurrent;
+    currentReadCount++;
 }
 
 void Vesc::updateSpeedUsingBoost()
@@ -218,4 +230,14 @@ float Vesc::getCurrentDutyCycle()
 void Vesc::setDutyCycleBoost(float boost)
 {
     dutyCycleBoost = boost;
+}
+
+PowerStatistics Vesc::getCurrentStatistics()
+{
+    powerStats.peakCurrent = this->peakCurrent;
+    powerStats.currentNow = vescUart.data.avgMotorCurrent;
+    powerStats.averageCurrent = currentSum / currentReadCount;
+    powerStats.ampHours = vescUart.data.ampHours;
+    powerStats.ampHoursCharged = vescUart.data.ampHoursCharged;
+    return powerStats;
 }

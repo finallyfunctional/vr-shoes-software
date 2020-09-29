@@ -1,13 +1,14 @@
 #include "../../include/Sensors/Sensors.h"
 
 Sensors::Sensors(Button* frontButton, Button* rearButton, MovementTracker* movementTracker, 
-                 SpeedController* speedController, RemoteVrShoe* remoteVrShoe)
+                 SpeedController* speedController, RemoteVrShoe* remoteVrShoe, PowerTracker* powerTracker)
 {
     this->frontButton = frontButton;
     this->rearButton = rearButton;
     this->movementTracker = movementTracker;
     this->speedController = speedController;
     this->remoteVrShoe = remoteVrShoe;
+    this->powerTracker = powerTracker;
 }
 
 void Sensors::updateSensors()
@@ -38,4 +39,9 @@ SpeedController* Sensors::getSpeedController()
 RemoteVrShoe* Sensors::getRemoteVrShoe()
 {
     return remoteVrShoe;
+}
+
+PowerTracker* Sensors::getPowerTracker()
+{
+    return powerTracker;
 }

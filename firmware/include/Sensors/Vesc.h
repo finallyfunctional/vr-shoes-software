@@ -7,6 +7,7 @@
 #include "../Wheels/Wheel.h"
 #include "../Timer.h"
 #include "../Pid.h"
+#include "./PowerStatistics.h"
 
 class Vesc
 {
@@ -25,6 +26,7 @@ class Vesc
     void tunePidLoop(float kp, float ki, float kd);
     void brake();
     void setDutyCycleBoost(float boost);
+    PowerStatistics getCurrentStatistics();
 
     private:
     float convertErpmToMrpm(float erpm);
@@ -32,6 +34,7 @@ class Vesc
     float convertErpmToDutyCycle(float erpm);
     float getSpeedFromErpm(float erpm);
     void handleBraking();
+    void updateStatistics();
 
     void updateSpeedUsingPidLoop();
     void updateSpeedUsingSimpleStepping();
@@ -52,6 +55,11 @@ class Vesc
     int triggerBrakeAtErpm;
     double previousBrakeCurrent = 0;
     float dutyCycleBoost;
+    PowerStatistics powerStats;
+
+    float peakCurrent;
+    float currentSum;
+    float currentReadCount;
 
     const int MOVING_MODE = 1;
     const int BRAKING_MODE = 2;

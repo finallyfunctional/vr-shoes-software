@@ -51,7 +51,7 @@ void OmniPoweredWalking::update()
         if((!compensateForBackwardsArc || doneCompensatingForBackwardArcing(remoteShoe)) &&
            (!compensateForForwardsArc || doneCompensatingForForwardArching(remoteShoe)))
            {
-               speedController->setForwardSpeed(remoteShoe->forwardSpeed * -1);
+               speedController->setForwardSpeed(remoteShoe->forwardSpeed * -1 * speedMultiplier);
            }
            else
            {

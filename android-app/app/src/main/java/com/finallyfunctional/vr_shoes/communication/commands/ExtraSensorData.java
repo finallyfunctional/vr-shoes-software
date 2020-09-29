@@ -12,6 +12,16 @@ public class ExtraSensorData
     public float sds; //sideways desired speed
     public float fdc; //forward duty cycle
     public float sdc; //sideways duty cycle
+    public float spk; //sideway peak current
+    public float scn; //sideway current now
+    public float sac; //sideway average current
+    public float sah; //sideway amp hours
+    public float sahc; //sideway amp hours charged
+    public float fpc; //forward peak current
+    public float fcn; //forward current now
+    public float fac; //forward average current
+    public float fah; //forward amp hours
+    public float fahc; //forward amp hours charged
 
     public ExtraSensorData()
     {

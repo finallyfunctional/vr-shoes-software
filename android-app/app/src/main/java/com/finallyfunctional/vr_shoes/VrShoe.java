@@ -17,6 +17,22 @@ public class VrShoe
     private float forwardDistanceFromOrigin;
     private float sidewayDistanceFromOrigin;
 
+    private float sidewayPeakCurrent;
+    private float sidewayCurrentNow;
+    private float sidewayAverageCurrent;
+    private float sidewayAmpHours;
+    private float sidewayAmpCharged;
+
+    private float forwardPeakCurrent;
+    private float forwardCurrentNow;
+    private float forwardAverageCurrent;
+    private float forwardAmpHours;
+    private float forwardAmpCharged;
+
+    private float speedMultiplier;
+
+    private float kp, ki, kd;
+
     public String getDeviceId()
     {
         return deviceId;
@@ -104,4 +120,76 @@ public class VrShoe
     public float getForwardDistanceFromOrigin() {return forwardDistanceFromOrigin;}
 
     public float getSidewayDistanceFromOrigin() {return sidewayDistanceFromOrigin;}
+
+    public void setSidewayPeakCurrent(float current) {sidewayPeakCurrent = current;}
+
+    public float getSidewayPeakCurrent() {return sidewayPeakCurrent;}
+
+    public void setSidewayCurrentNow(float current) {sidewayCurrentNow = current;}
+
+    public float getSidewayCurrentNow() {return sidewayCurrentNow;}
+
+    public void setSidewayAverageCurrent(float current) {sidewayAverageCurrent = current;}
+
+    public float getSidewayAverageCurrent() {return sidewayAverageCurrent;}
+
+    public void setSidewayAmpHours(float ampHours) {sidewayAmpHours = ampHours;}
+
+    public float getSidewayAmpHours() {return sidewayAmpHours;}
+
+    public void setSidewayAmpCharged(float ampHours) {sidewayAmpCharged = ampHours;}
+
+    public float getSidewayAmpCharged() {return sidewayAmpCharged;}
+
+    public void setForwardPeakCurrent(float current) {forwardPeakCurrent = current;}
+
+    public float getForwardPeakCurrent() {return forwardPeakCurrent;}
+
+    public void setForwardCurrentNow(float current) {forwardCurrentNow = current;}
+
+    public float getForwardCurrentNow() {return forwardCurrentNow;}
+
+    public void setForwardAverageCurrent(float current) {forwardAverageCurrent = current;}
+
+    public float getForwardAverageCurrent() {return forwardAverageCurrent;}
+
+    public void setForwardAmpHours(float ampHours) {forwardAmpHours = ampHours;}
+
+    public float getForwardAmpHours() {return forwardAmpHours;}
+
+    public void setForwardAmpCharged(float ampHours) {forwardAmpCharged = ampHours;}
+
+    public float getForwardAmpCharged() {return forwardAmpCharged;}
+
+    public float getSpeedMultiplier()
+    {
+        return speedMultiplier;
+    }
+
+    public void setSpeedMultiplier(float speedMultiplier)
+    {
+        this.speedMultiplier = speedMultiplier;
+    }
+
+    public void setPidParameters(float kp, float ki, float kd)
+    {
+        this.kp = kp;
+        this.ki = ki;
+        this.kd = kd;
+    }
+
+    public float getPidKp()
+    {
+        return kp;
+    }
+
+    public float getPidKi()
+    {
+        return ki;
+    }
+
+    public float getPidKd()
+    {
+        return kd;
+    }
 }

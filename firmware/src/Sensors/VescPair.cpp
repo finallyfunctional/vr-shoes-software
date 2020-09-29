@@ -95,3 +95,19 @@ Vector2D VescPair::getCurrentDutyCycle()
 {
     return Vector2D(forwardVesc->getCurrentDutyCycle(), sidewaysVesc->getCurrentDutyCycle());
 }
+
+void VescPair::tunePidLoop(float kp, float ki, float kd)
+{
+    forwardVesc->tunePidLoop(kp, ki, kd);
+    sidewaysVesc->tunePidLoop(kp, ki, kd);
+}
+
+PowerStatistics VescPair::getForwardCurrentStatistics()
+{
+    return forwardVesc->getCurrentStatistics();
+}
+    
+PowerStatistics VescPair::getSidewayCurrentStatistics()
+{
+    return sidewaysVesc->getCurrentStatistics();
+}

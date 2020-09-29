@@ -113,6 +113,21 @@ int Communicator::handleRecievedMessage(String message)
     {
         return setDutyCycleBoost();
     }
+    else if(commandId.equals(Messages::TUNE_PID_LOOP))
+    {
+        return tunePidLoop();
+    }
+    else if(commandId.equals(Messages::SPEED_MULTIPLIER))
+    {
+        if(!json[MessageKeys::GET].isNull() && json[MessageKeys::GET].as<bool>())
+        {
+            return getSpeedMultipler();
+        }
+        else 
+        {
+            return setSpeedMultipler();
+        }
+    }
     else
     {
         int implResponse = handleImplementationSpecificMessage(commandId);
@@ -292,6 +307,20 @@ int Communicator::sendExtraSensorData()
     json[MessageKeys::FORWARD_DUTY_CYCLE] = currentDutyCycle.getX();
     json[MessageKeys::SIDEWAY_DUTY_CYCLE] = currentDutyCycle.getY();
 
+    PowerStatistics sidewayStatistics = sensors->getPowerTracker()->getSidewayCurrentStatistics();
+    json[MessageKeys::SIDEWAY_PEAK_CURRENT] = sidewayStatistics.peakCurrent;
+    json[MessageKeys::SIDEWAY_AVERAGE_CURRENT] = sidewayStatistics.averageCurrent;
+    json[MessageKeys::SIDEWAY_CURRENT_NOW] = sidewayStatistics.currentNow;
+    json[MessageKeys::SIDEWAY_AMP_HOURS] = sidewayStatistics.ampHours;
+    json[MessageKeys::SIDEWAY_AMP_HOURS_CHARGED] = sidewayStatistics.ampHoursCharged;
+
+    PowerStatistics forwardStatistics = sensors->getPowerTracker()->getForwardCurrentStatistics();
+    json[MessageKeys::FORWARD_PEAK_CURRENT] = forwardStatistics.peakCurrent;
+    json[MessageKeys::FORWARD_AVERAGE_CURRENT] = forwardStatistics.averageCurrent;
+    json[MessageKeys::FORWARD_CURRENT_NOW] = forwardStatistics.currentNow;
+    json[MessageKeys::FORWARD_AMP_HOURS] = forwardStatistics.ampHours;
+    json[MessageKeys::FORWARD_AMP_HOURS_CHARGED] = forwardStatistics.ampHoursCharged;
+
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
 
@@ -299,5 +328,27 @@ int Communicator::setDutyCycleBoost()
 {
     float boost = json[MessageKeys::DUTY_CYCLE_BOOST];
     sensors->getSpeedController()->setDutyCycleBoost(boost);
+    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+}
+
+int Communicator::tunePidLoop()
+{
+    float kp = json[MessageKeys::KP];
+    float ki = json[MessageKeys::KI];
+    float kd = json[MessageKeys::KD];
+    sensors->getSpeedController()->tunePidLoop(kp, ki, kd);
+    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+}
+
+int Communicator::getSpeedMultipler()
+{
+    json[MessageKeys::SPEED_MULTIPLER] = shoeController->getSpeedMultiplier();
+    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
+}
+
+int Communicator::setSpeedMultipler()
+{
+    float multiplier = json[MessageKeys::SPEED_MULTIPLER];
+    shoeController->setSpeedMultiplier(multiplier);
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }

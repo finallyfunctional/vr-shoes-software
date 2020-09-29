@@ -17,6 +17,7 @@ class SpeedController
     virtual void brakeSideway() = 0;
     virtual void setDutyCycleBoost(float boost) = 0;
     virtual Vector2D getCurrentDutyCycle() = 0;
+    virtual void tunePidLoop(float kp, float ki, float kd);
 };
 
 #endif

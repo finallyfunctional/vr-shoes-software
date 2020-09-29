@@ -13,6 +13,8 @@
 #include "../Timer.h"
 #include "../ShoeSides.h"
 #include "../AutoShoeControllers/AutoShoeController.h"
+#include "../Sensors/PowerStatistics.h"
+#include "../Sensors/PowerTracker.h"
 
 class Communicator
 {
@@ -37,6 +39,9 @@ class Communicator
     int stopAlgorithm();
     int sendExtraSensorData();
     int setDutyCycleBoost();
+    int tunePidLoop();
+    int setSpeedMultipler();
+    int getSpeedMultipler();
 
     static const char* SHOE_ID_KEY;
     static const String DEVICE_ID_PREFIX;

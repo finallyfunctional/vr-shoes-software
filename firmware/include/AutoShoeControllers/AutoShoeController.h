@@ -11,10 +11,13 @@ class AutoShoeController
     virtual void start();
     virtual void stop();
     virtual void update() = 0;
+    virtual void setSpeedMultiplier(float multiplier);
+    virtual float getSpeedMultiplier();
 
     protected:
     bool started;
     Sensors* sensors;
+    float speedMultiplier;
 };
 
 #endif
