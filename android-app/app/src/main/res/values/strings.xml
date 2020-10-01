@@ -46,4 +46,16 @@
     <string name="duty_cycle_boost">Duty Cycle Boost</string>
     <string name="current_forward_duty_cycle">Forward Duty Cycle: </string>
     <string name="current_sideway_duty_cycle">Sideway Duty Cycle: </string>
+    <string name="speed_multiplier">Speed Multiplier</string>
+    <string name="peak_current">Peak Current: </string>
+    <string name="average_current">Average Current: </string>
+    <string name="amp_hours">Amp Hours: </string>
+    <string name="amp_hours_charged">Amp Hours Charged: </string>
+    <string name="kp">Kp</string>
+    <string name="ki">Ki</string>
+    <string name="kd">Kd</string>
+    <string name="actual_vs_desired_speed">Actual vs. Desired Speed</string>
+    <string name="speeds">Speeds</string>
+    <string name="actual_speed">Actual Speed</string>
+    <string name="desired_speed">Desired Speed</string>
 </resources>

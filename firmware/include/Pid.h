@@ -8,6 +8,7 @@ class Pid
     public:
     void tune(float kp, float ki, float kd);
     float compute(float input, float setPoint);
+    bool ready();
 
     private:
     float kp, ki, kd, errorSum, lastError;

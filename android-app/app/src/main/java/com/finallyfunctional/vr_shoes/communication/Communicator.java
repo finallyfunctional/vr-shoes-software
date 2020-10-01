@@ -8,6 +8,7 @@ import com.finallyfunctional.vr_shoes.communication.commands.DutyCycleBoost;
 import com.finallyfunctional.vr_shoes.communication.commands.ExtraSensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.OtherShoeId;
 import com.finallyfunctional.vr_shoes.communication.commands.Ping;
+import com.finallyfunctional.vr_shoes.communication.commands.PowerStatistics;
 import com.finallyfunctional.vr_shoes.communication.commands.ResetOrigin;
 import com.finallyfunctional.vr_shoes.communication.commands.SensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.SetCommunicationMode;
@@ -151,6 +152,8 @@ public abstract class Communicator
                 case ExtraSensorData.EXTRA_SENSOR_DATA_COMMAND:
                     readExtraSensorData(gson.fromJson(message, ExtraSensorData.class), thisVrShoe);
                     break;
+                case PowerStatistics.POWER_STATISTICS_COMMAND:
+                    readPowerStatistics(gson.fromJson(message, PowerStatistics.class), thisVrShoe);
             }
         }
         catch(IllegalStateException ex)
@@ -190,7 +193,14 @@ public abstract class Communicator
         vrShoe.setSidewayDesiredSpeed(message.sds);
         vrShoe.setForwardDutyCycle(message.fdc);
         vrShoe.setSidewayDutyCycle(message.sdc);
+    }
 
+    private void readPowerStatistics(PowerStatistics message, VrShoe vrShoe)
+    {
+        if(!message.r)
+        {
+            return;
+        }
         vrShoe.setSidewayPeakCurrent(message.spk);
         vrShoe.setSidewayCurrentNow(message.scn);
         vrShoe.setSidewayAverageCurrent(message.sac);
@@ -353,6 +363,13 @@ public abstract class Communicator
         command.spm = multiplier;
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
         vrShoe.setSpeedMultiplier(multiplier);
+    }
+
+    public void getPowerStatistics(VrShoe vrShoe)
+    {
+        PowerStatistics command = new PowerStatistics();
+        command.d = vrShoe.getDeviceId();
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
     }
 
     public VrShoe getVrShoe1()

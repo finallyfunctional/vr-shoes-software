@@ -128,6 +128,10 @@ int Communicator::handleRecievedMessage(String message)
             return setSpeedMultipler();
         }
     }
+    else if(commandId.equals(Messages::POWER_STATISTICS))
+    {
+        return getPowerStatistics();
+    }
     else
     {
         int implResponse = handleImplementationSpecificMessage(commandId);
@@ -307,20 +311,6 @@ int Communicator::sendExtraSensorData()
     json[MessageKeys::FORWARD_DUTY_CYCLE] = currentDutyCycle.getX();
     json[MessageKeys::SIDEWAY_DUTY_CYCLE] = currentDutyCycle.getY();
 
-    PowerStatistics sidewayStatistics = sensors->getPowerTracker()->getSidewayCurrentStatistics();
-    json[MessageKeys::SIDEWAY_PEAK_CURRENT] = sidewayStatistics.peakCurrent;
-    json[MessageKeys::SIDEWAY_AVERAGE_CURRENT] = sidewayStatistics.averageCurrent;
-    json[MessageKeys::SIDEWAY_CURRENT_NOW] = sidewayStatistics.currentNow;
-    json[MessageKeys::SIDEWAY_AMP_HOURS] = sidewayStatistics.ampHours;
-    json[MessageKeys::SIDEWAY_AMP_HOURS_CHARGED] = sidewayStatistics.ampHoursCharged;
-
-    PowerStatistics forwardStatistics = sensors->getPowerTracker()->getForwardCurrentStatistics();
-    json[MessageKeys::FORWARD_PEAK_CURRENT] = forwardStatistics.peakCurrent;
-    json[MessageKeys::FORWARD_AVERAGE_CURRENT] = forwardStatistics.averageCurrent;
-    json[MessageKeys::FORWARD_CURRENT_NOW] = forwardStatistics.currentNow;
-    json[MessageKeys::FORWARD_AMP_HOURS] = forwardStatistics.ampHours;
-    json[MessageKeys::FORWARD_AMP_HOURS_CHARGED] = forwardStatistics.ampHoursCharged;
-
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
 
@@ -342,6 +332,9 @@ int Communicator::tunePidLoop()
 
 int Communicator::getSpeedMultipler()
 {
+    json[MessageKeys::COMMAND] = Messages::SPEED_MULTIPLIER;
+    json[MessageKeys::SHOE_ID] = shoeId;
+    json[MessageKeys::REPLY] = true;
     json[MessageKeys::SPEED_MULTIPLER] = shoeController->getSpeedMultiplier();
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
@@ -351,4 +344,27 @@ int Communicator::setSpeedMultipler()
     float multiplier = json[MessageKeys::SPEED_MULTIPLER];
     shoeController->setSpeedMultiplier(multiplier);
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+}
+
+int Communicator::getPowerStatistics()
+{
+    json[MessageKeys::COMMAND] = Messages::POWER_STATISTICS;
+    json[MessageKeys::SHOE_ID] = shoeId;
+    json[MessageKeys::REPLY] = true;
+
+    PowerStatistics sidewayStatistics = sensors->getPowerTracker()->getSidewayCurrentStatistics();
+    json[MessageKeys::SIDEWAY_PEAK_CURRENT] = roundFloatToTwoDecimalPlaces(sidewayStatistics.peakCurrent);
+    json[MessageKeys::SIDEWAY_AVERAGE_CURRENT] = roundFloatToTwoDecimalPlaces(sidewayStatistics.averageCurrent);
+    json[MessageKeys::SIDEWAY_CURRENT_NOW] = roundFloatToTwoDecimalPlaces(sidewayStatistics.currentNow);
+    json[MessageKeys::SIDEWAY_AMP_HOURS] = roundFloatToTwoDecimalPlaces(sidewayStatistics.ampHours);
+    json[MessageKeys::SIDEWAY_AMP_HOURS_CHARGED] = roundFloatToTwoDecimalPlaces(sidewayStatistics.ampHoursCharged);
+
+    PowerStatistics forwardStatistics = sensors->getPowerTracker()->getForwardCurrentStatistics();
+    json[MessageKeys::FORWARD_PEAK_CURRENT] = roundFloatToTwoDecimalPlaces(forwardStatistics.peakCurrent);
+    json[MessageKeys::FORWARD_AVERAGE_CURRENT] = roundFloatToTwoDecimalPlaces(forwardStatistics.averageCurrent);
+    json[MessageKeys::FORWARD_CURRENT_NOW] = roundFloatToTwoDecimalPlaces(forwardStatistics.currentNow);
+    json[MessageKeys::FORWARD_AMP_HOURS] = roundFloatToTwoDecimalPlaces(forwardStatistics.ampHours);
+    json[MessageKeys::FORWARD_AMP_HOURS_CHARGED] = roundFloatToTwoDecimalPlaces(forwardStatistics.ampHoursCharged);
+
+    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }

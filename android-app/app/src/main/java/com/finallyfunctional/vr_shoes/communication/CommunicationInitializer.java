@@ -72,6 +72,16 @@ public abstract class CommunicationInitializer
         float boost = settings.getDutyCycleBoost();
         communicator.setDutyCycleBoost(vrShoe1, boost);
         communicator.setDutyCycleBoost(vrShoe2, boost);
+
+        float speedMultiplier = settings.getSpeedMultiplier();
+        communicator.setSpeedMultiplier(vrShoe1, speedMultiplier);
+        communicator.setSpeedMultiplier(vrShoe2, speedMultiplier);
+
+        float kp = settings.getPidKp();
+        float ki = settings.getPidKi();
+        float kd = settings.getPidKd();
+        communicator.tunePidLoop(vrShoe1, kp, ki, kd);
+        communicator.tunePidLoop(vrShoe2, kp, ki, kd);
     }
 
     public static Communicator getCommunicator()

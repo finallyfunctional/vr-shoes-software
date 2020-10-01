@@ -31,7 +31,9 @@ class OmniPoweredWalking : public AutoShoeController
     bool compensateForForwardsArc;
     float backwardLimitForArcCompensation;
     float forwardLimitForArcCompensation;
-    const float ARC_DISTANCE_COMPENSATION = 0.02;
+    const float ARC_DISTANCE_COMPENSATION = 0.04;
+
+    const float MIN_SPEED = 0.2;
 };
 
 #endif

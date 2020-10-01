@@ -35,6 +35,10 @@ void Vesc::update()
     {
         updateSpeedUsingBoost();
     }
+    else if(pidLoop.ready()) 
+    {
+        updateSpeedUsingPidLoop();
+    }
     else 
     {
         updateSpeedUsingSimpleStepping();
@@ -48,8 +52,11 @@ void Vesc::updateStatistics()
     {
         peakCurrent = vescUart.data.avgMotorCurrent;
     }
-    currentSum += vescUart.data.avgMotorCurrent;
-    currentReadCount++;
+    if(vescUart.data.avgMotorCurrent != 0)
+    {
+        currentSum += vescUart.data.avgMotorCurrent;
+        currentReadCount++;
+    }
 }
 
 void Vesc::updateSpeedUsingBoost()

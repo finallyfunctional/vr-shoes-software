@@ -13,3 +13,4 @@ const String Messages::EXTRA_SENSOR_DATA = "esd";
 const String Messages::DUTY_CYCLE_BOOST = "dcb";
 const String Messages::TUNE_PID_LOOP = "tpl";
 const String Messages::SPEED_MULTIPLIER = "sm";
+const String Messages::POWER_STATISTICS = "ps";

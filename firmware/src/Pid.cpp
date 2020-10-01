@@ -21,3 +21,8 @@ float Pid::compute(float input, float setPoint)
   
     return kp * error + ki * errorSum + kd * dErr;
 }
+
+bool Pid::ready()
+{
+    return kp != 0;
+}

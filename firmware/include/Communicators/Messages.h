@@ -19,6 +19,7 @@ class Messages
     static const String DUTY_CYCLE_BOOST;
     static const String TUNE_PID_LOOP;
     static const String SPEED_MULTIPLIER;
+    static const String POWER_STATISTICS;
 };
 
 #endif

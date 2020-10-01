@@ -42,6 +42,7 @@ class Communicator
     int tunePidLoop();
     int setSpeedMultipler();
     int getSpeedMultipler();
+    int getPowerStatistics();
 
     static const char* SHOE_ID_KEY;
     static const String DEVICE_ID_PREFIX;
