@@ -21,6 +21,8 @@ class VescPair : public MovementTracker, public SpeedController, public PowerTra
     Vector2D getCurrentDutyCycle();
     void resetOrigin();
     void setRpm(float forwardRpm, float sidewayRpm);
+    void setForwardRpm(float rpm);
+    void setSidewayRpm(float rpm);
     void setForwardSpeed(float speed);
     void setSidewaySpeed(float speed);
     void inverseForwardDirection();

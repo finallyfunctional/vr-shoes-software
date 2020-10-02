@@ -44,6 +44,16 @@ void VescPair::setRpm(float forwardRpm, float sidewayRpm)
     sidewaysVesc->setRpm(sidewayRpm);
 }
 
+void VescPair::setForwardRpm(float rpm)
+{
+    forwardVesc->setRpm(rpm);
+}
+
+void VescPair::setSidewayRpm(float rpm)
+{
+    sidewaysVesc->setRpm(rpm);
+}
+
 void VescPair::setForwardSpeed(float speed)
 {
     forwardVesc->setSpeed(speed);

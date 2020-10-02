@@ -3,11 +3,12 @@
 
 #include <Arduino.h>
 #include "../Sensors/Sensors.h"
+#include "../ShoeSides.h"
 
 class AutoShoeController
 {
     public:
-    AutoShoeController(Sensors* sensors);
+    AutoShoeController(Sensors* sensors, int side);
     virtual void start();
     virtual void stop();
     virtual void update() = 0;
@@ -17,6 +18,7 @@ class AutoShoeController
     protected:
     bool started;
     Sensors* sensors;
+    int side;
     float speedMultiplier;
 };
 
