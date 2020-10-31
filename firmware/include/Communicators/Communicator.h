@@ -63,6 +63,7 @@ class Communicator
     virtual bool shouldForwardMessage() = 0;
     virtual void sendMessageTo(String sendingToDeviceId) = 0;
     int handleRecievedMessage(String message);
+    String cleanMessage(String message);
 
     String shoeId;
     String lastSensorDataMessageSent;

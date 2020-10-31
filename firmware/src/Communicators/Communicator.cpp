@@ -37,8 +37,36 @@ void Communicator::update()
     }
 }
 
+String Communicator::cleanMessage(String message)
+{
+    int jsonStart = -1;
+    int jsonEnd = -1;
+    for(int i = 0; i < message.length(); i++)
+    {
+        if(message[i] == '{')
+        {
+            jsonStart = i;
+            break;
+        }
+    }
+    for(int i = message.length() - 1; i >= jsonStart; i--)
+    {
+        if(message[i] == '}')
+        {
+            jsonEnd = i;
+            break;
+        }
+    }
+    if(jsonStart == -1 || jsonEnd == -1)
+    {
+        return "";
+    }
+    return message.substring(jsonStart, jsonEnd + 1);
+}
+
 int Communicator::handleRecievedMessage(String message)
 {
+    message = cleanMessage(message);
     json.clear();
     DeserializationError error = deserializeJson(json, message);
     if (error) 
