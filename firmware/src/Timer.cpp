@@ -1,5 +1,10 @@
 #include "../include/Timer.h"
 
+Timer::Timer()
+{
+    this->timeout = 0;
+}
+
 Timer::Timer(unsigned long timeout)
 {
     this->timeout = timeout;

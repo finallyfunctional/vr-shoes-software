@@ -7,6 +7,7 @@ class Timer
 {
     public:
 
+    Timer();
     Timer(unsigned long timeout);
     void start();
     bool timeIsUp();
