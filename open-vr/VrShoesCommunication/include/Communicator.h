@@ -1,5 +1,6 @@
 #pragma once
 
+#include <VrShoesCommunication.h>
 #include <ResponseCodes.h>
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
@@ -10,7 +11,7 @@
 
 using namespace rapidjson;
 
-class Communicator
+class VRSHOESCOMMUNICATION_API Communicator
 {
 public:
 	virtual void processMessages() = 0;
