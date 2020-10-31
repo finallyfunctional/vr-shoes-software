@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VrShoesCommunicationTester"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VrShoesCommunication", "VrShoesCommunication\VrShoesCommunication.vcxproj", "{BA960014-1D1F-4D8F-A2D4-6F68457F4203}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VrShoesOpenVrDriver", "VrShoesOpenVrDriver\VrShoesOpenVrDriver.vcxproj", "{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{BA960014-1D1F-4D8F-A2D4-6F68457F4203}.Release|x64.Build.0 = Release|x64
 		{BA960014-1D1F-4D8F-A2D4-6F68457F4203}.Release|x86.ActiveCfg = Release|Win32
 		{BA960014-1D1F-4D8F-A2D4-6F68457F4203}.Release|x86.Build.0 = Release|Win32
+		{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}.Debug|x64.ActiveCfg = Debug|x64
+		{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}.Debug|x64.Build.0 = Debug|x64
+		{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}.Debug|x86.ActiveCfg = Debug|Win32
+		{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}.Debug|x86.Build.0 = Debug|Win32
+		{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}.Release|x64.ActiveCfg = Release|x64
+		{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}.Release|x64.Build.0 = Release|x64
+		{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}.Release|x86.ActiveCfg = Release|Win32
+		{E9F07C0E-B5A2-4119-8473-BD3783CE73A0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

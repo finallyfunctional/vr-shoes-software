@@ -1,10 +1,10 @@
 #pragma once
 
 #include <VrShoesCommunication.h>
-#include <ResponseCodes.h>
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
+#include <ResponseCodes.h>
 #include <MessageKeys.h>
 #include <Messages.h>
 #include <VrShoe.h>
