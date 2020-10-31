@@ -17,12 +17,12 @@ void BtMessageReader::processMessagesFromSocket()
 		recievedMessage[messageIndex++] = recieveBuffer[i];
 		if (recieveBuffer[i] == MESSAGE_TERMINATOR)
 		{
-			char* message = new char[messageIndex + 2];
-			for (int i = 0; i < messageIndex + 1; i++)
+			char* message = new char[messageIndex + 1];
+			for (int j = 0; j < messageIndex + 1; j++)
 			{
-				message[i] = recievedMessage[i];
+				message[j] = recievedMessage[j];
 			}
-			message[messageIndex + 1] = '\0';
+			message[messageIndex] = '\0';
 			messageQueue.push(message);
 			messageIndex = 0;
 		}
