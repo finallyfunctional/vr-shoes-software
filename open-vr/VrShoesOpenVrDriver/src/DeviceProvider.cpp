@@ -8,10 +8,10 @@ EVRInitError DeviceProvider::Init(IVRDriverContext* pDriverContext)
         return initError;
     }
     
-    VRDriverLog()->Log("Initializing example controller"); //this is how you log out Steam's log file.
+    VRDriverLog()->Log("Initializing Finally Functional's VR Shoes");
 
     controllerDriver = new ControllerDriver();
-    VRServerDriverHost()->TrackedDeviceAdded("example_controller", TrackedDeviceClass_Controller, controllerDriver); //add all your devices like this.
+    VRServerDriverHost()->TrackedDeviceAdded("ffVrShoes_controller", TrackedDeviceClass_Controller, controllerDriver); 
 
     return vr::VRInitError_None;
 }

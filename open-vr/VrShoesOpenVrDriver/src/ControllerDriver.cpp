@@ -2,41 +2,29 @@
 
 EVRInitError ControllerDriver::Activate(uint32_t unObjectId)
 {
-	driverId = unObjectId; //unique ID for your driver
+	driverId = unObjectId;
 
-	PropertyContainerHandle_t props = VRProperties()->TrackedDeviceToPropertyContainer(driverId); //this gets a container object where you store all the information about your driver
+	PropertyContainerHandle_t props = VRProperties()->TrackedDeviceToPropertyContainer(driverId);
 
-	VRProperties()->SetStringProperty(props, Prop_InputProfilePath_String, "{example}/input/controller_profile.json"); //tell OpenVR where to get your driver's Input Profile
-	VRProperties()->SetInt32Property(props, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_Treadmill); //tells OpenVR what kind of device this is
+	VRProperties()->SetStringProperty(props, Prop_InputProfilePath_String, "{ffVrShoes}/input/ffVrShoes_profile.json"); 
+	VRProperties()->SetInt32Property(props, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_Treadmill); 
 	VRDriverInput()->CreateScalarComponent(props, "/input/joystick/y", &joystickYHandle, EVRScalarType::VRScalarType_Absolute,
-		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided); //sets up handler you'll use to send joystick commands to OpenVR with, in the Y direction (forward/backward)
+		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
 	VRDriverInput()->CreateScalarComponent(props, "/input/trackpad/y", &trackpadYHandle, EVRScalarType::VRScalarType_Absolute,
-		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided); //sets up handler you'll use to send trackpad commands to OpenVR with, in the Y direction
+		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
 	VRDriverInput()->CreateScalarComponent(props, "/input/joystick/x", &joystickXHandle, EVRScalarType::VRScalarType_Absolute,
-		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided); //Why VRScalarType_Absolute? Take a look at the comments on EVRScalarType.
+		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
 	VRDriverInput()->CreateScalarComponent(props, "/input/trackpad/x", &trackpadXHandle, EVRScalarType::VRScalarType_Absolute,
-		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided); //Why VRScalarUnits_NormalizedTwoSided? Take a look at the comments on EVRScalarUnits.
+		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
 	
-	//The following properites are ones I tried out because I saw them in other samples, but I found they were not needed to get the sample working.
-	//There are many samples, take a look at the openvr_header.h file. You can try them out.
-
-	//VRProperties()->SetUint64Property(props, Prop_CurrentUniverseId_Uint64, 2);
-	//VRProperties()->SetBoolProperty(props, Prop_HasControllerComponent_Bool, true);
-	//VRProperties()->SetBoolProperty(props, Prop_NeverTracked_Bool, true);
-	//VRProperties()->SetInt32Property(props, Prop_Axis0Type_Int32, k_eControllerAxis_TrackPad);
-	//VRProperties()->SetInt32Property(props, Prop_Axis2Type_Int32, k_eControllerAxis_Joystick);
 	//VRProperties()->SetStringProperty(props, Prop_SerialNumber_String, "example_controler_serial");
-	//VRProperties()->SetStringProperty(props, Prop_RenderModelName_String, "vr_controller_vive_1_5");
-	//uint64_t availableButtons = ButtonMaskFromId(k_EButton_SteamVR_Touchpad) |
-	//	ButtonMaskFromId(k_EButton_IndexController_JoyStick);
-	//VRProperties()->SetUint64Property(props, Prop_SupportedButtons_Uint64, availableButtons);
 
 	return VRInitError_None;
 }
 
 DriverPose_t ControllerDriver::GetPose()
 {
-	DriverPose_t pose = { 0 }; //This example doesn't use Pose, so this method is just returning a default Pose.
+	DriverPose_t pose = { 0 };
 	pose.poseIsValid = false;
 	pose.result = TrackingResult_Calibrating_OutOfRange;
 	pose.deviceIsConnected = true;
