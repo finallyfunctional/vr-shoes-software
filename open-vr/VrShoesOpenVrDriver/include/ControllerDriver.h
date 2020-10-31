@@ -10,53 +10,35 @@
 
 using namespace vr;
 
-/**
-Configures the behavior of the device. Sends state changes 
-to OpenVR every frame.
-**/
 class ControllerDriver : public ITrackedDeviceServerDriver
 {
 public:
 
-	/**
-	Initializes this driver. Sets up OpenVR configurations 
-	and connects to VR shoes.
-	**/
 	EVRInitError Activate(uint32_t unObjectId);
-
-	/**
-	Un-initialize the controller.
-	**/
 	void Deactivate();
-
-	/**
-	Tells VR shoes to go into standby mode.
-	**/
 	void EnterStandby();
-
-	/**
-	Returns this class as an input device.
-	**/
+	void LeaveStandby();
 	void* GetComponent(const char* pchComponentNameAndVersion);
-
 	void DebugRequest(const char* pchRequest, char* pchResponseBuffer, uint32_t unResponseBufferSize);
-
-	/**
-	Returns a default Pose. VR shoes do not use Pose.
-	**/
 	DriverPose_t GetPose();
-
-	/**
-	Retrieves VR shoe state information and updates Open VR with any state changes.
-	**/
 	void RunFrame();
 
 private:
+	EVRInitError InitializeVrShoeCommunication();
+	EVRInitError InitializeOpenVrConfigurations(uint32_t unObjectId);
+	float GetYSpeed(VrShoe* vrShoe);
 
 	uint32_t driverId;
 	VRInputComponentHandle_t joystickYHandle;
 	VRInputComponentHandle_t trackpadYHandle;
 	VRInputComponentHandle_t joystickXHandle;
 	VRInputComponentHandle_t trackpadXHandle;
+
+	Communicator* communicator;
+	VrShoe* vrShoe1;
+	VrShoe* vrShoe2;
+
+	static const float MIN_SHOE_ABS_SPEED;
+	static const float Y_JOYSTICK_ABS_SPEED;
 
 };

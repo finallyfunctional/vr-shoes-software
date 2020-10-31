@@ -1,13 +1,37 @@
 #include <ControllerDriver.h>
 
+const float ControllerDriver::MIN_SHOE_ABS_SPEED = 0.1f;
+const float ControllerDriver::Y_JOYSTICK_ABS_SPEED = 1.0f;
+
 EVRInitError ControllerDriver::Activate(uint32_t unObjectId)
+{
+	InitializeVrShoeCommunication();
+	InitializeOpenVrConfigurations(unObjectId);
+}
+
+EVRInitError ControllerDriver::InitializeVrShoeCommunication()
+{
+	CommunicationInitializer* communicationInitializer = new BtCommunicationInitializer();
+	if (!communicationInitializer->initialize())
+	{
+		VRDriverLog()->Log("There was an error setting up BT communication");
+		return VRInitError_Unknown;
+	}
+	VRDriverLog()->Log("BT communication initialized");
+	vrShoe1 = communicationInitializer->getVrShoe1();
+	vrShoe2 = communicationInitializer->getVrShoe2();
+	communicator = communicationInitializer->getCommunicator();
+}
+
+EVRInitError ControllerDriver::InitializeOpenVrConfigurations(uint32_t unObjectId)
 {
 	driverId = unObjectId;
 
 	PropertyContainerHandle_t props = VRProperties()->TrackedDeviceToPropertyContainer(driverId);
 
-	VRProperties()->SetStringProperty(props, Prop_InputProfilePath_String, "{ffVrShoes}/input/ffVrShoes_profile.json"); 
-	VRProperties()->SetInt32Property(props, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_Treadmill); 
+	VRProperties()->SetStringProperty(props, Prop_InputProfilePath_String, "{ffVrShoes}/input/ffVrShoes_profile.json");
+	VRProperties()->SetInt32Property(props, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_Treadmill);
+	VRProperties()->SetStringProperty(props, Prop_SerialNumber_String, "ffVrShoes");
 	VRDriverInput()->CreateScalarComponent(props, "/input/joystick/y", &joystickYHandle, EVRScalarType::VRScalarType_Absolute,
 		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
 	VRDriverInput()->CreateScalarComponent(props, "/input/trackpad/y", &trackpadYHandle, EVRScalarType::VRScalarType_Absolute,
@@ -16,8 +40,6 @@ EVRInitError ControllerDriver::Activate(uint32_t unObjectId)
 		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
 	VRDriverInput()->CreateScalarComponent(props, "/input/trackpad/x", &trackpadXHandle, EVRScalarType::VRScalarType_Absolute,
 		EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
-	
-	//VRProperties()->SetStringProperty(props, Prop_SerialNumber_String, "example_controler_serial");
 
 	return VRInitError_None;
 }
@@ -41,13 +63,42 @@ DriverPose_t ControllerDriver::GetPose()
 	return pose;
 }
 
+//Y is forward/backward, X is sideways
 void ControllerDriver::RunFrame()
 {
-	//Since we used VRScalarUnits_NormalizedTwoSided as the unit, the range is -1 to 1.
-	VRDriverInput()->UpdateScalarComponent(joystickYHandle, 0.95f, 0); //move forward
-	VRDriverInput()->UpdateScalarComponent(trackpadYHandle, 0.95f, 0); //move foward
-	VRDriverInput()->UpdateScalarComponent(joystickXHandle, 0.0f, 0); //change the value to move sideways
-	VRDriverInput()->UpdateScalarComponent(trackpadXHandle, 0.0f, 0); //change the value to move sideways
+	communicator->processMessages();
+	
+	float ySpeed = GetYSpeed(vrShoe1);
+	if (ySpeed == 0)
+	{
+		ySpeed = GetYSpeed(vrShoe2);
+	}
+
+	VRDriverInput()->UpdateScalarComponent(joystickYHandle, ySpeed, 0);
+	VRDriverInput()->UpdateScalarComponent(trackpadYHandle, ySpeed, 0);
+
+	VRDriverInput()->UpdateScalarComponent(joystickXHandle, 0.0f, 0);
+	VRDriverInput()->UpdateScalarComponent(trackpadXHandle, 0.0f, 0);
+}
+
+float ControllerDriver::GetYSpeed(VrShoe* vrShoe)
+{
+	if (!vrShoe->frontButtonPressed || !vrShoe->rearButtonPressed)
+	{
+		return 0;
+	}
+	if (fabs(vrShoe->forwardSpeed) >= MIN_SHOE_ABS_SPEED)
+	{
+		if (vrShoe->forwardSpeed > 0)
+		{
+			return Y_JOYSTICK_ABS_SPEED;
+		}
+		else
+		{
+			return Y_JOYSTICK_ABS_SPEED * -1;
+		}
+	}
+	return 0;
 }
 
 void ControllerDriver::Deactivate()
@@ -57,11 +108,6 @@ void ControllerDriver::Deactivate()
 
 void* ControllerDriver::GetComponent(const char* pchComponentNameAndVersion)
 {
-	//I found that if this method just returns null always, it works fine. But I'm leaving the if statement in since it doesn't 
-	//hurt.
-	//Check out the IVRDriverInput_Version declaration in openvr_driver.h. You can search that file for other _Version declarations 
-	//to see other components that are available. You could also put a log in this class and output the value passed into this 
-	//method to see what OpenVR is looking for.
 	if (strcmp(IVRDriverInput_Version, pchComponentNameAndVersion) == 0)
 	{
 		return this;
@@ -69,7 +115,17 @@ void* ControllerDriver::GetComponent(const char* pchComponentNameAndVersion)
 	return NULL;
 }
 
-void ControllerDriver::EnterStandby() {}
+void ControllerDriver::EnterStandby() 
+{
+	communicator->stopAlgorithm(vrShoe1->deviceId);
+	communicator->stopAlgorithm(vrShoe2->deviceId);
+}
+
+void ControllerDriver::LeaveStandby()
+{
+	communicator->startAlgorithm(vrShoe1->deviceId);
+	communicator->startAlgorithm(vrShoe2->deviceId);
+}
 
 void ControllerDriver::DebugRequest(const char* pchRequest, char* pchResponseBuffer, uint32_t unResponseBufferSize) 
 {

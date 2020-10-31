@@ -36,6 +36,12 @@ bool DeviceProvider::ShouldBlockStandbyMode()
     return false;
 }
 
-void DeviceProvider::EnterStandby() {}
+void DeviceProvider::EnterStandby() 
+{
+    controllerDriver->EnterStandby();
+}
 
-void DeviceProvider::LeaveStandby() {}
+void DeviceProvider::LeaveStandby() 
+{
+    controllerDriver->LeaveStandby();
+}

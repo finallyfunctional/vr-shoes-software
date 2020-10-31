@@ -33,10 +33,10 @@
   <ItemGroup>
     <None Include="include\openvr_api.cs" />
     <None Include="include\openvr_api.json" />
-    <None Include="resources\controller_profile.json" />
+    <None Include="resources\ffVrShoes_profile.json" />
     <None Include="resources\driver.vrdrivermanifest" />
     <None Include="resources\game_controller.svg" />
-    <None Include="resources\legacy_bindings_example.json" />
+    <None Include="resources\legacy_bindings_ffVrShoes.json" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\openvr_api.lib" />
