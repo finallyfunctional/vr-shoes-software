@@ -58,6 +58,8 @@ int main()
     VrShoe prevVrShoe1 = VrShoe();
     VrShoe prevVrShoe2 = VrShoe();
 
+    communicator->startAlgorithm(vrShoe1->deviceId);
+    communicator->startAlgorithm(vrShoe2->deviceId);
     while (true)
     {
         communicator->processMessages();
