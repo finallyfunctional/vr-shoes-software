@@ -2,8 +2,6 @@
 #include <BtCommunicationInitializer.h>
 #include <Communicator.h>
 #include <VrShoe.h>
-#include <thread>
-#include <chrono>
 
 void printVrShoeStateChanges(VrShoe prevVrShoe, VrShoe vrShoe)
 {
