@@ -37,6 +37,7 @@ void BluetoothCommunicator::initializeCommunication()
             Serial.println(otherShoeId);
         }
     }
+    serialBt.setTimeout(10);
 }
 
 int BluetoothCommunicator::setCommunicationMode()
