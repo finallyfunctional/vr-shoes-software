@@ -102,11 +102,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>../VrShoesCommunication/include;include;$(IncludePath)</IncludePath>
     <LibraryPath>lib;$(LibraryPath)</LibraryPath>
+    <TargetName>ffVrShoes_driver</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>../VrShoesCommunication/include;include;$(IncludePath)</IncludePath>
     <LibraryPath>lib;$(LibraryPath)</LibraryPath>
+    <TargetName>ffVrShoes_driver</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -118,6 +120,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>../VrShoesCommunication/include;include;$(IncludePath)</IncludePath>
     <LibraryPath>lib;$(LibraryPath)</LibraryPath>
+    <TargetName>ffVrShoes_driver</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -189,6 +192,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)$(Platform)\$(Configuration)\$(TargetName).dll" "$(SolutionDir)ffVrShoes\bin\win64\$(TargetName).dll"
+copy /Y "$(ProjectDir)resources\driver.vrdrivermanifest" "$(SolutionDir)ffVrShoes\driver.vrdrivermanifest"
+copy /Y "$(ProjectDir)resources\ffVrShoes_profile.json" "$(SolutionDir)ffVrShoes\resources\input\ffVrShoes_profile.json"
+copy /Y "$(ProjectDir)resources\legacy_bindings_ffVrShoes.json" "$(SolutionDir)ffVrShoes\resources\input\legacy_bindings_ffVrShoes.json"
+copy /Y "$(ProjectDir)resources\game_controller.svg" "$(SolutionDir)ffVrShoes\resources\icons\game_controller.svg"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
