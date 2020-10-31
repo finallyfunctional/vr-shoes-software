@@ -5,8 +5,12 @@ const float ControllerDriver::Y_JOYSTICK_ABS_SPEED = 1.0f;
 
 EVRInitError ControllerDriver::Activate(uint32_t unObjectId)
 {
-	InitializeVrShoeCommunication();
-	InitializeOpenVrConfigurations(unObjectId);
+	EVRInitError error = InitializeVrShoeCommunication();
+	if (error != VRInitError_None)
+	{
+		return error;
+	}
+	return InitializeOpenVrConfigurations(unObjectId);
 }
 
 EVRInitError ControllerDriver::InitializeVrShoeCommunication()
@@ -21,6 +25,7 @@ EVRInitError ControllerDriver::InitializeVrShoeCommunication()
 	vrShoe1 = communicationInitializer->getVrShoe1();
 	vrShoe2 = communicationInitializer->getVrShoe2();
 	communicator = communicationInitializer->getCommunicator();
+	return VRInitError_None;
 }
 
 EVRInitError ControllerDriver::InitializeOpenVrConfigurations(uint32_t unObjectId)
