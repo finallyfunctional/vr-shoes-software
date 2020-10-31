@@ -53,7 +53,13 @@ void BtCommunicator::sendMessageTo(const char* sendingToDeviceId, const char* me
     {
         return;
     }
-    int sendResult = send(btSocket, message, strlen(message), 0);
+    int messageLength = strlen(message);
+    int messageWithTerminatorLength = messageLength + 2;
+    char* messageWithTerminator = new char[messageWithTerminatorLength];
+    strcpy_s(messageWithTerminator, messageWithTerminatorLength, message);
+    messageWithTerminator[messageLength] = '\n';
+    messageWithTerminator[messageLength + 1] = '\0';
+    int sendResult = send(btSocket, messageWithTerminator, messageWithTerminatorLength, 0);
     if (sendResult == SOCKET_ERROR)
     {
         wprintf(L"Sending BT message failed. Error code %d\r\n", WSAGetLastError());
