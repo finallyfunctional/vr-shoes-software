@@ -18,7 +18,7 @@ public:
     static const char* OTHER_SHOE_ID;
     static const char* REMOTE_NAME;
     static const char* SUCCESS;
-    static const char* ERROR;
+    static const char* VR_SHOE_ERROR;
     static const char* GET;
     static const char* MODE;
     static const char* SIDE;
