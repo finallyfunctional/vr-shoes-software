@@ -9,4 +9,7 @@
 .vscode/launch.json
 .vscode/ipch
 
+open-vr/ffVrShoes/**/*.*
 !open-vr/ffVrShoes/bin/win64/.gitkeep
+!open-vr/ffVrShoes/resources/input/.gitkeep
+!open-vr/ffVrShoes/resources/icons/.gitkeep
