@@ -22,6 +22,8 @@ class Sensors
     SpeedController* getSpeedController();
     RemoteVrShoe* getRemoteVrShoe();
     PowerTracker* getPowerTracker();
+    Button* getFrontButton();
+    Button* getRearButton();
 
     private:
     Button* frontButton;

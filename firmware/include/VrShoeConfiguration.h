@@ -7,8 +7,7 @@
 #include "./Communicators/Bluetooth/BluetoothCommunicator.h"
 #include "./Communicators/CommunicatorTypes.h"
 #include "./Sensors/Buttons/Button.h"
-#include "./Sensors/Buttons/ButtonTypes.h"
-#include "./Sensors/Buttons/AdafruitMiniSoftTouchButton.h"
+#include "./Sensors/Buttons/LinearHallEffectSensorButton.h"
 #include "./Sensors/Sensors.h"
 #include "./Sensors/VescPair.h"
 #include "./Sensors/Vesc.h"
@@ -35,9 +34,8 @@ class VrShoeConfiguration
     AutoShoeController* shoeController;
 
     static const char* COMMUNICATOR_TYPE_KEY;
-    static const char* BUTTONS_TYPE_KEY;
-    static const int FRONT_BUTTON_PIN = 5;
-    static const int REAR_BUTTON_PIN = 4;
+    static const int FRONT_BUTTON_PIN = 36;
+    static const int REAR_BUTTON_PIN = 39;
 
 };
 

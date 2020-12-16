@@ -3,7 +3,9 @@ package com.finallyfunctional.vr_shoes.communication;
 import android.util.Pair;
 
 import com.finallyfunctional.vr_shoes.VrShoe;
+import com.finallyfunctional.vr_shoes.communication.commands.ButtonValues;
 import com.finallyfunctional.vr_shoes.communication.commands.CommandConstants;
+import com.finallyfunctional.vr_shoes.communication.commands.ConfigureButtons;
 import com.finallyfunctional.vr_shoes.communication.commands.DutyCycleBoost;
 import com.finallyfunctional.vr_shoes.communication.commands.ExtraSensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.OtherShoeId;
@@ -219,6 +221,14 @@ public abstract class Communicator
         shoe.setSide(shoeSide.si);
     }
 
+    private void readButtonValues(VrShoe shoe, ButtonValues values)
+    {
+        for(ICommunicatorObserver observer : observers)
+        {
+            observer.buttonValuesRead(shoe, values.fbpv, values.rbpv, values.bmd);
+        }
+    }
+
     private void writeMessage(VrShoe vrShoe, String message) throws IOException
     {
         if(message.charAt(message.length() - 1) != MESSAGE_TERMINATOR)
@@ -369,6 +379,22 @@ public abstract class Communicator
     {
         PowerStatistics command = new PowerStatistics();
         command.d = vrShoe.getDeviceId();
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+    }
+
+    public void configureButtons(
+            VrShoe vrShoe,
+            int buttonMaxDifference)
+    {
+        ConfigureButtons command = new ConfigureButtons();
+        command.bmd = buttonMaxDifference;
+        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
+    }
+
+    public void getButtonValues(VrShoe vrShoe)
+    {
+        ButtonValues command = new ButtonValues();
+        command.id = vrShoe.getDeviceId();
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
     }
 

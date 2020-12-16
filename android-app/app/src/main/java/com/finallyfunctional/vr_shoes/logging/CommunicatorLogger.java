@@ -29,4 +29,10 @@ public class CommunicatorLogger implements ICommunicatorObserver
     {
 
     }
+
+    @Override
+    public void buttonValuesRead(VrShoe vrShoe, int frontButtonValue, int rearButtonValue, int maxDifference)
+    {
+
+    }
 }

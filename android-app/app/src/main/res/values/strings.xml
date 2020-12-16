@@ -58,4 +58,8 @@
     <string name="speeds">Speeds</string>
     <string name="actual_speed">Actual Speed</string>
     <string name="desired_speed">Desired Speed</string>
+    <string name="front_button_value">Front Button Value</string>
+    <string name="rear_button_value">Rear Button Value</string>
+    <string name="button_max_difference">Percentage Max Difference</string>
+    <string name="configure_buttons">Configure Buttons</string>
 </resources>

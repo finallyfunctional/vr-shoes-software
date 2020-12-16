@@ -13,7 +13,7 @@
         <activity android:name=".ui.SettingsActivity" />
         <activity android:name=".ui.ManualControlActivity" />
         <activity android:name=".ui.MovementDiagnosticsActivity" />
-        <activity android:name=".ui.ButtonsDiagnosticsActivity" />
+        <activity android:name=".ui.ConfigureButtonsActivity" />
         <activity android:name=".ui.MonitorActivity" />
         <activity android:name=".ui.DiagnosticsActivity" />
         <activity android:name=".ui.PairVrShoesActivity" />

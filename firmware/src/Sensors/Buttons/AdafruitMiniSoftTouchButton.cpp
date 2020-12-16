@@ -14,3 +14,21 @@ bool AdafruitMiniSoftTouchButton::isPressed()
 {
     return digitalRead(buttonPin) == LOW;
 }
+
+void AdafruitMiniSoftTouchButton::setPressedValue()
+{
+}
+
+int AdafruitMiniSoftTouchButton::getPressedValue()
+{
+    return isPressed() ? 1 : 0;
+}
+
+void AdafruitMiniSoftTouchButton::setMaxDifferencePercentage(int diffPercentage)
+{
+}
+
+int AdafruitMiniSoftTouchButton::getMaxDifferencePercentage()
+{
+    return 0;
+}

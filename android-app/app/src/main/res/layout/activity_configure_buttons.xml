@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ConfigureButtonsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/configureButtonsVrShoe1Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/configureButtonsVrShoe1FrontBtnPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/front_button_pressed"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/configureButtonsVrShoe1RearBtnPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rear_button_pressed"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/configButtonsVrShoe1FrontBtnValueLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/front_button_value"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/configButtonsVrShoe1RearBtnValueLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rear_button_value"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/configButtonsVrShoe1MaxDifferenceLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_max_difference"
+            android:textSize="24sp"/>
+
+        <EditText
+            android:id="@+id/configButtonsVrShoe1MaxDifferenceValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:autofillHints="@string/button_max_difference"
+            android:hint="@string/button_max_difference"/>
+
+        <TextView
+            android:id="@+id/configButtonsVrShoe1FrontBtnValue"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text=""
+            android:textSize="24sp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/configureButtonsVrShoe2Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/configureButtonsVrShoe2FrontBtnPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/front_button_pressed"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/configureButtonsVrShoe2RearBtnPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rear_button_pressed"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/configButtonsVrShoe2FrontBtnValueLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/front_button_value"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/configButtonsVrShoe2RearBtnValueLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rear_button_value"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/configButtonsVrShoe2MaxDifferenceLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_max_difference"
+            android:textSize="24sp"/>
+
+        <EditText
+            android:id="@+id/configButtonsVrShoe2MaxDifferenceValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:autofillHints="@string/button_max_difference"
+            android:hint="@string/button_max_difference"/>
+
+        <TextView
+            android:id="@+id/configButtonsVrShoe2FrontBtnValue"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text=""
+            android:textSize="24sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/configureButtonsCalibrateBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="CalibrateBtnClicked"
+            android:text="@string/configure_buttons" />
+
+        <Button
+            android:id="@+id/configureButtonsBackBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="BackBtnClicked"
+            android:text="@string/back" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

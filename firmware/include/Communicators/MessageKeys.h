@@ -44,6 +44,9 @@ class MessageKeys
     static const String FORWARD_AMP_HOURS;
     static const String FORWARD_AMP_HOURS_CHARGED;
     static const String SPEED_MULTIPLER;
+    static const String FRONT_BUTTON_PRESSED_VALUE;
+    static const String REAR_BUTTON_PRESSED_VALUE;
+    static const String BUTTON_MAX_DIFFERENCE;
 };
 
 #endif
