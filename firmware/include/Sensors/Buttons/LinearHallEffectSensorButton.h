@@ -1,14 +1,13 @@
-#ifndef AdafruitMiniSoftTouchButton_h
-#define AdafruitMiniSoftTouchButton_h
+#ifndef LinearHallEffectSensorButton_h
+#define LinearHallEffectSensorButton_h
 
 #include <Arduino.h>
 #include "Button.h"
 
-//https://www.adafruit.com/product/3983
-class AdafruitMiniSoftTouchButton : public Button 
+class LinearHallEffectSensorButton : public Button
 {
     public:
-    AdafruitMiniSoftTouchButton(int buttonPin);
+    LinearHallEffectSensorButton(int pin, int pressedValue);
     void initialize();
     bool isPressed();
     void setPressedValue();
@@ -19,6 +18,8 @@ class AdafruitMiniSoftTouchButton : public Button
 
     private:
     int buttonPin;
+    int pressedValue;
+    int percentageDiff;
 };
 
 #endif

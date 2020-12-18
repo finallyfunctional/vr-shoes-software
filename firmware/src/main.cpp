@@ -46,6 +46,9 @@ void setup()
     0);                                 
 }
 
+int prevSensor1Value;
+int prevSensor2Value;
+
 void loop() 
 {
   TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;

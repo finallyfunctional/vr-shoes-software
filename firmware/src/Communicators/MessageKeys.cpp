@@ -38,3 +38,6 @@ const String MessageKeys::FORWARD_AVERAGE_CURRENT = "fac";
 const String MessageKeys::FORWARD_AMP_HOURS = "fah";
 const String MessageKeys::FORWARD_AMP_HOURS_CHARGED = "fahc";
 const String MessageKeys::SPEED_MULTIPLER = "spm";
+const String MessageKeys::FRONT_BUTTON_PRESSED_VALUE = "fbpv";
+const String MessageKeys::REAR_BUTTON_PRESSED_VALUE = "rbpv";
+const String MessageKeys::BUTTON_MAX_DIFFERENCE = "bmd";

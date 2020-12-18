@@ -160,6 +160,14 @@ int Communicator::handleRecievedMessage(String message)
     {
         return getPowerStatistics();
     }
+    else if(commandId.equals(Messages::CONFIGURE_BUTTONS))
+    {
+        return configureButtons();
+    }
+    else if(commandId.equals(Messages::BUTTON_VALUES))
+    {
+        return sendButtonValues();
+    }
     else
     {
         int implResponse = handleImplementationSpecificMessage(commandId);
@@ -393,6 +401,39 @@ int Communicator::getPowerStatistics()
     json[MessageKeys::FORWARD_CURRENT_NOW] = roundFloatToTwoDecimalPlaces(forwardStatistics.currentNow);
     json[MessageKeys::FORWARD_AMP_HOURS] = roundFloatToTwoDecimalPlaces(forwardStatistics.ampHours);
     json[MessageKeys::FORWARD_AMP_HOURS_CHARGED] = roundFloatToTwoDecimalPlaces(forwardStatistics.ampHoursCharged);
+
+    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
+}
+
+int Communicator::configureButtons()
+{
+    int maxDiff = json[MessageKeys::BUTTON_MAX_DIFFERENCE];
+    Button* frontBtn = sensors->getFrontButton();
+    Button* rearBtn = sensors->getRearButton();
+
+    frontBtn->setPressedValue();
+    frontBtn->setMaxDifferencePercentage(maxDiff);
+    rearBtn->setPressedValue();
+    rearBtn->setMaxDifferencePercentage(maxDiff);
+
+    VrShoePreferences.putInt(Button::FRONT_BUTTON_PRESSED_VALUE_KEY, frontBtn->getPressedValue());
+    VrShoePreferences.putInt(Button::REAR_BUTTON_PRESSED_VALUE_KEY, rearBtn->getPressedValue());
+    VrShoePreferences.putInt(Button::MAX_DIFF_VALUE_KEY, maxDiff);
+
+    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
+}
+
+int Communicator::sendButtonValues()
+{
+    Button* frontBtn = sensors->getFrontButton();
+    Button* rearBtn = sensors->getRearButton();
+
+    json[MessageKeys::COMMAND] = Messages::BUTTON_VALUES;
+    json[MessageKeys::SHOE_ID] = shoeId;
+    json[MessageKeys::REPLY] = true;
+    json[MessageKeys::FRONT_BUTTON_PRESSED_VALUE] = frontBtn->getCurrentValue();
+    json[MessageKeys::REAR_BUTTON_PRESSED_VALUE] = rearBtn->getCurrentValue();
+    json[MessageKeys::BUTTON_MAX_DIFFERENCE] = frontBtn->getMaxDifferencePercentage();
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }

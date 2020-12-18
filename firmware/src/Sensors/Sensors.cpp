@@ -45,3 +45,13 @@ PowerTracker* Sensors::getPowerTracker()
 {
     return powerTracker;
 }
+
+Button* Sensors::getFrontButton()
+{
+    return frontButton;
+}
+
+Button* Sensors::getRearButton()
+{
+    return rearButton;
+}

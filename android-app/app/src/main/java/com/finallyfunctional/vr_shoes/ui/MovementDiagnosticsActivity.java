@@ -153,5 +153,11 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
                 });
             }
         }
+
+        @Override
+        public void buttonValuesRead(VrShoe vrShoe, int frontButtonValue, int rearButtonValue, int maxDifference)
+        {
+
+        }
     }
 }

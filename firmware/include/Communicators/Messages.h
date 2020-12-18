@@ -20,6 +20,8 @@ class Messages
     static const String TUNE_PID_LOOP;
     static const String SPEED_MULTIPLIER;
     static const String POWER_STATISTICS;
+    static const String CONFIGURE_BUTTONS;
+    static const String BUTTON_VALUES;
 };
 
 #endif

@@ -15,6 +15,7 @@
 #include "../AutoShoeControllers/AutoShoeController.h"
 #include "../Sensors/PowerStatistics.h"
 #include "../Sensors/PowerTracker.h"
+#include "../Sensors/Buttons/Button.h"
 
 class Communicator
 {
@@ -43,6 +44,8 @@ class Communicator
     int setSpeedMultipler();
     int getSpeedMultipler();
     int getPowerStatistics();
+    int configureButtons();
+    int sendButtonValues();
 
     static const char* SHOE_ID_KEY;
     static const String DEVICE_ID_PREFIX;
