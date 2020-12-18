@@ -34,7 +34,7 @@ class VrShoeConfiguration
     AutoShoeController* shoeController;
 
     static const char* COMMUNICATOR_TYPE_KEY;
-    static const int FRONT_BUTTON_PIN = 36;
+    static const int FRONT_BUTTON_PIN = 35;
     static const int REAR_BUTTON_PIN = 39;
 
 };

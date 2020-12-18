@@ -13,6 +13,7 @@ class AdafruitMiniSoftTouchButton : public Button
     bool isPressed();
     void setPressedValue();
     int getPressedValue();
+    int getCurrentValue();
     void setMaxDifferencePercentage(int diffPercentage);
     int getMaxDifferencePercentage();
 

@@ -8,6 +8,7 @@ class Button
     virtual bool isPressed() = 0;
     virtual void setPressedValue() = 0;
     virtual int getPressedValue() = 0;
+    virtual int getCurrentValue() = 0;
     virtual void setMaxDifferencePercentage(int diffPercentage) = 0;
     virtual int getMaxDifferencePercentage() = 0;
 

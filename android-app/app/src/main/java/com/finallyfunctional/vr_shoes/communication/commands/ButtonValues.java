@@ -2,7 +2,7 @@ package com.finallyfunctional.vr_shoes.communication.commands;
 
 public class ButtonValues
 {
-    public static final String COMMAND = "bv";
+    public static final String BUTTON_VALUES_COMMAND = "bv";
 
     public String c; //command
     public String id; //shoe ID
@@ -12,6 +12,6 @@ public class ButtonValues
 
     public ButtonValues()
     {
-        c = COMMAND;
+        c = BUTTON_VALUES_COMMAND;
     }
 }

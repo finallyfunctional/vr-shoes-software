@@ -8,13 +8,13 @@ LinearHallEffectSensorButton::LinearHallEffectSensorButton(int pin, int pressedV
 
 void LinearHallEffectSensorButton::initialize()
 {
-
+    
 }
 
 bool LinearHallEffectSensorButton::isPressed()
 {
     int currentValue = analogRead(buttonPin);
-    int currentDiffPercentage = abs(currentValue - pressedValue) / ((currentValue + pressedValue) / 2) * 100;
+    int currentDiffPercentage = ((float) abs(currentValue - pressedValue)) / ((float)(currentValue + pressedValue) / 2) * 100;
     return currentDiffPercentage <= percentageDiff;
 }
 
@@ -26,6 +26,11 @@ void LinearHallEffectSensorButton::setPressedValue()
 int LinearHallEffectSensorButton::getPressedValue()
 {
     return this->pressedValue;
+}
+
+int LinearHallEffectSensorButton::getCurrentValue()
+{
+    return analogRead(buttonPin);
 }
 
 void LinearHallEffectSensorButton::setMaxDifferencePercentage(int diffPercentage)

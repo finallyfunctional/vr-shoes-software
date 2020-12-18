@@ -62,4 +62,5 @@
     <string name="rear_button_value">Rear Button Value</string>
     <string name="button_max_difference">Percentage Max Difference</string>
     <string name="configure_buttons">Configure Buttons</string>
+    <string name="configure_buttons_btn_text">Configure Pressed Values</string>
 </resources>

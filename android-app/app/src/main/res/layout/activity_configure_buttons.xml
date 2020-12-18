@@ -41,25 +41,10 @@
         <TextView
             android:id="@+id/configButtonsVrShoe1RearBtnValueLabel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:text="@string/rear_button_value"
-            android:textSize="24sp"/>
-
-        <TextView
-            android:id="@+id/configButtonsVrShoe1MaxDifferenceLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/button_max_difference"
-            android:textSize="24sp"/>
-
-        <EditText
-            android:id="@+id/configButtonsVrShoe1MaxDifferenceValue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            android:autofillHints="@string/button_max_difference"
-            android:hint="@string/button_max_difference"/>
+            android:textSize="24sp"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/configButtonsVrShoe1FrontBtnValue"
@@ -99,16 +84,17 @@
         <TextView
             android:id="@+id/configButtonsVrShoe2RearBtnValueLabel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:text="@string/rear_button_value"
-            android:textSize="24sp"/>
+            android:textSize="24sp"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/configButtonsVrShoe2MaxDifferenceLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/button_max_difference"
-            android:textSize="24sp"/>
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/configButtonsVrShoe2MaxDifferenceValue"
@@ -116,23 +102,23 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="number"
-            android:autofillHints="@string/button_max_difference"
-            android:hint="@string/button_max_difference"/>
+            android:autofillHints="0"
+            android:hint="0"/>
 
         <TextView
             android:id="@+id/configButtonsVrShoe2FrontBtnValue"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:text=""
             android:textSize="24sp"
-            android:layout_weight="1"/>
+            />
 
         <Button
             android:id="@+id/configureButtonsCalibrateBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="CalibrateBtnClicked"
-            android:text="@string/configure_buttons" />
+            android:text="@string/configure_buttons_btn_text" />
 
         <Button
             android:id="@+id/configureButtonsBackBtn"

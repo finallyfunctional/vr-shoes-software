@@ -33,7 +33,6 @@ public class ConfigureButtonsActivity extends AppCompatActivity
         TextView vrShoe1RearButtonPressed = findViewById(R.id.configureButtonsVrShoe1RearBtnPressedLabel);
         TextView vrShoe1FrontButtonValue = findViewById(R.id.configButtonsVrShoe1FrontBtnValueLabel);
         TextView vrShoe1RearButtonValue = findViewById(R.id.configButtonsVrShoe1RearBtnValueLabel);
-        EditText vrShoe1MaxDifferenceValue = findViewById(R.id.configButtonsVrShoe1MaxDifferenceValue);
 
         TextView vrShoe2Header = findViewById(R.id.configureButtonsVrShoe2Header);
         TextView vrShoe2FrontButtonPressed = findViewById(R.id.configureButtonsVrShoe2FrontBtnPressedLabel);
@@ -46,7 +45,7 @@ public class ConfigureButtonsActivity extends AppCompatActivity
         diagnosticsForShoe1 = new ButtonDiagnosticsForShoe(this,
                 communicator, vrShoe1Header, vrShoe1FrontButtonPressed,
                 vrShoe1RearButtonPressed, vrShoe1FrontButtonValue, vrShoe1RearButtonValue,
-                vrShoe1MaxDifferenceValue, communicator.getVrShoe1());
+                vrShoe2MaxDifferenceValue, communicator.getVrShoe1());
         diagnosticsForShoe2 = new ButtonDiagnosticsForShoe(this,
                 communicator, vrShoe2Header, vrShoe2FrontButtonPressed,
                 vrShoe2RearButtonPressed, vrShoe2FrontButtonValue,
@@ -99,6 +98,7 @@ public class ConfigureButtonsActivity extends AppCompatActivity
         private Activity activity;
         private Communicator communicator;
         private String vrShoeId;
+        boolean maxDiffSet;
 
         public ButtonDiagnosticsForShoe(Activity activity, Communicator communicator,
                                         TextView header, TextView frontButton, TextView rearButton,
@@ -114,10 +114,13 @@ public class ConfigureButtonsActivity extends AppCompatActivity
             this.rearButtonValue = rearButtonValue;
             this.maxDifference = maxDifference;
             this.vrShoeId = vrShoe.getDeviceId();
-
+            maxDiffSet = false;
             communicator.addObserver(this);
             setBooleanValues(vrShoe);
-            setIntValues(vrShoe, 0, 0, 0);
+            this.maxDifference.setText(String.valueOf(0));
+            header.setText(vrShoe.getDeviceId());
+            this.frontButtonValue.setText(getString(R.string.front_button_value) + " : " + 0);
+            this.rearButtonValue.setText(getString(R.string.rear_button_value) + " : " + 0);
         }
 
         public void destroy()
@@ -177,13 +180,16 @@ public class ConfigureButtonsActivity extends AppCompatActivity
             rearButtonPressed.setText(getString(R.string.rear_button_pressed) + " : " + vrShoe.isRearButtonPressed());
         }
 
-        private void setIntValues(VrShoe vrShoe, int frontButtonValue, int rearButtonValue,
-                                  int maxDifference)
+        private void setIntValues(VrShoe vrShoe, int frontButtonValue, int rearButtonValue, int maxDifference)
         {
             header.setText(vrShoe.getDeviceId());
             this.frontButtonValue.setText(getString(R.string.front_button_value) + " : " + frontButtonValue);
             this.rearButtonValue.setText(getString(R.string.rear_button_value) + " : " + rearButtonValue);
-            this.maxDifference.setText(getString(R.string.button_max_difference) + " : " + maxDifference);
+            if(!maxDiffSet)
+            {
+                this.maxDifference.setText(String.valueOf(maxDifference));
+                maxDiffSet = true;
+            }
         }
     }
 }

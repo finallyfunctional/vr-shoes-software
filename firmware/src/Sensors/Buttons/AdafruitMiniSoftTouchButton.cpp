@@ -24,6 +24,11 @@ int AdafruitMiniSoftTouchButton::getPressedValue()
     return isPressed() ? 1 : 0;
 }
 
+int AdafruitMiniSoftTouchButton::getCurrentValue()
+{
+    return isPressed() ? 1 : 0;
+}
+
 void AdafruitMiniSoftTouchButton::setMaxDifferencePercentage(int diffPercentage)
 {
 }

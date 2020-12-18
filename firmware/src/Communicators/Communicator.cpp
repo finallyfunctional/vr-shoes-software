@@ -431,8 +431,8 @@ int Communicator::sendButtonValues()
     json[MessageKeys::COMMAND] = Messages::BUTTON_VALUES;
     json[MessageKeys::SHOE_ID] = shoeId;
     json[MessageKeys::REPLY] = true;
-    json[MessageKeys::FRONT_BUTTON_PRESSED_VALUE] = frontBtn->getPressedValue();
-    json[MessageKeys::REAR_BUTTON_PRESSED_VALUE] = rearBtn->getPressedValue();
+    json[MessageKeys::FRONT_BUTTON_PRESSED_VALUE] = frontBtn->getCurrentValue();
+    json[MessageKeys::REAR_BUTTON_PRESSED_VALUE] = rearBtn->getCurrentValue();
     json[MessageKeys::BUTTON_MAX_DIFFERENCE] = frontBtn->getMaxDifferencePercentage();
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;

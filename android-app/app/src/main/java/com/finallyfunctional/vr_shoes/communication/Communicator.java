@@ -156,6 +156,9 @@ public abstract class Communicator
                     break;
                 case PowerStatistics.POWER_STATISTICS_COMMAND:
                     readPowerStatistics(gson.fromJson(message, PowerStatistics.class), thisVrShoe);
+                    break;
+                case ButtonValues.BUTTON_VALUES_COMMAND:
+                    readButtonValues(gson.fromJson(message, ButtonValues.class), thisVrShoe);
             }
         }
         catch(IllegalStateException ex)
@@ -221,7 +224,7 @@ public abstract class Communicator
         shoe.setSide(shoeSide.si);
     }
 
-    private void readButtonValues(VrShoe shoe, ButtonValues values)
+    private void readButtonValues(ButtonValues values, VrShoe shoe)
     {
         for(ICommunicatorObserver observer : observers)
         {
