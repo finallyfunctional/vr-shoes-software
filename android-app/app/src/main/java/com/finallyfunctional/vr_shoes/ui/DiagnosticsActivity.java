@@ -42,6 +42,12 @@ public class DiagnosticsActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void breakInShoesBtnClick(View view)
+    {
+        Intent intent = new Intent(this, BreakShoesInActivity.class);
+        startActivity(intent);
+    }
+
     public void backBtnClicked(View view)
     {
         finish();

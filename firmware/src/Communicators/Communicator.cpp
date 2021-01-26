@@ -29,7 +29,7 @@ void Communicator::update()
         if(otherShoeId != NULL && !otherShoeId.equals("") && sendSensorDataTimer->timeIsUp())
         {
             sendSensorDataIfStale(otherShoeId);
-        }    
+        }
     }
     else 
     {
@@ -294,13 +294,12 @@ int Communicator::setShoeSide()
     {
         VrShoePreferences.putInt(ShoeSides::SHOE_SIDE_KEY, shoeSide);
         sensors->getSpeedController()->inverseForwardDirection();
-        sensors->getSpeedController()->inverseSidewayDirection();
         return ResponseCodes::GOOD_REQUEST_NO_REPLY;
     }
     else if(shoeSide == ShoeSides::RIGHT)
     {
         VrShoePreferences.putInt(ShoeSides::SHOE_SIDE_KEY, shoeSide);
-        sensors->getSpeedController()->resetDirections();
+        sensors->getSpeedController()->inverseSidewayDirection();
         return ResponseCodes::GOOD_REQUEST_NO_REPLY;
     }
     else 

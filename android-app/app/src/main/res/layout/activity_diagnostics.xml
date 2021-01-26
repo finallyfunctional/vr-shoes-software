@@ -39,6 +39,13 @@
             android:onClick="manualControlBtnClick"
             android:text="@string/manual_control" />
 
+        <Button
+            android:id="@+id/breakInShoesBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/break_in_shoes"
+            android:onClick="breakInShoesBtnClick"/>
+
         <TextView
             android:id="@+id/diagnosticsSpacer"
             android:layout_width="match_parent"

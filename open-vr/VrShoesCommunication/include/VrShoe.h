@@ -6,4 +6,5 @@ struct VrShoe
 	bool frontButtonPressed;
 	bool rearButtonPressed;
 	float forwardSpeed;
+	float forwardDistanceFromOrigin;
 };

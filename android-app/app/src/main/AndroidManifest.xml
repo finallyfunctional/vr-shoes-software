@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.finallyfunctional.vr_shoes">
 
     <application
@@ -8,16 +9,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ui.WalkingTestActivity"></activity>
-        <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.ManualControlActivity" />
-        <activity android:name=".ui.MovementDiagnosticsActivity" />
-        <activity android:name=".ui.ConfigureButtonsActivity" />
-        <activity android:name=".ui.MonitorActivity" />
-        <activity android:name=".ui.DiagnosticsActivity" />
-        <activity android:name=".ui.PairVrShoesActivity" />
-        <activity android:name=".ui.MainActivity">
+        android:theme="@style/AppTheme"
+        tools:ignore="LockedOrientationActivity">
+        <activity android:name=".ui.BreakShoesInActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.WalkingTestActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.SettingsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.ManualControlActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.MovementDiagnosticsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.ConfigureButtonsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.MonitorActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.DiagnosticsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.PairVrShoesActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,9 +28,9 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
     <uses-permission android:name="android.permission.BLUETOOTH" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 </manifest>

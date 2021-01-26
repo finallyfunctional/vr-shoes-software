@@ -26,7 +26,7 @@ public:
 private:
 	EVRInitError InitializeVrShoeCommunication();
 	EVRInitError InitializeOpenVrConfigurations(uint32_t unObjectId);
-	float GetYSpeed(VrShoe* vrShoe);
+	float GetYSpeed();
 
 	uint32_t driverId;
 	VRInputComponentHandle_t joystickYHandle;
@@ -37,8 +37,4 @@ private:
 	Communicator* communicator;
 	VrShoe* vrShoe1;
 	VrShoe* vrShoe2;
-
-	static const float MIN_SHOE_ABS_SPEED;
-	static const float Y_JOYSTICK_ABS_SPEED;
-
 };

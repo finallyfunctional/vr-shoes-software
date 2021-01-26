@@ -8,6 +8,7 @@
 #include "./Communicators/CommunicatorTypes.h"
 #include "./Sensors/Buttons/Button.h"
 #include "./Sensors/Buttons/LinearHallEffectSensorButton.h"
+#include "./Sensors/Buttons/AdafruitMiniSoftTouchButton.h"
 #include "./Sensors/Sensors.h"
 #include "./Sensors/VescPair.h"
 #include "./Sensors/Vesc.h"
@@ -17,6 +18,7 @@
 #include "./VrShoeGlobals.h"
 #include "./AutoShoeControllers/AutoShoeController.h"
 #include "./AutoShoeControllers/OmniPoweredWalking.h"
+#include "./AutoShoeControllers/ForwardWalking.h"
 #include "./ShoeSides.h"
 #include "./Sensors/PowerTracker.h"
 
@@ -34,8 +36,8 @@ class VrShoeConfiguration
     AutoShoeController* shoeController;
 
     static const char* COMMUNICATOR_TYPE_KEY;
-    static const int FRONT_BUTTON_PIN = 35;
-    static const int REAR_BUTTON_PIN = 39;
+    static const int FRONT_BUTTON_PIN = 4;
+    static const int REAR_BUTTON_PIN = 5;
 
 };
 

@@ -38,11 +38,6 @@
     <string name="Diagnostics">Diagnostics</string>
     <string name="side">Side</string>
     <string name="walking_test">Walking Test</string>
-    <string-array name="sides_array">
-        <item>Unspecified</item>
-        <item>Right</item>
-        <item>Left</item>
-    </string-array>
     <string name="duty_cycle_boost">Duty Cycle Boost</string>
     <string name="current_forward_duty_cycle">Forward Duty Cycle: </string>
     <string name="current_sideway_duty_cycle">Sideway Duty Cycle: </string>
@@ -63,4 +58,13 @@
     <string name="button_max_difference">Percentage Max Difference</string>
     <string name="configure_buttons">Configure Buttons</string>
     <string name="configure_buttons_btn_text">Configure Pressed Values</string>
+    <string name="countdown_default">600 s</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="break_in_shoes">Break In Shoes</string>
+    <string-array name="sides_array">
+        <item>Unspecified</item>
+        <item>Right</item>
+        <item>Left</item>
+    </string-array>
 </resources>

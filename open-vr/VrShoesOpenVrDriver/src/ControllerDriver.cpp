@@ -1,8 +1,5 @@
 #include <ControllerDriver.h>
 
-const float ControllerDriver::MIN_SHOE_ABS_SPEED = 0.1f;
-const float ControllerDriver::Y_JOYSTICK_ABS_SPEED = 1.0f;
-
 EVRInitError ControllerDriver::Activate(uint32_t unObjectId)
 {
 	EVRInitError error = InitializeVrShoeCommunication();
@@ -72,12 +69,8 @@ DriverPose_t ControllerDriver::GetPose()
 void ControllerDriver::RunFrame()
 {
 	communicator->processMessages();
-	
-	float ySpeed = GetYSpeed(vrShoe1);
-	if (ySpeed == 0)
-	{
-		ySpeed = GetYSpeed(vrShoe2);
-	}
+
+	float ySpeed = GetYSpeed();
 
 	VRDriverInput()->UpdateScalarComponent(joystickYHandle, ySpeed, 0);
 	VRDriverInput()->UpdateScalarComponent(trackpadYHandle, ySpeed, 0);
@@ -86,24 +79,41 @@ void ControllerDriver::RunFrame()
 	VRDriverInput()->UpdateScalarComponent(trackpadXHandle, 0.0f, 0);
 }
 
-float ControllerDriver::GetYSpeed(VrShoe* vrShoe)
+float ControllerDriver::GetYSpeed()
 {
-	if (!vrShoe->frontButtonPressed || !vrShoe->rearButtonPressed)
+	VrShoe vrShoeWithFootInAir;
+	if (!vrShoe1->frontButtonPressed && !vrShoe1->rearButtonPressed)
 	{
+		vrShoeWithFootInAir = *vrShoe1;
+		VRDriverLog()->Log("VR Shoe 1 is in the air");
+		if (!vrShoe2->frontButtonPressed && !vrShoe2->rearButtonPressed)
+		{
+			VRDriverLog()->Log("VR Shoe 2 is also in the air");
+			return 0;
+		}
+	}
+	else if (!vrShoe2->frontButtonPressed && !vrShoe2->rearButtonPressed)
+	{
+		vrShoeWithFootInAir = *vrShoe2;
+		VRDriverLog()->Log("VR Shoe 2 is in the air");
+		if (!vrShoe1->frontButtonPressed && !vrShoe1->rearButtonPressed)
+		{
+			VRDriverLog()->Log("VR Shoe 1 is also in the air");
+			return 0;
+		}
+	}
+	else
+	{
+		VRDriverLog()->Log("Niether foot was in the air");
 		return 0;
 	}
-	if (fabs(vrShoe->forwardSpeed) >= MIN_SHOE_ABS_SPEED)
+	if (vrShoeWithFootInAir.forwardDistanceFromOrigin <= 0)
 	{
-		if (vrShoe->forwardSpeed > 0)
-		{
-			return Y_JOYSTICK_ABS_SPEED;
-		}
-		else
-		{
-			return Y_JOYSTICK_ABS_SPEED * -1;
-		}
+		VRDriverLog()->Log("Foot in the air distance is 0");
+		return 0;
 	}
-	return 0;
+	VRDriverLog()->Log("Walking! Sending 1");
+	return 1;
 }
 
 void ControllerDriver::Deactivate()

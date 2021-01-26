@@ -56,6 +56,7 @@ void Communicator::recieveSensorData(VrShoe* vrShoe)
 	vrShoe->frontButtonPressed = json[MessageKeys::FRONT_BUTTON_PRESSED].GetBool();
 	vrShoe->rearButtonPressed = json[MessageKeys::REAR_BUTTON_PRESSED].GetBool();
 	vrShoe->forwardSpeed = json[MessageKeys::FORWARD_SPEED].GetFloat();
+	vrShoe->forwardDistanceFromOrigin = json[MessageKeys::FORWARD_DISTANCE].GetFloat();
 }
 
 void Communicator::setOtherShoeId(const char* idOfShoeToSendTo, const char* otherShoeId)

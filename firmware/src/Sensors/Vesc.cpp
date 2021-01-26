@@ -22,6 +22,7 @@ void Vesc::update()
     if(!vescUart.getVescValues())
     {
         Serial.println("Could not connect to VESC!");
+        return;
     }
     else if(desiredRpm == 0 || safetyTimer.timeIsUp())
     {

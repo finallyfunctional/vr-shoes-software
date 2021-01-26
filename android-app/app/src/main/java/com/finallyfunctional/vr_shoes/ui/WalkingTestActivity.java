@@ -264,9 +264,16 @@ public class WalkingTestActivity extends AppCompatActivity
     private void updateExtraSensorData()
     {
         communicator.getExtraSensorData(vrShoe);
-        setDutyCycleText();
-        setDistanceText();
-        updateSpeedChart();
+        this.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setDutyCycleText();
+                setDistanceText();
+                updateSpeedChart();
+            }
+        });
     }
 
     private void updatePowerStatistics()

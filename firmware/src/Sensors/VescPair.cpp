@@ -16,7 +16,7 @@ void VescPair::update()
     }
     updateTimer->start();
     forwardVesc->update();
-    sidewaysVesc->update();
+    //sidewaysVesc->update();
 }
 
 void VescPair::resetOrigin()
@@ -87,7 +87,7 @@ void VescPair::brakeForwardsBackwards()
 
 void VescPair::brakeSideway()
 {
-    sidewaysVesc->brake();
+    //sidewaysVesc->brake();
 }
 
 void VescPair::setDutyCycleBoost(float boost)
