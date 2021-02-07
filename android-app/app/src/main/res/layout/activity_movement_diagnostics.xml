@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="resetOriginVrShoe1BtnClicked"
-            android:text="@string/reset_origin" />
+            android:text="@string/reset_distance" />
 
         <TextView
             android:id="@+id/movementDiagnosticVrShoe2Header"
@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="resetOriginVrShoe2BtnClicked"
-            android:text="@string/reset_origin" />
+            android:text="@string/reset_distance" />
 
         <TextView
             android:id="@+id/movementDiagnosticsSpacer"

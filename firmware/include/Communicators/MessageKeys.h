@@ -47,6 +47,7 @@ class MessageKeys
     static const String FRONT_BUTTON_PRESSED_VALUE;
     static const String REAR_BUTTON_PRESSED_VALUE;
     static const String BUTTON_MAX_DIFFERENCE;
+    static const String MOVEMENT_STATE;
 };
 
 #endif

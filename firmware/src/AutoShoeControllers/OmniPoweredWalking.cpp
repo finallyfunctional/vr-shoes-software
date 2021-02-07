@@ -191,13 +191,13 @@ void OmniPoweredWalking::setUpArcingCompensation(RemoteVrShoe* remoteShoe)
 {
         if(remoteShoeLastPoweredXDirection == FORWARD)
         {
-            forwardLimitForArcCompensation = remoteShoe->forwardDistanceFromOrigin + ARC_DISTANCE_COMPENSATION;
+            forwardLimitForArcCompensation = remoteShoe->forwardDistance + ARC_DISTANCE_COMPENSATION;
             compensateForForwardsArc = true;
             compensateForBackwardsArc = false;
         }
         else if(remoteShoeLastPoweredXDirection == BACKWARD)
         {
-            backwardLimitForArcCompensation =  remoteShoe->forwardDistanceFromOrigin - ARC_DISTANCE_COMPENSATION;
+            backwardLimitForArcCompensation =  remoteShoe->forwardDistance - ARC_DISTANCE_COMPENSATION;
             compensateForBackwardsArc = true;
             compensateForForwardsArc = false;
         }
@@ -205,7 +205,7 @@ void OmniPoweredWalking::setUpArcingCompensation(RemoteVrShoe* remoteShoe)
 
 bool OmniPoweredWalking::doneCompensatingForBackwardArcing(RemoteVrShoe* remoteShoe)
 {
-    if(remoteShoe->forwardSpeed > 0 || remoteShoe->forwardDistanceFromOrigin < backwardLimitForArcCompensation)
+    if(remoteShoe->forwardSpeed > 0 || remoteShoe->forwardDistance < backwardLimitForArcCompensation)
     {
         compensateForBackwardsArc = false;
         return true;
@@ -215,7 +215,7 @@ bool OmniPoweredWalking::doneCompensatingForBackwardArcing(RemoteVrShoe* remoteS
 
 bool OmniPoweredWalking::doneCompensatingForForwardArching(RemoteVrShoe* remoteShoe)
 {
-    if(remoteShoe->forwardSpeed < 0 || remoteShoe->forwardDistanceFromOrigin > forwardLimitForArcCompensation)
+    if(remoteShoe->forwardSpeed < 0 || remoteShoe->forwardDistance > forwardLimitForArcCompensation)
     {
         compensateForForwardsArc = false;
         return true;

@@ -38,3 +38,4 @@ const char* MessageKeys::FORWARD_AVERAGE_CURRENT = "fac";
 const char* MessageKeys::FORWARD_AMP_HOURS = "fah";
 const char* MessageKeys::FORWARD_AMP_HOURS_CHARGED = "fahc";
 const char* MessageKeys::SPEED_MULTIPLER = "spm";
+const char* MessageKeys::MOVEMENT_STATE = "ms";

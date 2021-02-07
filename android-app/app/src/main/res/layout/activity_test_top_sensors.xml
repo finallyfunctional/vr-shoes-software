@@ -4,59 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.DiagnosticsActivity">
+    tools:context=".ui.TestTopSensorsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/diagnosticsPingBtn"
+        <TextView
+            android:id="@+id/testTopSensorsVrShoe1Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="showLogsBtnClick"
-            android:text="@string/show_logs" />
-
-        <Button
-            android:id="@+id/diagnosticsButtonTestBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="buttonsTestBtnClick"
-            android:text="@string/buttons_test" />
-
-        <Button
-            android:id="@+id/diagnosticsMovementBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="movementBtnClick"
-            android:text="@string/movement" />
-
-        <Button
-            android:id="@+id/diagnosticsManualControlBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="manualControlBtnClick"
-            android:text="@string/manual_control" />
-
-        <Button
-            android:id="@+id/breakInShoesBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/break_in_shoes"
-            android:onClick="breakInShoesBtnClick"/>
+            android:textSize="36sp" />
 
         <TextView
-            android:id="@+id/diagnosticsSpacer"
+            android:id="@+id/testTopSensorsVrShoe1FrontSensorPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/front_button_pressed"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/testTopSensorsVrShoe1RearSensorPressedLabel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:text="@string/rear_button_pressed"
+            android:textSize="24sp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/testTopSensorsVrShoe2Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/testTopSensorsVrShoe2FrontSensorPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/front_button_pressed"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/testTopSensorsVrShoe2RearSensorPressedLabel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/rear_button_pressed"
+            android:textSize="24sp"
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/diagnosticsBackBtn"
+            android:id="@+id/configureButtonsBackBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="backBtnClicked"
+            android:onClick="BackBtnClicked"
             android:text="@string/back" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

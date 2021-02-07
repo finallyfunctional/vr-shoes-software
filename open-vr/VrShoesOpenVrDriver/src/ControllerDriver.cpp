@@ -77,43 +77,60 @@ void ControllerDriver::RunFrame()
 
 	VRDriverInput()->UpdateScalarComponent(joystickXHandle, 0.0f, 0);
 	VRDriverInput()->UpdateScalarComponent(trackpadXHandle, 0.0f, 0);
+
+	previousYSpeed = ySpeed;
 }
 
 float ControllerDriver::GetYSpeed()
 {
-	VrShoe vrShoeWithFootInAir;
-	if (!vrShoe1->frontButtonPressed && !vrShoe1->rearButtonPressed)
+	if (vrShoe1->movementState != ShoeMovementState::STOPPED || vrShoe2->movementState != ShoeMovementState::STOPPED)
 	{
-		vrShoeWithFootInAir = *vrShoe1;
-		VRDriverLog()->Log("VR Shoe 1 is in the air");
-		if (!vrShoe2->frontButtonPressed && !vrShoe2->rearButtonPressed)
-		{
-			VRDriverLog()->Log("VR Shoe 2 is also in the air");
-			return 0;
-		}
+		return 1;
 	}
-	else if (!vrShoe2->frontButtonPressed && !vrShoe2->rearButtonPressed)
+	if (previousYSpeed == 1)
 	{
-		vrShoeWithFootInAir = *vrShoe2;
-		VRDriverLog()->Log("VR Shoe 2 is in the air");
-		if (!vrShoe1->frontButtonPressed && !vrShoe1->rearButtonPressed)
-		{
-			VRDriverLog()->Log("VR Shoe 1 is also in the air");
-			return 0;
-		}
+		clockStart = std::chrono::high_resolution_clock::now();
+		return 1;
 	}
-	else
+	double ellapsedTime = GetEllapsedTimeInSeconds();
+	if (ellapsedTime <= 0.001)
 	{
-		VRDriverLog()->Log("Niether foot was in the air");
+		return 1;
+	}
+	double speed = GetDeceleratingSpeed(0, 10);
+	if (speed > 1)
+	{
+		return 1;
+	}
+	else if (speed < 0)
+	{
 		return 0;
 	}
-	if (vrShoeWithFootInAir.forwardDistanceFromOrigin <= 0)
+	return speed;
+}
+
+/*
+y = (-2^(ax) + (2+b)^a)/( (2+b)^(a) - 1 )
+y: Output speed.
+x: Elapsed time since stopping.
+a: Manipulate the graph's slope to make speed lower linearly or exponentially.
+b: Default time to 0 speed is 1. Use this variable to add or decrease the time.
+*/
+double ControllerDriver::GetDeceleratingSpeed(double timeAdjustment, double slopeAdjustment)
+{
+	double ellapsedTime = GetEllapsedTimeInSeconds();
+	if (slopeAdjustment == 0) //cannot be zero, otherwise denominator is zero
 	{
-		VRDriverLog()->Log("Foot in the air distance is 0");
-		return 0;
+		slopeAdjustment = 0.01;
 	}
-	VRDriverLog()->Log("Walking! Sending 1");
-	return 1;
+	return (pow(-2, slopeAdjustment * ellapsedTime) + pow(2 + timeAdjustment, slopeAdjustment)) / (pow(2 + timeAdjustment, slopeAdjustment) - 1);
+}
+
+double ControllerDriver::GetEllapsedTimeInSeconds()
+{
+	std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+	long ellapsedTimeInMilli = std::chrono::duration_cast<std::chrono::milliseconds>(now - clockStart).count();
+	return (double)(ellapsedTimeInMilli) / 1000;
 }
 
 void ControllerDriver::Deactivate()
@@ -132,14 +149,14 @@ void* ControllerDriver::GetComponent(const char* pchComponentNameAndVersion)
 
 void ControllerDriver::EnterStandby() 
 {
-	communicator->stopAlgorithm(vrShoe1->deviceId);
-	communicator->stopAlgorithm(vrShoe2->deviceId);
+	communicator->stopNegatingMovement(vrShoe1->deviceId);
+	communicator->stopNegatingMovement(vrShoe2->deviceId);
 }
 
 void ControllerDriver::LeaveStandby()
 {
-	communicator->startAlgorithm(vrShoe1->deviceId);
-	communicator->startAlgorithm(vrShoe2->deviceId);
+	communicator->startNegatingMovement(vrShoe1->deviceId);
+	communicator->startNegatingMovement(vrShoe2->deviceId);
 }
 
 void ControllerDriver::DebugRequest(const char* pchRequest, char* pchResponseBuffer, uint32_t unResponseBufferSize) 

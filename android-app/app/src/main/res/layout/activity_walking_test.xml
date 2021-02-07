@@ -23,8 +23,8 @@
             android:id="@+id/walkingTestResetOriginBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="resetOriginBtnClicked"
-            android:text="@string/reset_origin" />
+            android:onClick="resetDistanceBtnClick"
+            android:text="@string/reset_distance" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -86,20 +86,6 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:id="@+id/walkingTestCurrentForwardDutyCycleText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/current_forward_duty_cycle"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:id="@+id/walkingTestCurrentSidewayDutyCycleText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/current_sideway_duty_cycle"
-                    android:textSize="24sp" />
-
-                <TextView
                     android:id="@+id/walkingTestForwardDistanceText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -153,71 +139,11 @@
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider" />
 
-                <TextView
-                    android:id="@+id/walkingTestKpLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/kp"
-                    android:textSize="24sp" />
-
-                <EditText
-                    android:id="@+id/walkingTestKpEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="numberDecimal"
-                    android:autofillHints="@string/kp"
-                    android:hint="@string/kp"/>
-
-                <TextView
-                    android:id="@+id/walkingTestKiLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ki"
-                    android:textSize="24sp" />
-
-                <EditText
-                    android:id="@+id/walkingTestKiEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="numberDecimal"
-                    android:autofillHints="@string/ki"
-                    android:hint="@string/ki"/>
-
-                <TextView
-                    android:id="@+id/walkingTestKdLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/kd"
-                    android:textSize="24sp" />
-
-                <EditText
-                    android:id="@+id/walkingTestKdEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="numberDecimal"
-                    android:autofillHints="@string/kd"
-                    android:hint="@string/kd"/>
-
                 <View
                     android:id="@+id/divider5"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider" />
-
-                <TextView
-                    android:id="@+id/walkingTestSpeedChartLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/actual_vs_desired_speed"
-                    android:textSize="24sp" />
-
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/walkingTestSpeedChart"
-                    android:layout_width="match_parent"
-                    android:layout_height="400dp" />
 
             </LinearLayout>
         </ScrollView>

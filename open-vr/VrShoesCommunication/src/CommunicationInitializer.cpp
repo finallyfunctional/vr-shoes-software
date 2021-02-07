@@ -9,12 +9,8 @@ bool CommunicationInitializer::initialize()
 	{
 		return false;
 	}
-	communicator->setOtherShoeId(vrShoe1->deviceId, vrShoe2->deviceId);
-	communicator->setOtherShoeId(vrShoe2->deviceId, vrShoe1->deviceId);
-	communicator->setDutyCycleBoost(vrShoe1->deviceId, 0.2f);
-	communicator->setDutyCycleBoost(vrShoe2->deviceId, 0.2f);
-	communicator->setSpeedMultipler(vrShoe1->deviceId, 3);
-	communicator->setSpeedMultipler(vrShoe2->deviceId, 3);
+	communicator->getShoeConfigurations(vrShoe1->deviceId);
+	communicator->getShoeConfigurations(vrShoe2->deviceId);
 	return true;
 }
 

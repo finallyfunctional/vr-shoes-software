@@ -26,7 +26,7 @@ public class DiagnosticsActivity extends AppCompatActivity
 
     public void buttonsTestBtnClick(View view)
     {
-        Intent intent = new Intent(this, ConfigureButtonsActivity.class);
+        Intent intent = new Intent(this, TestTopSensorsActivity.class);
         startActivity(intent);
     }
 

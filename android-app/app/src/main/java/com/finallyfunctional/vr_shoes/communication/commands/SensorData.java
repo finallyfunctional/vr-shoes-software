@@ -12,9 +12,9 @@ public class SensorData
     public boolean fb; //front button pressed
     public boolean rb; //rear button pressed
     public float fs; //forward speed
-    public float ss; //sideway speed
+    public float ss; //sideways speed
     public float fd; //forward distance
-    public float sid; //sideway distance
+    public float sid; //sideways distance
 
     public SensorData()
     {

@@ -20,16 +20,18 @@ void ForwardWalking::update()
     RemoteVrShoe* remoteShoe = sensors->getRemoteVrShoe();
     bool oppositeFootInAir = !remoteShoe->frontButtonPressed && !remoteShoe->rearButtonPressed;
     bool thisFootOnFloor = sensors->isFrontButtonPressed() || sensors->isRearButtonPressed();
-    bool oppositeFootInsideBuffer = remoteShoe->forwardDistanceFromOrigin <= 0;
+    bool oppositeFootInsideBuffer = remoteShoe->forwardDistance <= 0;
 
     SpeedController* speedController = sensors->getSpeedController();
+    movementState = ShoeMovementState::STOPPED;
     if(thisFootOnFloor)
     {
-        sensors->getMovementTracker()->resetOrigin();
+        sensors->getMovementTracker()->resetDistance();
         
         if(oppositeFootInAir && !oppositeFootInsideBuffer)
         {
             speedController->setForwardRpm(-100 * speedMultiplier);
+            movementState = ShoeMovementState::WALKING;
         }
         else
         {

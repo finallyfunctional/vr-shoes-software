@@ -1,8 +1,8 @@
 package com.finallyfunctional.vr_shoes.communication.commands;
 
-public class ButtonValues
+public class TopSensorValues
 {
-    public static final String BUTTON_VALUES_COMMAND = "bv";
+    public static final String TOP_SENSOR_VALUES_COMMAND = "tsv";
 
     public String c; //command
     public String id; //shoe ID
@@ -10,8 +10,8 @@ public class ButtonValues
     public int rbpv; //rear button pressed value
     public int bmd; //button max difference
 
-    public ButtonValues()
+    public TopSensorValues()
     {
-        c = BUTTON_VALUES_COMMAND;
+        c = TOP_SENSOR_VALUES_COMMAND;
     }
 }

@@ -11,8 +11,8 @@ class RemoteVrShoe
     bool rearButtonPressed;
     float forwardSpeed;
     float sidewaySpeed;
-    float forwardDistanceFromOrigin;
-    float sidewayDistanceFromOrigin;
+    float forwardDistance;
+    float sidewaysDistance;
 };
 
 #endif

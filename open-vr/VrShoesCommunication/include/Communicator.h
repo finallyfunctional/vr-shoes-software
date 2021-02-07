@@ -15,11 +15,9 @@ class VRSHOESCOMMUNICATION_API Communicator
 {
 public:
 	virtual void processMessages() = 0;
-	void setOtherShoeId(const char* idOfShoeToSendTo, const char* otherShoeId);
-	void setDutyCycleBoost(const char* shoeId, float boost);
-	void setSpeedMultipler(const char* shoeId, float multiplier);
-	void startAlgorithm(const char* shoeId);
-	void stopAlgorithm(const char* shoeId);
+	void getShoeConfigurations(const char* shoeId);
+	void startNegatingMovement(const char* shoeId);
+	void stopNegatingMovement(const char* shoeId);
 
 protected:
 	void initialize(VrShoe* vrShoe1, VrShoe* vrShoe2);
@@ -34,4 +32,6 @@ protected:
 
 private:
 	void recieveSensorData(VrShoe* vrShoe);
+	void recieveShoeConfigurations(VrShoe* vrShoe);
+	void sendShoeConfigurations(const char* vrShoeId, const char* otherVrShoeId);
 };

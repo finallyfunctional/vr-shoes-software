@@ -16,7 +16,7 @@ void BluetoothCommunicator::initializeCommunication()
         btReady = true;
         connected = true;
         isMaster = false;
-        Serial.println("Starting in bluetooth slave mode");
+        //Serial.println("Starting in bluetooth slave mode");
     }
     else
     {
@@ -27,14 +27,14 @@ void BluetoothCommunicator::initializeCommunication()
         isMaster = true;
         if(!connected)
         {
-            Serial.print("Could not connect to other shoe with name: ");
-            Serial.println(otherShoeId);
+            //Serial.print("Could not connect to other shoe with name: ");
+            //Serial.println(otherShoeId);
         }
         else 
         {
-            Serial.println("Starting in bluetooth master mode");
-            Serial.print("Connected to other shoe: ");
-            Serial.println(otherShoeId);
+            //Serial.println("Starting in bluetooth master mode");
+            //Serial.print("Connected to other shoe: ");
+            //Serial.println(otherShoeId);
         }
     }
     serialBt.setTimeout(10);
@@ -45,7 +45,7 @@ int BluetoothCommunicator::setCommunicationMode()
     String mode = json[MessageKeys::MODE].as<String>();
     if(mode.equals(BLUETOOTH_MASTER_MODE))
     {     
-        Serial.println("Changing to master mode");
+        //Serial.println("Changing to master mode");
         String otherShoeId = json[MessageKeys::OTHER_SHOE_ID].as<String>();
         VrShoePreferences.putString(OTHER_SHOE_ID_KEY, otherShoeId);
         VrShoePreferences.putString(BT_MODE_KEY, BLUETOOTH_MASTER_MODE);
@@ -54,7 +54,7 @@ int BluetoothCommunicator::setCommunicationMode()
     }
     else if(mode.equals(BLUETOOTH_SLAVE_MODE))
     {
-        Serial.println("Changing to slave mode");
+        //Serial.println("Changing to slave mode");
         VrShoePreferences.putString(BT_MODE_KEY, BLUETOOTH_SLAVE_MODE);
         VrShoePreferences.remove(OTHER_SHOE_ID_KEY);
         endBtSerial();

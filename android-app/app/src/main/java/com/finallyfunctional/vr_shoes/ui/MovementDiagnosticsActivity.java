@@ -9,7 +9,7 @@ import com.finallyfunctional.vr_shoes.R;
 import com.finallyfunctional.vr_shoes.VrShoe;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
-import com.finallyfunctional.vr_shoes.communication.ICommunicatorObserver;
+import com.finallyfunctional.vr_shoes.communication.observers.ISensorDataObserver;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -65,7 +65,7 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
         finish();
     }
 
-    private class MovementDiagnosticsForShoe implements ICommunicatorObserver
+    private class MovementDiagnosticsForShoe implements ISensorDataObserver
     {
         private TextView header;
         private TextView forwardDistance;
@@ -90,7 +90,7 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
             this.activity = activity;
             this.vrShoe = vrShoe;
 
-            communicator.addObserver(this);
+            communicator.getObservers().addSensorDataObserver(this);
 
             setDeviceIdText();
             setDistanceText(0, 0);
@@ -100,12 +100,12 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
 
         public void destroy()
         {
-            communicator.removeObserver(this);
+            communicator.getObservers().removeSensorDataObserver(this);
         }
 
         private void resetOrigin()
         {
-            communicator.resetOrigin(vrShoe);
+            communicator.resetDistance(vrShoe);
         }
 
         private void setDeviceIdText()
@@ -126,18 +126,6 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
         }
 
         @Override
-        public void messageRead(String message)
-        {
-
-        }
-
-        @Override
-        public void messageWritten(VrShoe vrShoe, String message)
-        {
-
-        }
-
-        @Override
         public void sensorDataRead(final VrShoe vrShoe)
         {
             if(vrShoe == this.vrShoe)
@@ -147,17 +135,11 @@ public class MovementDiagnosticsActivity extends AppCompatActivity
                     public void run()
                     {
                         setDeviceIdText();
-                        setSpeedText(vrShoe.getForwardSpeed(), vrShoe.getSidewaySpeed());
-                        setDistanceText(vrShoe.getForwardDistanceFromOrigin(), vrShoe.getSidewayDistanceFromOrigin());
+                        setSpeedText(vrShoe.getForwardSpeed(), vrShoe.getSidewaysSpeed());
+                        setDistanceText(vrShoe.getForwardDistance(), vrShoe.getSidewaysDistance());
                     }
                 });
             }
-        }
-
-        @Override
-        public void buttonValuesRead(VrShoe vrShoe, int frontButtonValue, int rearButtonValue, int maxDifference)
-        {
-
         }
     }
 }

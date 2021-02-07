@@ -2,19 +2,22 @@ package com.finallyfunctional.vr_shoes.communication;
 
 import com.finallyfunctional.vr_shoes.StoredSettings;
 import com.finallyfunctional.vr_shoes.VrShoe;
+import com.finallyfunctional.vr_shoes.communication.commands.ShoeConfiguration;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotEnabledException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.CommunicationNotSupportedException;
 import com.finallyfunctional.vr_shoes.communication.exceptions.ConfigurationWithOtherActivityNeededException;
+import com.finallyfunctional.vr_shoes.communication.observers.IShoeConfigurationsObserver;
 import com.finallyfunctional.vr_shoes.logging.CommunicatorLogger;
 import com.finallyfunctional.vr_shoes.logging.monitor.VrShoesAggregateLogger;
 import com.finallyfunctional.vr_shoes.ui.PairVrShoesActivity;
 
 import java.io.IOException;
 
-public abstract class CommunicationInitializer
+public abstract class CommunicationInitializer implements IShoeConfigurationsObserver
 {
     protected static Communicator communicator;
     protected StoredSettings settings;
+    protected Runnable callback;
 
     protected CommunicationInitializer(StoredSettings settings)
     {
@@ -27,7 +30,7 @@ public abstract class CommunicationInitializer
             CommunicationNotEnabledException,
             ConfigurationWithOtherActivityNeededException;
 
-    public void initialize()
+    public void initialize(Runnable callbackOnSuccess)
             throws
             IOException,
             CommunicationNotSupportedException,
@@ -36,8 +39,10 @@ public abstract class CommunicationInitializer
     {
         if(communicator != null)
         {
+            callback.run();
             return; //already initialized
         }
+        this.callback = callbackOnSuccess;
         String deviceId1 = settings.getPairedVrShoe1();
         String deviceId2 = settings.getPairedVrShoe2();
         initializeCommunicator(deviceId1, deviceId2);
@@ -54,7 +59,8 @@ public abstract class CommunicationInitializer
             throw new ConfigurationWithOtherActivityNeededException(PairVrShoesActivity.class);
         }
         setup(shoe1Id, shoe2Id);
-        communicator.addObserver(new CommunicatorLogger(VrShoesAggregateLogger.getLogger()));
+        communicator.getObservers().addCommunicationObserver(new CommunicatorLogger(VrShoesAggregateLogger.getLogger()));
+        communicator.getObservers().addShoeConfigurationObserver(this);
         communicator.start();
         initializeShoes();
     }
@@ -63,25 +69,33 @@ public abstract class CommunicationInitializer
     {
         VrShoe vrShoe1 = communicator.getVrShoe1();
         VrShoe vrShoe2 = communicator.getVrShoe2();
-        communicator.sendOtherShoeId(vrShoe1, vrShoe2);
-        communicator.sendOtherShoeId(vrShoe2, vrShoe1);
-        communicator.readSensorDataFromShoes();
-        communicator.getShoeSide(vrShoe1);
-        communicator.getShoeSide(vrShoe2);
+        communicator.getShoeConfigurations(vrShoe1);
+        communicator.getShoeConfigurations(vrShoe2);
+    }
 
-        float boost = settings.getDutyCycleBoost();
-        communicator.setDutyCycleBoost(vrShoe1, boost);
-        communicator.setDutyCycleBoost(vrShoe2, boost);
-
-        float speedMultiplier = settings.getSpeedMultiplier();
-        communicator.setSpeedMultiplier(vrShoe1, speedMultiplier);
-        communicator.setSpeedMultiplier(vrShoe2, speedMultiplier);
-
-        float kp = settings.getPidKp();
-        float ki = settings.getPidKi();
-        float kd = settings.getPidKd();
-        communicator.tunePidLoop(vrShoe1, kp, ki, kd);
-        communicator.tunePidLoop(vrShoe2, kp, ki, kd);
+    public void shoeConfigurationsRead(ShoeConfiguration message, VrShoe vrShoe)
+    {
+        if(message.osi == null || message.osi.trim().equals("") ||
+           message.osi.equals(vrShoe.getDeviceId()))
+        {
+            if(vrShoe.getDeviceId().equals(communicator.getVrShoe1().getDeviceId()))
+            {
+                message.osi = communicator.getVrShoe2().getDeviceId();
+            }
+            else
+            {
+                message.osi = communicator.getVrShoe1().getDeviceId();
+            }
+            communicator.configureShoe(vrShoe, message);
+        }
+        if(communicator.getVrShoe1().getOtherShoeDeviceId() != null &&
+           communicator.getVrShoe2().getOtherShoeDeviceId() != null &&
+           !communicator.getVrShoe1().getOtherShoeDeviceId().equals("") &&
+           !communicator.getVrShoe2().getOtherShoeDeviceId().equals(""))
+        {
+            callback.run();
+            communicator.getObservers().removeShoeConfigurationObserver(this);
+        }
     }
 
     public static Communicator getCommunicator()

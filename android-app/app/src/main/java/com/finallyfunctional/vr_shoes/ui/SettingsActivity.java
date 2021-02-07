@@ -10,9 +10,10 @@ import android.widget.TextView;
 
 import com.finallyfunctional.vr_shoes.R;
 import com.finallyfunctional.vr_shoes.VrShoe;
+import com.finallyfunctional.vr_shoes.VrShoeSide;
 import com.finallyfunctional.vr_shoes.communication.CommunicationInitializer;
 import com.finallyfunctional.vr_shoes.communication.Communicator;
-import com.finallyfunctional.vr_shoes.communication.commands.ShoeSide;
+import com.finallyfunctional.vr_shoes.communication.commands.ShoeConfiguration;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -58,10 +59,10 @@ public class SettingsActivity extends AppCompatActivity
             spinner.setAdapter(adapter);
             switch(vrShoe.getSide())
             {
-                case ShoeSide.LEFT_SIDE:
+                case VrShoeSide.LEFT:
                     spinner.setSelection(2);
                     break;
-                case ShoeSide.RIGHT_SIDE:
+                case VrShoeSide.RIGHT:
                     spinner.setSelection(1);
                     break;
                 default:
@@ -87,12 +88,17 @@ public class SettingsActivity extends AppCompatActivity
         {
             if(itemSelected.equals("Right"))
             {
-                communicator.setShoeSide(vrShoe, ShoeSide.RIGHT_SIDE);
+                vrShoe.setSide(VrShoeSide.RIGHT);
             }
             else if(itemSelected.equals("Left"))
             {
-                communicator.setShoeSide(vrShoe, ShoeSide.LEFT_SIDE);
+                vrShoe.setSide(VrShoeSide.LEFT);
             }
+            else
+            {
+                return;
+            }
+            communicator.configureShoe(vrShoe, new ShoeConfiguration(vrShoe));
         }
     }
 }

@@ -3,27 +3,24 @@ package com.finallyfunctional.vr_shoes.communication;
 import android.util.Pair;
 
 import com.finallyfunctional.vr_shoes.VrShoe;
-import com.finallyfunctional.vr_shoes.communication.commands.ButtonValues;
 import com.finallyfunctional.vr_shoes.communication.commands.CommandConstants;
-import com.finallyfunctional.vr_shoes.communication.commands.ConfigureButtons;
-import com.finallyfunctional.vr_shoes.communication.commands.DutyCycleBoost;
-import com.finallyfunctional.vr_shoes.communication.commands.ExtraSensorData;
-import com.finallyfunctional.vr_shoes.communication.commands.OtherShoeId;
 import com.finallyfunctional.vr_shoes.communication.commands.Ping;
 import com.finallyfunctional.vr_shoes.communication.commands.PowerStatistics;
-import com.finallyfunctional.vr_shoes.communication.commands.ResetOrigin;
+import com.finallyfunctional.vr_shoes.communication.commands.ResetDistanceTracker;
 import com.finallyfunctional.vr_shoes.communication.commands.SensorData;
 import com.finallyfunctional.vr_shoes.communication.commands.SetCommunicationMode;
 import com.finallyfunctional.vr_shoes.communication.commands.SetRpm;
-import com.finallyfunctional.vr_shoes.communication.commands.ShoeSide;
-import com.finallyfunctional.vr_shoes.communication.commands.SpeedMultiplier;
-import com.finallyfunctional.vr_shoes.communication.commands.StartAlgorithm;
-import com.finallyfunctional.vr_shoes.communication.commands.StopAlgorithm;
-import com.finallyfunctional.vr_shoes.communication.commands.TunePidLoop;
+import com.finallyfunctional.vr_shoes.communication.commands.ShoeConfiguration;
+import com.finallyfunctional.vr_shoes.communication.commands.StartNegatingMotion;
+import com.finallyfunctional.vr_shoes.communication.commands.StopNegatingMotion;
+import com.finallyfunctional.vr_shoes.communication.commands.TopSensorValues;
+import com.finallyfunctional.vr_shoes.communication.observers.CommunicationObservers;
+import com.finallyfunctional.vr_shoes.communication.observers.ICommunicatorObserver;
+import com.finallyfunctional.vr_shoes.communication.observers.ISensorDataObserver;
+import com.finallyfunctional.vr_shoes.communication.observers.IShoeConfigurationsObserver;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -31,12 +28,13 @@ import java.util.Queue;
 
 public abstract class Communicator
 {
-    private ArrayList<ICommunicatorObserver> observers;
     private Queue<String> recievedMessages;
     private Queue<Pair<VrShoe, String>> messagesToSend;
     private Gson gson;
     private boolean keepLoopAlive;
     private VrShoe vrShoe1, vrShoe2;
+
+    protected CommunicationObservers observers;
 
     public static char MESSAGE_TERMINATOR = '\n';
     public static final int MESSAGE_TERMINATOR_ASCII = 10;
@@ -44,23 +42,13 @@ public abstract class Communicator
     public Communicator(String deviceId1, String deviceId2)
     {
         gson = new Gson();
-        observers = new ArrayList<>();
+        observers = new CommunicationObservers();
         recievedMessages = new LinkedList<>();
         messagesToSend = new LinkedList<>();
         vrShoe1 = new VrShoe();
         vrShoe1.setDeviceId(deviceId1);
         vrShoe2 = new VrShoe();
         vrShoe2.setDeviceId(deviceId2);
-    }
-
-    public void addObserver(ICommunicatorObserver observer)
-    {
-        observers.add(observer);
-    }
-
-    public void removeObserver(ICommunicatorObserver observer)
-    {
-        observers.remove(observer);
     }
 
     public void start()
@@ -148,17 +136,11 @@ public abstract class Communicator
                 case SensorData.SENSOR_DATA_COMMAND:
                     readSensorData(gson.fromJson(message, SensorData.class), thisVrShoe, otherVrShoe);
                     break;
-                case ShoeSide.SHOE_SIDE_COMMAND:
-                    readShoeSide(thisVrShoe, gson.fromJson(message, ShoeSide.class));
-                    break;
-                case ExtraSensorData.EXTRA_SENSOR_DATA_COMMAND:
-                    readExtraSensorData(gson.fromJson(message, ExtraSensorData.class), thisVrShoe);
-                    break;
                 case PowerStatistics.POWER_STATISTICS_COMMAND:
                     readPowerStatistics(gson.fromJson(message, PowerStatistics.class), thisVrShoe);
                     break;
-                case ButtonValues.BUTTON_VALUES_COMMAND:
-                    readButtonValues(gson.fromJson(message, ButtonValues.class), thisVrShoe);
+                case ShoeConfiguration.SHOE_CONFIGURATION_COMMAND:
+                    readShoeConfiguration(gson.fromJson(message, ShoeConfiguration.class), thisVrShoe);
             }
         }
         catch(IllegalStateException ex)
@@ -172,9 +154,9 @@ public abstract class Communicator
         thisVrShoe.frontButtonPressed(message.fb);
         thisVrShoe.rearButtonPressed(message.rb);
         thisVrShoe.setForwardSpeed(message.fs);
-        thisVrShoe.setSidewaySpeed(message.ss);
-        thisVrShoe.setForwardDistanceFromOrigin(message.fd);
-        thisVrShoe.setSidewayDistanceFromOrigin(message.sid);
+        thisVrShoe.setSidewaysSpeed(message.ss);
+        thisVrShoe.setForwardDistance(message.fd);
+        thisVrShoe.setSidewaysDistance(message.sid);
 
         if(forwardSensorDataToOtherShoe() && message.d != null && message.d.equals(otherVrShoe.getDeviceId()))
         {
@@ -182,22 +164,23 @@ public abstract class Communicator
             writeMessage(otherVrShoe, gson.toJson(message));
         }
 
-        for(ICommunicatorObserver observer : observers)
+        for(ISensorDataObserver observer : observers.getSensorDataObservers())
         {
             observer.sensorDataRead(thisVrShoe);
         }
     }
 
-    private void readExtraSensorData(ExtraSensorData message, VrShoe vrShoe)
+    private void readShoeConfiguration(ShoeConfiguration message, VrShoe vrShoe)
     {
-        if(!message.r)
+        vrShoe.setOtherShoeDeviceId(message.osi);
+        vrShoe.setSide(message.si);
+        vrShoe.setDutyCycleBoost(message.dcb);
+        vrShoe.setSpeedMultiplier(message.spm);
+
+        for(IShoeConfigurationsObserver observer : observers.getShoeConfigurationObservers())
         {
-            return;
+            observer.shoeConfigurationsRead(message, vrShoe);
         }
-        vrShoe.setForwardDesiredSpeed(message.fds);
-        vrShoe.setSidewayDesiredSpeed(message.sds);
-        vrShoe.setForwardDutyCycle(message.fdc);
-        vrShoe.setSidewayDutyCycle(message.sdc);
     }
 
     private void readPowerStatistics(PowerStatistics message, VrShoe vrShoe)
@@ -206,30 +189,17 @@ public abstract class Communicator
         {
             return;
         }
-        vrShoe.setSidewayPeakCurrent(message.spk);
-        vrShoe.setSidewayCurrentNow(message.scn);
-        vrShoe.setSidewayAverageCurrent(message.sac);
-        vrShoe.setSidewayAmpHours(message.sah);
-        vrShoe.setSidewayAmpCharged(message.sahc);
+        vrShoe.setSidewaysPeakCurrent(message.spk);
+        vrShoe.setSidewaysCurrentNow(message.scn);
+        vrShoe.setSidewaysAverageCurrent(message.sac);
+        vrShoe.setSidewaysAmpHours(message.sah);
+        vrShoe.setSidewaysAmpCharged(message.sahc);
 
         vrShoe.setForwardPeakCurrent(message.fpc);
         vrShoe.setForwardCurrentNow(message.fcn);
         vrShoe.setForwardAverageCurrent(message.fac);
         vrShoe.setForwardAmpHours(message.fah);
         vrShoe.setForwardAmpCharged(message.fahc);
-    }
-
-    private void readShoeSide(VrShoe shoe, ShoeSide shoeSide)
-    {
-        shoe.setSide(shoeSide.si);
-    }
-
-    private void readButtonValues(ButtonValues values, VrShoe shoe)
-    {
-        for(ICommunicatorObserver observer : observers)
-        {
-            observer.buttonValuesRead(shoe, values.fbpv, values.rbpv, values.bmd);
-        }
     }
 
     private void writeMessage(VrShoe vrShoe, String message) throws IOException
@@ -239,7 +209,7 @@ public abstract class Communicator
             message += MESSAGE_TERMINATOR;
         }
         writeMessageImplementation(vrShoe, message);
-        for(ICommunicatorObserver observer : observers)
+        for(ICommunicatorObserver observer : observers.getCommunicationObservers())
         {
             observer.messageWritten(vrShoe, message);
         }
@@ -248,7 +218,7 @@ public abstract class Communicator
     protected void storeReadMessage(String message)
     {
         recievedMessages.add(message);
-        for(ICommunicatorObserver observer : observers)
+        for(ICommunicatorObserver observer : observers.getCommunicationObservers())
         {
             observer.messageRead(message);
         }
@@ -278,9 +248,9 @@ public abstract class Communicator
         messagesToSend.add(new Pair<>(vrShoe, json));
     }
 
-    public void resetOrigin(VrShoe vrShoe)
+    public void resetDistance(VrShoe vrShoe)
     {
-        ResetOrigin command = new ResetOrigin();
+        ResetDistanceTracker command = new ResetDistanceTracker();
         command.d = vrShoe.getDeviceId();
         String json = gson.toJson(command);
         messagesToSend.add(new Pair<>(vrShoe, json));
@@ -302,80 +272,39 @@ public abstract class Communicator
         messagesToSend.add(new Pair<>(vrShoe, json));
     }
 
-    public void sendOtherShoeId(VrShoe thisShoe, VrShoe otherShoe)
+    public void configureShoe(VrShoe vrShoe, ShoeConfiguration command)
     {
-        OtherShoeId command = new OtherShoeId();
-        command.osi = otherShoe.getDeviceId();
-        messagesToSend.add(new Pair<>(thisShoe, gson.toJson(command)));
+        command.id = vrShoe.getDeviceId();
+        command.d = vrShoe.getDeviceId();
+        command.g = false;
+        command.r = false;
+        String json = gson.toJson(command);
+        messagesToSend.add(new Pair<>(vrShoe, json));
     }
 
-    public void setShoeSide(VrShoe shoe, int side)
+    public void getShoeConfigurations(VrShoe vrShoe)
     {
-        if(side != ShoeSide.LEFT_SIDE && side != ShoeSide.RIGHT_SIDE)
-        {
-            throw new IllegalArgumentException();
-        }
-        shoe.setSide(side);
-        ShoeSide command = new ShoeSide();
-        command.si = side;
-        command.d = shoe.getDeviceId();
-        messagesToSend.add(new Pair<>(shoe, gson.toJson(command)));
-    }
-
-    public void getShoeSide(VrShoe vrShoe)
-    {
-        ShoeSide command = new ShoeSide();
+        ShoeConfiguration command = new ShoeConfiguration();
+        command.id = vrShoe.getDeviceId();
+        command.d = vrShoe.getDeviceId();
         command.g = true;
+        command.r = false;
+        String json = gson.toJson(command);
+        messagesToSend.add(new Pair<>(vrShoe, json));
+    }
+
+    public void startNegatingMotion(VrShoe vrShoe)
+    {
+        StartNegatingMotion command = new StartNegatingMotion();
         command.d = vrShoe.getDeviceId();
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
     }
 
-    public void startAlgorithm(VrShoe vrShoe)
+    public void stopNegatingMotion(VrShoe vrShoe)
     {
-        StartAlgorithm command = new StartAlgorithm();
+        StopNegatingMotion command = new StopNegatingMotion();
         command.d = vrShoe.getDeviceId();
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
-    }
-
-    public void stopAlgorithm(VrShoe vrShoe)
-    {
-        StopAlgorithm command = new StopAlgorithm();
-        command.d = vrShoe.getDeviceId();
-        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
-    }
-
-    public void getExtraSensorData(VrShoe vrShoe)
-    {
-        ExtraSensorData command = new ExtraSensorData();
-        command.d = vrShoe.getDeviceId();
-        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
-    }
-
-    public void setDutyCycleBoost(VrShoe vrShoe, float boost)
-    {
-        DutyCycleBoost command = new DutyCycleBoost();
-        command.d = vrShoe.getDeviceId();
-        command.dcb = boost;
-        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
-        vrShoe.setDutyCycleBoost(boost);
-    }
-
-    public void tunePidLoop(VrShoe vrShoe, float kp, float ki, float kd)
-    {
-        TunePidLoop command = new TunePidLoop();
-        command.kp = kp;
-        command.ki = ki;
-        command.kd = kd;
-        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
-        vrShoe.setPidParameters(kp, ki, kd);
-    }
-
-    public void setSpeedMultiplier(VrShoe vrShoe, float multiplier)
-    {
-        SpeedMultiplier command = new SpeedMultiplier();
-        command.spm = multiplier;
-        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
-        vrShoe.setSpeedMultiplier(multiplier);
     }
 
     public void getPowerStatistics(VrShoe vrShoe)
@@ -385,18 +314,9 @@ public abstract class Communicator
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
     }
 
-    public void configureButtons(
-            VrShoe vrShoe,
-            int buttonMaxDifference)
+    public void getTopSensorValues(VrShoe vrShoe)
     {
-        ConfigureButtons command = new ConfigureButtons();
-        command.bmd = buttonMaxDifference;
-        messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
-    }
-
-    public void getButtonValues(VrShoe vrShoe)
-    {
-        ButtonValues command = new ButtonValues();
+        TopSensorValues command = new TopSensorValues();
         command.id = vrShoe.getDeviceId();
         messagesToSend.add(new Pair<>(vrShoe, gson.toJson(command)));
     }
@@ -407,6 +327,11 @@ public abstract class Communicator
     }
 
     public VrShoe getVrShoe2() {return vrShoe2;}
+
+    public CommunicationObservers getObservers()
+    {
+        return observers;
+    }
 
     protected abstract void readMessagesIntoQueue() throws IOException;
     protected abstract void writeMessageImplementation(VrShoe vrShoe, String message) throws IOException;

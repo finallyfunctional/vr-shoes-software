@@ -41,3 +41,4 @@ const String MessageKeys::SPEED_MULTIPLER = "spm";
 const String MessageKeys::FRONT_BUTTON_PRESSED_VALUE = "fbpv";
 const String MessageKeys::REAR_BUTTON_PRESSED_VALUE = "rbpv";
 const String MessageKeys::BUTTON_MAX_DIFFERENCE = "bmd";
+const String MessageKeys::MOVEMENT_STATE = "ms";

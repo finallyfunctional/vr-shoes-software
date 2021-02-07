@@ -151,7 +151,7 @@ void Vesc::handleBraking()
     previousBrakeCurrent = brakeCurrent;
 }
 
-void Vesc::resetOrigin()
+void Vesc::resetDistance()
 {
     originTachometer = vescUart.data.tachometer;
 }

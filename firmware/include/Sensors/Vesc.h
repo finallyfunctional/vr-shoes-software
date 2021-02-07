@@ -18,7 +18,7 @@ class Vesc
     float getDistanceFromOrigin();
     float getCurrentDutyCycle();
     float getDesiredSpeed();
-    void resetOrigin();
+    void resetDistance();
     void setRpm(float rpm);
     void setSpeed(float speed);
     void inverseDirection();

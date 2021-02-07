@@ -3,25 +3,22 @@ package com.finallyfunctional.vr_shoes;
 public class VrShoe
 {
     private String deviceId;
+    private String otherShoeDeviceId;
     private boolean frontButtonPressed;
     private boolean rearButtonPressed;
     private float forwardSpeed;
-    private float sidewaySpeed;
+    private float sidewaysSpeed;
     private int side;
+
     private float dutyCycleBoost;
+    private float forwardDistance;
+    private float sidewaysDistance;
 
-    private float forwardDesiredSpeed;
-    private float sidewayDesiredSpeed;
-    private float forwardDutyCycle;
-    private float sidewayDutyCycle;
-    private float forwardDistanceFromOrigin;
-    private float sidewayDistanceFromOrigin;
-
-    private float sidewayPeakCurrent;
-    private float sidewayCurrentNow;
-    private float sidewayAverageCurrent;
-    private float sidewayAmpHours;
-    private float sidewayAmpCharged;
+    private float sidewaysPeakCurrent;
+    private float sidewaysCurrentNow;
+    private float sidewaysAverageCurrent;
+    private float sidewaysAmpHours;
+    private float sidewaysAmpCharged;
 
     private float forwardPeakCurrent;
     private float forwardCurrentNow;
@@ -31,12 +28,12 @@ public class VrShoe
 
     private float speedMultiplier;
 
-    private float kp, ki, kd;
-
     public String getDeviceId()
     {
         return deviceId;
     }
+
+    public String getOtherShoeDeviceId() {return otherShoeDeviceId;}
 
     public boolean isFrontButtonPressed()
     {
@@ -53,6 +50,8 @@ public class VrShoe
         this.deviceId = deviceId;
     }
 
+    public void setOtherShoeDeviceId(String otherShoeDeviceId) {this.otherShoeDeviceId = otherShoeDeviceId;};
+
     public void frontButtonPressed(boolean pressed)
     {
         frontButtonPressed = pressed;
@@ -68,9 +67,9 @@ public class VrShoe
         forwardSpeed = speed;
     }
 
-    public void setSidewaySpeed(float speed)
+    public void setSidewaysSpeed(float speed)
     {
-        sidewaySpeed = speed;
+        sidewaysSpeed = speed;
     }
 
     public float getForwardSpeed()
@@ -78,9 +77,9 @@ public class VrShoe
         return forwardSpeed;
     }
 
-    public float getSidewaySpeed()
+    public float getSidewaysSpeed()
     {
-        return sidewaySpeed;
+        return sidewaysSpeed;
     }
 
     public void setSide(int side)
@@ -93,53 +92,47 @@ public class VrShoe
         return side;
     }
 
+    public float getDutyCycleBoost()
+    {
+        return dutyCycleBoost;
+    }
+
     public void setDutyCycleBoost(float boost) {dutyCycleBoost = boost;}
 
-    public float getDutyCycleBoost() {return dutyCycleBoost;}
+    public void setForwardDistance(float distance) {
+        forwardDistance = distance;}
 
-    public void setForwardDesiredSpeed(float speed) {forwardDesiredSpeed = speed;}
+    public void setSidewaysDistance(float distance) {
+        sidewaysDistance = distance;}
 
-    public void setSidewayDesiredSpeed(float speed) {sidewayDesiredSpeed = speed;}
+    public float getForwardDistance() {return forwardDistance;}
 
-    public float getForwardDesiredSpeed() {return forwardDesiredSpeed;}
+    public float getSidewaysDistance() {return sidewaysDistance;}
 
-    public float getSidewayDesiredSpeed() {return sidewayDesiredSpeed;}
+    public void setSidewaysPeakCurrent(float current) {
+        sidewaysPeakCurrent = current;}
 
-    public void setForwardDutyCycle(float dutyCycle) {forwardDutyCycle = dutyCycle;}
+    public float getSidewaysPeakCurrent() {return sidewaysPeakCurrent;}
 
-    public void setSidewayDutyCycle(float dutyCycle) {sidewayDutyCycle = dutyCycle;}
+    public void setSidewaysCurrentNow(float current) {
+        sidewaysCurrentNow = current;}
 
-    public float getForwardDutyCycle() {return forwardDutyCycle;}
+    public float getSidewaysCurrentNow() {return sidewaysCurrentNow;}
 
-    public float getSidewayDutyCycle() {return sidewayDutyCycle;}
+    public void setSidewaysAverageCurrent(float current) {
+        sidewaysAverageCurrent = current;}
 
-    public void setForwardDistanceFromOrigin(float distance) {forwardDistanceFromOrigin = distance;}
+    public float getSidewaysAverageCurrent() {return sidewaysAverageCurrent;}
 
-    public void setSidewayDistanceFromOrigin(float distance) {sidewayDistanceFromOrigin = distance;}
+    public void setSidewaysAmpHours(float ampHours) {
+        sidewaysAmpHours = ampHours;}
 
-    public float getForwardDistanceFromOrigin() {return forwardDistanceFromOrigin;}
+    public float getSidewaysAmpHours() {return sidewaysAmpHours;}
 
-    public float getSidewayDistanceFromOrigin() {return sidewayDistanceFromOrigin;}
+    public void setSidewaysAmpCharged(float ampHours) {
+        sidewaysAmpCharged = ampHours;}
 
-    public void setSidewayPeakCurrent(float current) {sidewayPeakCurrent = current;}
-
-    public float getSidewayPeakCurrent() {return sidewayPeakCurrent;}
-
-    public void setSidewayCurrentNow(float current) {sidewayCurrentNow = current;}
-
-    public float getSidewayCurrentNow() {return sidewayCurrentNow;}
-
-    public void setSidewayAverageCurrent(float current) {sidewayAverageCurrent = current;}
-
-    public float getSidewayAverageCurrent() {return sidewayAverageCurrent;}
-
-    public void setSidewayAmpHours(float ampHours) {sidewayAmpHours = ampHours;}
-
-    public float getSidewayAmpHours() {return sidewayAmpHours;}
-
-    public void setSidewayAmpCharged(float ampHours) {sidewayAmpCharged = ampHours;}
-
-    public float getSidewayAmpCharged() {return sidewayAmpCharged;}
+    public float getSidewaysAmpCharged() {return sidewaysAmpCharged;}
 
     public void setForwardPeakCurrent(float current) {forwardPeakCurrent = current;}
 
@@ -169,27 +162,5 @@ public class VrShoe
     public void setSpeedMultiplier(float speedMultiplier)
     {
         this.speedMultiplier = speedMultiplier;
-    }
-
-    public void setPidParameters(float kp, float ki, float kd)
-    {
-        this.kp = kp;
-        this.ki = ki;
-        this.kd = kd;
-    }
-
-    public float getPidKp()
-    {
-        return kp;
-    }
-
-    public float getPidKi()
-    {
-        return ki;
-    }
-
-    public float getPidKd()
-    {
-        return kd;
     }
 }

@@ -16,10 +16,10 @@ class VescPair : public MovementTracker, public SpeedController, public PowerTra
     VescPair(Vesc* forwardVesc, Vesc* sidewaysVesc);
     void update();
     Vector2D getSpeed();
-    Vector2D getDistanceFromOrigin();
+    Vector2D getDistanceTracked();
     Vector2D getDesiredSpeed();
     Vector2D getCurrentDutyCycle();
-    void resetOrigin();
+    void resetDistance();
     void setRpm(float forwardRpm, float sidewayRpm);
     void setForwardRpm(float rpm);
     void setSidewayRpm(float rpm);
@@ -31,6 +31,7 @@ class VescPair : public MovementTracker, public SpeedController, public PowerTra
     void brakeForwardsBackwards();
     void brakeSideway();
     void setDutyCycleBoost(float boost);
+    float getDutyCycleBoost();
     void tunePidLoop(float kp, float ki, float kd);
     PowerStatistics getForwardCurrentStatistics();
     PowerStatistics getSidewayCurrentStatistics();

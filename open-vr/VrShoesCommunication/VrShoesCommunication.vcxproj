@@ -62,6 +62,7 @@
     <ClInclude Include="include\rapidjson\stringbuffer.h" />
     <ClInclude Include="include\rapidjson\writer.h" />
     <ClInclude Include="include\ResponseCodes.h" />
+    <ClInclude Include="include\ShoeMovementState.h" />
     <ClInclude Include="include\VrShoe.h" />
     <ClInclude Include="include\VrShoesCommunication.h" />
   </ItemGroup>

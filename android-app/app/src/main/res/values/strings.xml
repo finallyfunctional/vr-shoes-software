@@ -62,6 +62,7 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="break_in_shoes">Break In Shoes</string>
+    <string name="reset_distance">Reset Distance</string>
     <string-array name="sides_array">
         <item>Unspecified</item>
         <item>Right</item>

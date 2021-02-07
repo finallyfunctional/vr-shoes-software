@@ -41,4 +41,5 @@ public:
     static const char* FORWARD_AMP_HOURS;
     static const char* FORWARD_AMP_HOURS_CHARGED;
     static const char* SPEED_MULTIPLER;
+    static const char* MOVEMENT_STATE;
 };

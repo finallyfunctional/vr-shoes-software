@@ -16,7 +16,7 @@
         <activity android:name=".ui.SettingsActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.ManualControlActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.MovementDiagnosticsActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.ConfigureButtonsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.TestTopSensorsActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.MonitorActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.DiagnosticsActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.PairVrShoesActivity" android:screenOrientation="portrait" />

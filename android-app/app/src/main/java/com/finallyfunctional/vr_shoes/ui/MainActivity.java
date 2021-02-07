@@ -38,63 +38,110 @@ public class MainActivity extends AppCompatActivity
     public void onResume()
     {
         super.onResume();
-        try
+        ProgressBarUtility.showProgressBar(progressBar, this);
+        new Runnable()
         {
-            ProgressBarUtility.showProgressBar(progressBar, this);
-            communicationInitializer.initialize();
-            ProgressBarUtility.hideProgressBar(progressBar, MainActivity.this);
-        }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
-            DialogUtility.showOkayDialog(this, getString(R.string.communication_error), new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
+                try
                 {
-                    finish();
-                    System.exit(0);
-                }
-            });
-        }
-        catch (CommunicationNotSupportedException ex)
-        {
-            DialogUtility.showOkayDialog(this, getString(ex.dialogMessageId), new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    finish();
-                    System.exit(0);
-                }
-            });
-        }
-        catch(CommunicationNotEnabledException ex)
-        {
-            Intent enableBtIntent = new Intent(ex.requestToEnable);
-            startActivityForResult(enableBtIntent, 1);
-            Toast.makeText(getApplicationContext(), getString(ex.dialogMessageId), Toast.LENGTH_LONG).show();
-        }
-        catch(final ConfigurationWithOtherActivityNeededException ex)
-        {
-            if(ex.showDialogFirst)
-            {
-                DialogUtility.showOkayDialog(this, getString(ex.dialogMessageId), new Runnable()
-                {
-                    @Override
-                    public void run()
+                    communicationInitializer.initialize(new Runnable()
                     {
-                        Intent intent = new Intent(MainActivity.this, ex.otherActivity);
-                        startActivity(intent);
-                    }
-                });
+                        @Override
+                        public void run()
+                        {
+                            MainActivity.this.runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    ProgressBarUtility.hideProgressBar(progressBar, MainActivity.this);
+                                }
+                            });
+                        }
+                    });
+                }
+                catch (IOException ex)
+                {
+                    ex.printStackTrace();
+                    MainActivity.this.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            DialogUtility.showOkayDialog(MainActivity.this, getString(R.string.communication_error), new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    finish();
+                                    System.exit(0);
+                                }
+                            });
+                        }
+                    });
+                }
+                catch (final CommunicationNotSupportedException ex)
+                {
+                    MainActivity.this.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            DialogUtility.showOkayDialog(MainActivity.this, getString(ex.dialogMessageId), new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    finish();
+                                    System.exit(0);
+                                }
+                            });
+                        }
+                    });
+                }
+                catch(final CommunicationNotEnabledException ex)
+                {
+                    MainActivity.this.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            Intent enableBtIntent = new Intent(ex.requestToEnable);
+                            startActivityForResult(enableBtIntent, 1);
+                            Toast.makeText(getApplicationContext(), getString(ex.dialogMessageId), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                catch(final ConfigurationWithOtherActivityNeededException ex)
+                {
+                    MainActivity.this.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            if(ex.showDialogFirst)
+                            {
+                                DialogUtility.showOkayDialog(MainActivity.this, getString(ex.dialogMessageId), new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        Intent intent = new Intent(MainActivity.this, ex.otherActivity);
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
+                            else {
+                                Intent intent = new Intent(MainActivity.this, ex.otherActivity);
+                                startActivity(intent);
+                            }
+                        }
+                    });
+                }
             }
-            else
-            {
-                Intent intent = new Intent(this, ex.otherActivity);
-                startActivity(intent);
-            }
-        }
+        }.run();
     }
 
     public void settingsBtnClicked(View view)

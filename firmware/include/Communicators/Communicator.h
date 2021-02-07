@@ -29,35 +29,21 @@ class Communicator
     void sendSensorDataIfStale(String sendingToDeviceId);
     void sendSensorData();
     int recieveSensorData();
-    int resetOrigin();
-    int sendDistanceFromOrigin();
+    int resetDistanceTracker();
     int setRpm();
-    int setOtherShoeId();
-    int setShoeSide();
-    int getShoeSide();
-    float roundFloatToTwoDecimalPlaces(float number);
-    int startAlgorithm();
-    int stopAlgorithm();
-    int sendExtraSensorData();
-    int setDutyCycleBoost();
-    int tunePidLoop();
-    int setSpeedMultipler();
-    int getSpeedMultipler();
+    int configureShoe();
+    int getShoeConfigurations();
+    int startNegatingMotion();
+    int stopNegatingMotion();
     int getPowerStatistics();
-    int configureButtons();
-    int sendButtonValues();
+    float roundFloatToTwoDecimalPlaces(float number);
+    bool isGetRequest();
+    int setShoeSide(int shoeSide);
 
     static const char* SHOE_ID_KEY;
     static const String DEVICE_ID_PREFIX;
 
     protected:
-
-    Sensors* sensors;
-    AutoShoeController* shoeController;
-    Timer* sendSensorDataTimer;
-
-    static const char MESSAGE_TERMINATOR;
-
     virtual void initializeCommunication() = 0;
     virtual void processMessages() = 0;
     virtual int handleImplementationSpecificMessage(String commandId) = 0;
@@ -67,6 +53,12 @@ class Communicator
     virtual void sendMessageTo(String sendingToDeviceId) = 0;
     int handleRecievedMessage(String message);
     String cleanMessage(String message);
+
+    Sensors* sensors;
+    AutoShoeController* shoeController;
+    Timer* sendSensorDataTimer;
+
+    static const char MESSAGE_TERMINATOR;
 
     String shoeId;
     String lastSensorDataMessageSent;

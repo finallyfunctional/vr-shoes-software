@@ -18,6 +18,9 @@ void Communicator::initialize(Sensors* sensors, AutoShoeController* shoeControll
     }
     initializeCommunication();
     lastSensorDataMessageSent = "";
+
+    //Serial.print("Shoe ID - ");
+    //Serial.println(shoeId);
 }
 
 void Communicator::update()
@@ -88,19 +91,11 @@ int Communicator::handleRecievedMessage(String message)
     }
     else if(commandId.equals(Messages::SENSOR_DATA))
     {
-        if(!json[MessageKeys::GET].isNull() && json[MessageKeys::GET].as<bool>())
-        {
-            return replyWithSensorData();
-        }
-        else
-        {
-            return recieveSensorData();
-        }
-        
+        return isGetRequest() ? replyWithSensorData() : recieveSensorData();        
     }
-    else if(commandId.equals(Messages::RESET_ORIGIN))
+    else if(commandId.equals(Messages::RESET_DISTANCE_TRACKER))
     {
-        return resetOrigin();
+        return resetDistanceTracker();
     }
     else if(commandId.equals(Messages::SET_RPM))
     {
@@ -110,63 +105,21 @@ int Communicator::handleRecievedMessage(String message)
     {
         return setCommunicationMode();
     }
-    else if(commandId.equals(Messages::OTHER_SHOE_ID))
+    else if(commandId.equals(Messages::SHOE_CONFIGURATIONS))
     {
-        return setOtherShoeId();
+        return isGetRequest() ? getShoeConfigurations() : configureShoe();
     }
-    else if(commandId.equals(Messages::SHOE_SIDE))
+    else if(commandId.equals(Messages::START_NEGATING_MOTION))
     {
-        if(!json[MessageKeys::GET].isNull() && json[MessageKeys::GET].as<bool>())
-        {
-            return getShoeSide();
-        }
-        else 
-        {
-            return setShoeSide();
-        }
+        return startNegatingMotion();
     }
-    else if(commandId.equals(Messages::START_ALGORITHM))
+    else if(commandId.equals(Messages::STOP_NEGATING_MOTION))
     {
-        return startAlgorithm();
-    }
-    else if(commandId.equals(Messages::STOP_ALGORITHM))
-    {
-        return stopAlgorithm();
-    }
-    else if(commandId.equals(Messages::EXTRA_SENSOR_DATA))
-    {
-        return sendExtraSensorData();
-    }
-    else if(commandId.equals(Messages::DUTY_CYCLE_BOOST))
-    {
-        return setDutyCycleBoost();
-    }
-    else if(commandId.equals(Messages::TUNE_PID_LOOP))
-    {
-        return tunePidLoop();
-    }
-    else if(commandId.equals(Messages::SPEED_MULTIPLIER))
-    {
-        if(!json[MessageKeys::GET].isNull() && json[MessageKeys::GET].as<bool>())
-        {
-            return getSpeedMultipler();
-        }
-        else 
-        {
-            return setSpeedMultipler();
-        }
+        return stopNegatingMotion();
     }
     else if(commandId.equals(Messages::POWER_STATISTICS))
     {
         return getPowerStatistics();
-    }
-    else if(commandId.equals(Messages::CONFIGURE_BUTTONS))
-    {
-        return configureButtons();
-    }
-    else if(commandId.equals(Messages::BUTTON_VALUES))
-    {
-        return sendButtonValues();
     }
     else
     {
@@ -179,6 +132,11 @@ int Communicator::handleRecievedMessage(String message)
         json[MessageKeys::ERROR] = ResponseCodes::UNKNOWN_REQUEST;
     }
     return ResponseCodes::UNKNOWN_REQUEST;
+}
+
+bool Communicator::isGetRequest()
+{
+    return !json[MessageKeys::GET].isNull() && json[MessageKeys::GET].as<bool>();
 }
 
 int Communicator::ping()
@@ -224,8 +182,8 @@ int Communicator::recieveSensorData()
     remoteShoe->rearButtonPressed = json[MessageKeys::REAR_BUTTON_PRESSED];
     remoteShoe->forwardSpeed = json[MessageKeys::FORWARD_SPEED];
     remoteShoe->sidewaySpeed = json[MessageKeys::SIDEWAY_SPEED];
-    remoteShoe->forwardDistanceFromOrigin = json[MessageKeys::FORWARD_DISTANCE];
-    remoteShoe->sidewayDistanceFromOrigin = json[MessageKeys::SIDEWAY_DISTANCE];
+    remoteShoe->forwardDistance = json[MessageKeys::FORWARD_DISTANCE];
+    remoteShoe->sidewaysDistance = json[MessageKeys::SIDEWAY_DISTANCE];
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }
 
@@ -243,9 +201,11 @@ void Communicator::sendSensorData()
     json[MessageKeys::FORWARD_SPEED] = roundFloatToTwoDecimalPlaces(speed.getX());
     json[MessageKeys::SIDEWAY_SPEED] = roundFloatToTwoDecimalPlaces(speed.getY());
 
-    Vector2D distance = movementTracker->getDistanceFromOrigin();
+    Vector2D distance = movementTracker->getDistanceTracked();
     json[MessageKeys::FORWARD_DISTANCE] = roundFloatToTwoDecimalPlaces(distance.getX());
     json[MessageKeys::SIDEWAY_DISTANCE] = roundFloatToTwoDecimalPlaces(distance.getY());
+
+    json[MessageKeys::MOVEMENT_STATE] = shoeController->getMovementState();
 }
 
 float Communicator::roundFloatToTwoDecimalPlaces(float number)
@@ -253,12 +213,12 @@ float Communicator::roundFloatToTwoDecimalPlaces(float number)
     return (float)(roundf(number * 100) / 100);
 }
 
-int Communicator::resetOrigin()
+int Communicator::resetDistanceTracker()
 {
-    sensors->getMovementTracker()->resetOrigin();
+    sensors->getMovementTracker()->resetDistance();
 
     json.clear();
-    json[MessageKeys::COMMAND] = Messages::RESET_ORIGIN;
+    json[MessageKeys::COMMAND] = Messages::RESET_DISTANCE_TRACKER;
     json[MessageKeys::REPLY] = true;
     json[MessageKeys::SHOE_ID] = shoeId;
 
@@ -280,16 +240,41 @@ int Communicator::setRpm()
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
 
-int Communicator::setOtherShoeId()
+int Communicator::getShoeConfigurations()
+{
+    json.clear();
+    json[MessageKeys::COMMAND] = Messages::SHOE_CONFIGURATIONS;
+    json[MessageKeys::REPLY] = true;
+    json[MessageKeys::SHOE_ID] = shoeId;
+    json[MessageKeys::OTHER_SHOE_ID] = sensors->getRemoteVrShoe()->shoeId;
+    json[MessageKeys::SIDE] = VrShoePreferences.getInt(ShoeSides::SHOE_SIDE_KEY, ShoeSides::UNSPECIFIED);
+    json[MessageKeys::DUTY_CYCLE_BOOST] = roundFloatToTwoDecimalPlaces(sensors->getSpeedController()->getDutyCycleBoost());
+    json[MessageKeys::SPEED_MULTIPLER] = roundFloatToTwoDecimalPlaces(shoeController->getSpeedMultiplier());
+
+    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
+}
+
+int Communicator::configureShoe()
 {
     String otherShoeId = json[MessageKeys::OTHER_SHOE_ID];
+    float boost = json[MessageKeys::DUTY_CYCLE_BOOST];
+    int shoeSide = json[MessageKeys::SIDE];
+    float speedMultiplier = json[MessageKeys::SPEED_MULTIPLER];
+
+    if(setShoeSide(shoeSide) == ResponseCodes::BAD_REQUEST)
+    {
+        return ResponseCodes::BAD_REQUEST;
+    }
+
     sensors->getRemoteVrShoe()->shoeId = otherShoeId;
+    sensors->getSpeedController()->setDutyCycleBoost(boost);
+    shoeController->setSpeedMultiplier(speedMultiplier);
+    
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }
 
-int Communicator::setShoeSide()
+int Communicator::setShoeSide(int shoeSide)
 {
-    int shoeSide = json[MessageKeys::SIDE];
     if(shoeSide == ShoeSides::LEFT)
     {
         VrShoePreferences.putInt(ShoeSides::SHOE_SIDE_KEY, shoeSide);
@@ -308,76 +293,15 @@ int Communicator::setShoeSide()
     }
 }
 
-int Communicator::getShoeSide()
-{
-    int shoeSide = VrShoePreferences.getInt(ShoeSides::SHOE_SIDE_KEY, ShoeSides::UNSPECIFIED);
-    json.clear();
-    json[MessageKeys::COMMAND] = Messages::SHOE_SIDE;
-    json[MessageKeys::REPLY] = true;
-    json[MessageKeys::SIDE] = shoeSide;
-    json[MessageKeys::SHOE_ID] = shoeId;
-    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
-}
-
-int Communicator::startAlgorithm()
+int Communicator::startNegatingMotion()
 {
     shoeController->start();
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }
 
-int Communicator::stopAlgorithm()
+int Communicator::stopNegatingMotion()
 {
     shoeController->stop();
-    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
-}
-
-int Communicator::sendExtraSensorData()
-{
-    json.clear();
-    json[MessageKeys::COMMAND] = Messages::EXTRA_SENSOR_DATA;
-    json[MessageKeys::SHOE_ID] = shoeId;
-    json[MessageKeys::REPLY] = true;
-
-    Vector2D desiredSpeed = sensors->getMovementTracker()->getDesiredSpeed();
-    json[MessageKeys::FORWARD_DESIRED_SPEED] = desiredSpeed.getX();
-    json[MessageKeys::SIDEWAY_DESIRED_SPEED] = desiredSpeed.getY();
-
-    Vector2D currentDutyCycle = sensors->getSpeedController()->getCurrentDutyCycle();
-    json[MessageKeys::FORWARD_DUTY_CYCLE] = currentDutyCycle.getX();
-    json[MessageKeys::SIDEWAY_DUTY_CYCLE] = currentDutyCycle.getY();
-
-    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
-}
-
-int Communicator::setDutyCycleBoost()
-{
-    float boost = json[MessageKeys::DUTY_CYCLE_BOOST];
-    sensors->getSpeedController()->setDutyCycleBoost(boost);
-    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
-}
-
-int Communicator::tunePidLoop()
-{
-    float kp = json[MessageKeys::KP];
-    float ki = json[MessageKeys::KI];
-    float kd = json[MessageKeys::KD];
-    sensors->getSpeedController()->tunePidLoop(kp, ki, kd);
-    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
-}
-
-int Communicator::getSpeedMultipler()
-{
-    json[MessageKeys::COMMAND] = Messages::SPEED_MULTIPLIER;
-    json[MessageKeys::SHOE_ID] = shoeId;
-    json[MessageKeys::REPLY] = true;
-    json[MessageKeys::SPEED_MULTIPLER] = shoeController->getSpeedMultiplier();
-    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
-}
-
-int Communicator::setSpeedMultipler()
-{
-    float multiplier = json[MessageKeys::SPEED_MULTIPLER];
-    shoeController->setSpeedMultiplier(multiplier);
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }
 
@@ -400,39 +324,6 @@ int Communicator::getPowerStatistics()
     json[MessageKeys::FORWARD_CURRENT_NOW] = roundFloatToTwoDecimalPlaces(forwardStatistics.currentNow);
     json[MessageKeys::FORWARD_AMP_HOURS] = roundFloatToTwoDecimalPlaces(forwardStatistics.ampHours);
     json[MessageKeys::FORWARD_AMP_HOURS_CHARGED] = roundFloatToTwoDecimalPlaces(forwardStatistics.ampHoursCharged);
-
-    return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
-}
-
-int Communicator::configureButtons()
-{
-    int maxDiff = json[MessageKeys::BUTTON_MAX_DIFFERENCE];
-    Button* frontBtn = sensors->getFrontButton();
-    Button* rearBtn = sensors->getRearButton();
-
-    frontBtn->setPressedValue();
-    frontBtn->setMaxDifferencePercentage(maxDiff);
-    rearBtn->setPressedValue();
-    rearBtn->setMaxDifferencePercentage(maxDiff);
-
-    VrShoePreferences.putInt(Button::FRONT_BUTTON_PRESSED_VALUE_KEY, frontBtn->getPressedValue());
-    VrShoePreferences.putInt(Button::REAR_BUTTON_PRESSED_VALUE_KEY, rearBtn->getPressedValue());
-    VrShoePreferences.putInt(Button::MAX_DIFF_VALUE_KEY, maxDiff);
-
-    return ResponseCodes::GOOD_REQUEST_NO_REPLY;
-}
-
-int Communicator::sendButtonValues()
-{
-    Button* frontBtn = sensors->getFrontButton();
-    Button* rearBtn = sensors->getRearButton();
-
-    json[MessageKeys::COMMAND] = Messages::BUTTON_VALUES;
-    json[MessageKeys::SHOE_ID] = shoeId;
-    json[MessageKeys::REPLY] = true;
-    json[MessageKeys::FRONT_BUTTON_PRESSED_VALUE] = frontBtn->getCurrentValue();
-    json[MessageKeys::REAR_BUTTON_PRESSED_VALUE] = rearBtn->getCurrentValue();
-    json[MessageKeys::BUTTON_MAX_DIFFERENCE] = frontBtn->getMaxDifferencePercentage();
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }

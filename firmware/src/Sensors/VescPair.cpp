@@ -1,6 +1,6 @@
 #include "../../include/Sensors/VescPair.h"
 
-VescPair::VescPair(Vesc* forwardVesc, Vesc* sidewaysVesc)
+VescPair::VescPair(Vesc* forwardVesc, Vesc* sidewaysVesc) : SpeedController()
 {
     this->forwardVesc = forwardVesc;
     this->sidewaysVesc = sidewaysVesc;
@@ -19,10 +19,10 @@ void VescPair::update()
     //sidewaysVesc->update();
 }
 
-void VescPair::resetOrigin()
+void VescPair::resetDistance()
 {
-    forwardVesc->resetOrigin();
-    sidewaysVesc->resetOrigin();
+    forwardVesc->resetDistance();
+    sidewaysVesc->resetDistance();
 }
 
 Vector2D VescPair::getSpeed()
@@ -30,7 +30,7 @@ Vector2D VescPair::getSpeed()
     return Vector2D(forwardVesc->getSpeed(), sidewaysVesc->getSpeed());
 }
 
-Vector2D VescPair::getDistanceFromOrigin()
+Vector2D VescPair::getDistanceTracked()
 {
     return Vector2D(
         forwardVesc->getDistanceFromOrigin(),
@@ -92,8 +92,14 @@ void VescPair::brakeSideway()
 
 void VescPair::setDutyCycleBoost(float boost)
 {
+    SpeedController::setDutyCycleBoost(boost);
     forwardVesc->setDutyCycleBoost(boost);
     sidewaysVesc->setDutyCycleBoost(boost);
+}
+
+float VescPair::getDutyCycleBoost()
+{
+    return boost;
 }
 
 Vector2D VescPair::getDesiredSpeed()
