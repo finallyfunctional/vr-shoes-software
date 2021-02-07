@@ -6,6 +6,8 @@
 #include "../Sensors/RemoteVrShoe.h"
 #include "../Sensors/SpeedController.h"
 #include "../ShoeSides.h"
+#include "../Timer.h"
+#include "./StrideTracking/StrideTracker.h"
 
 class ForwardWalking : public AutoShoeController
 {
@@ -13,6 +15,11 @@ class ForwardWalking : public AutoShoeController
     ForwardWalking(Sensors* sensors, int side);
     void update();
     void start();
+
+    private:
+    bool thisFootWasInAir;
+    StrideTracker* strideTracker;
+    Timer* otherShoeMovementTimer;
 };
 
 #endif

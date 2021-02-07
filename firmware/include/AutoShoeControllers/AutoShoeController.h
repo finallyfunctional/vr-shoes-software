@@ -5,7 +5,7 @@
 #include <Preferences.h>
 #include "../Sensors/Sensors.h"
 #include "../ShoeSides.h"
-#include "ShoeMovementState.h"
+#include "./States/ShoeMovementState.h"
 #include "../VrShoeGlobals.h"
 
 class AutoShoeController

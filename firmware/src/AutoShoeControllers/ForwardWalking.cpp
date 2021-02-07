@@ -2,7 +2,9 @@
 
 ForwardWalking::ForwardWalking(Sensors* sensors, int side) : AutoShoeController(sensors, side)
 {
-    
+    strideTracker = new StrideTracker(sensors->getMovementTracker());
+    otherShoeMovementTimer = new Timer(1000);
+    thisFootWasInAir = false;
 }
 
 void ForwardWalking::start()
@@ -26,9 +28,27 @@ void ForwardWalking::update()
     movementState = ShoeMovementState::STOPPED;
     if(thisFootOnFloor)
     {
-        sensors->getMovementTracker()->resetDistance();
-        
-        if(oppositeFootInAir && !oppositeFootInsideBuffer)
+        if(thisFootWasInAir)
+        {
+            strideTracker->storeCurrentStrideLength();
+            strideTracker->reset();
+            thisFootWasInAir = false;
+            otherShoeMovementTimer->start();
+        }
+
+        if(oppositeFootInAir)
+        {
+            if(!oppositeFootInsideBuffer)
+            {
+                speedController->setForwardRpm(-100 * speedMultiplier);
+                movementState = ShoeMovementState::WALKING;
+            }
+            else
+            {
+                speedController->setForwardRpm(0);
+            }
+        }
+        else if(!otherShoeMovementTimer->timeIsUp() && strideTracker->getPosition() != ShoePositionState::MIDDLE)
         {
             speedController->setForwardRpm(-100 * speedMultiplier);
             movementState = ShoeMovementState::WALKING;
@@ -39,8 +59,15 @@ void ForwardWalking::update()
         }
         
     }
-    else 
+    else if(!thisFootWasInAir && strideTracker->getPosition() == ShoePositionState::BEHIND)
+    {
+        //speedController->brakeForwardsBackwards(); - test later
+        thisFootWasInAir = true;
+    }
+    else
     {
         speedController->setForwardRpm(0);
+        thisFootWasInAir = true;
     }
+    
 }
