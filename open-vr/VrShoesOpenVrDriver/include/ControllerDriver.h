@@ -31,6 +31,7 @@ private:
 	EVRInitError InitializeOpenVrConfigurations(uint32_t unObjectId);
 	float GetYSpeed();
 	double GetEllapsedTimeInSeconds();
+	double GetDeceleratingSpeed(double timeAdjustment, double slopeAdjustment);
 
 	uint32_t driverId;
 	VRInputComponentHandle_t joystickYHandle;
