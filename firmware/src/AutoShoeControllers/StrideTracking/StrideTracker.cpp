@@ -5,6 +5,7 @@ StrideTracker::StrideTracker(MovementTracker* movementTracker)
     this->movementTracker = movementTracker;
     centerRange = new Range();
     strideLengthIndex = 0;
+    strideLength = DEFAULT_STRIDE_LENGTH;
     clearStrideLengths();
     movementTracker->resetDistance();
     reset();
@@ -23,8 +24,6 @@ void StrideTracker::reset()
     if(position == ShoePositionState::MIDDLE)
     {
         return;
-        //startedAtCenter = true;
-        //centerRange->setRange(-1 * APPROX_CENTER_RADIUS, APPROX_CENTER_RADIUS);
     }
     else 
     {
@@ -32,11 +31,11 @@ void StrideTracker::reset()
         float center = 0;
         if(position == ShoePositionState::FRONT)
         {
-            center = 0 - getAverageStrideLength() / 2;
+            center = 0 - strideLength / 2 - 0.08;
         }
         else 
         {
-            center = getAverageStrideLength() / 2;
+            center = strideLength / 2 - 0.08;
         }
         centerRange->setRange(center - APPROX_CENTER_RADIUS, center + APPROX_CENTER_RADIUS);
     }
@@ -62,19 +61,18 @@ int StrideTracker::getPosition()
 
 float StrideTracker::getAverageStrideLength()
 {
-    return DEFAULT_STRIDE_LENGTH;
-    // float sum = 0;
-    // int count = 0;
-    // for(int i = 0; i < NUM_STRIDES; i++)
-    // {
-    //     if(recentStrideLengths[i] == 0)
-    //     {
-    //         continue;
-    //     }
-    //     sum += recentStrideLengths[i];
-    //     count++;
-    // }
-    // return count == 0 ? DEFAULT_STRIDE_LENGTH : sum / count;
+    float sum = 0;
+    int count = 0;
+    for(int i = 0; i < NUM_STRIDES; i++)
+    {
+        if(recentStrideLengths[i] == 0)
+        {
+            continue;
+        }
+        sum += recentStrideLengths[i];
+        count++;
+    }
+    return count == 0 ? DEFAULT_STRIDE_LENGTH : sum / count;
 }
 
 void StrideTracker::clearStrideLengths()
@@ -93,7 +91,7 @@ void StrideTracker::storeCurrentStrideLength()
     {
         return;
     }
-    float strideLength = fabs(movementTracker->getDistanceTracked().getX());
+    strideLength = fabs(movementTracker->getDistanceTracked().getX());
     if((startedAtCenter && (position == ShoePositionState::FRONT || position == ShoePositionState::BEHIND)) ||
        (!startedAtCenter && position == ShoePositionState::MIDDLE)) //half stride
     {
@@ -102,6 +100,6 @@ void StrideTracker::storeCurrentStrideLength()
     recentStrideLengths[strideLengthIndex++] = strideLength;
     if(strideLength >= NUM_STRIDES)
     {
-        strideLength = 0;
+        strideLengthIndex = 0;
     }
 }

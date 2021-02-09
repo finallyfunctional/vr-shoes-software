@@ -35,7 +35,7 @@ void ForwardWalking::update()
     {
         if(thisFootWasInAir)
         {
-            strideTracker->storeCurrentStrideLength();
+            //strideTracker->storeCurrentStrideLength();
             strideTracker->reset();
             thisFootWasInAir = false;
             if(strideTracker->getPosition() != ShoePositionState::MIDDLE)
