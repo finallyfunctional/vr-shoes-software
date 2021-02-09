@@ -216,6 +216,7 @@ float Communicator::roundFloatToTwoDecimalPlaces(float number)
 int Communicator::resetDistanceTracker()
 {
     sensors->getMovementTracker()->resetDistance();
+    shoeController->recenter();
 
     json.clear();
     json[MessageKeys::COMMAND] = Messages::RESET_DISTANCE_TRACKER;

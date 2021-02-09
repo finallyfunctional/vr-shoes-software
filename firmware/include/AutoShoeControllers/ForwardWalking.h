@@ -14,6 +14,7 @@ class ForwardWalking : public AutoShoeController
     public:
     ForwardWalking(Sensors* sensors, int side);
     void update();
+    void recenter();
     void start();
 
     private:

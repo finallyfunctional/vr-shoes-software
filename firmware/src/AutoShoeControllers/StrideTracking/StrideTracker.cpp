@@ -10,13 +10,21 @@ StrideTracker::StrideTracker(MovementTracker* movementTracker)
     reset();
 }
 
+void StrideTracker::recenter()
+{
+    movementTracker->resetDistance();
+    centerRange->setRange(-1 * APPROX_CENTER_RADIUS, APPROX_CENTER_RADIUS);
+    startedAtCenter = true;
+}
+
 void StrideTracker::reset()
 {
     int position = getPosition();
     if(position == ShoePositionState::MIDDLE)
     {
-        startedAtCenter = true;
-        centerRange->setRange(-1 * APPROX_CENTER_RADIUS, APPROX_CENTER_RADIUS);
+        return;
+        //startedAtCenter = true;
+        //centerRange->setRange(-1 * APPROX_CENTER_RADIUS, APPROX_CENTER_RADIUS);
     }
     else 
     {
@@ -54,18 +62,19 @@ int StrideTracker::getPosition()
 
 float StrideTracker::getAverageStrideLength()
 {
-    float sum = 0;
-    int count = 0;
-    for(int i = 0; i < NUM_STRIDES; i++)
-    {
-        if(recentStrideLengths[i] == 0)
-        {
-            continue;
-        }
-        sum += recentStrideLengths[i];
-        count++;
-    }
-    return count == 0 ? DEFAULT_STRIDE_LENGTH : sum / count;
+    return DEFAULT_STRIDE_LENGTH;
+    // float sum = 0;
+    // int count = 0;
+    // for(int i = 0; i < NUM_STRIDES; i++)
+    // {
+    //     if(recentStrideLengths[i] == 0)
+    //     {
+    //         continue;
+    //     }
+    //     sum += recentStrideLengths[i];
+    //     count++;
+    // }
+    // return count == 0 ? DEFAULT_STRIDE_LENGTH : sum / count;
 }
 
 void StrideTracker::clearStrideLengths()

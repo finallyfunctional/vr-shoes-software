@@ -12,6 +12,7 @@ class StrideTracker
     public:
     StrideTracker(MovementTracker* movementTracker);
     void reset();
+    void recenter();
     int getPosition();
     void storeCurrentStrideLength();
 
@@ -20,8 +21,8 @@ class StrideTracker
     void clearStrideLengths();
 
     const static int NUM_STRIDES = 20;
-    const float APPROX_CENTER_RADIUS = 0.15;
-    const float DEFAULT_STRIDE_LENGTH = 0.748;
+    const float APPROX_CENTER_RADIUS = 0.1;
+    const float DEFAULT_STRIDE_LENGTH = 0.5;
 
     MovementTracker* movementTracker;
     Range* centerRange;

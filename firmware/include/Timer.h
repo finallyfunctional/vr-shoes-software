@@ -11,6 +11,7 @@ class Timer
     Timer(unsigned long timeout);
     void start();
     bool timeIsUp();
+    void setTimeout(long timeout);
     unsigned long getElapsedTime();
     void printElapsedTime();
 
@@ -18,7 +19,6 @@ class Timer
 
     unsigned long startTime;
     unsigned long timeout;
-    bool temp;
 
 };
 

@@ -18,6 +18,11 @@ void OmniPoweredWalking::start()
     compensateForBackwardsArc = false;
 }
 
+void OmniPoweredWalking::recenter()
+{
+    
+}
+
 void OmniPoweredWalking::update()
 {
     if(!started)

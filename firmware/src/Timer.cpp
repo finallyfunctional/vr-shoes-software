@@ -15,6 +15,11 @@ void Timer::start()
     startTime = millis();
 }
 
+void Timer::setTimeout(long timeout)
+{
+    this->timeout = timeout;
+}
+
 bool Timer::timeIsUp()
 {
     unsigned long current = millis();
