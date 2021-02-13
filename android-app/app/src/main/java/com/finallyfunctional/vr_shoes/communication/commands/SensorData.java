@@ -15,6 +15,8 @@ public class SensorData
     public float ss; //sideways speed
     public float fd; //forward distance
     public float sid; //sideways distance
+    public float sl; //stride length
+    public int po; //position
 
     public SensorData()
     {

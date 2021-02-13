@@ -28,6 +28,12 @@ public class VrShoe
 
     private float speedMultiplier;
 
+    public float strideLength;
+    public float centerRadius;
+    public float centerOffset;
+    public boolean calculateStrideLength;
+    public int position;
+
     public String getDeviceId()
     {
         return deviceId;

@@ -7,6 +7,7 @@
 #include "../ShoeSides.h"
 #include "./States/ShoeMovementState.h"
 #include "../VrShoeGlobals.h"
+#include "./StrideTracking/StrideTracker.h"
 
 class AutoShoeController
 {
@@ -19,12 +20,14 @@ class AutoShoeController
     virtual void setSpeedMultiplier(float multiplier);
     virtual float getSpeedMultiplier();
     int getMovementState();
+    StrideTracker* getStrideTracker();
 
     static const char* SPEED_MULTIPLIER_KEY;
 
     protected:
     bool started;
     Sensors* sensors;
+    StrideTracker* strideTracker;
     int side;
     int movementState;
     float speedMultiplier;

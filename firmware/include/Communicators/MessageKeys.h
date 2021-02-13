@@ -48,6 +48,11 @@ class MessageKeys
     static const String REAR_BUTTON_PRESSED_VALUE;
     static const String BUTTON_MAX_DIFFERENCE;
     static const String MOVEMENT_STATE;
+    static const String STRIDE_LENGTH;
+    static const String CENTER_RADIUS;
+    static const String CENTER_OFFSET;
+    static const String CALCULATE_STRIDE_LENGTH;
+    static const String POSITION;
 };
 
 #endif

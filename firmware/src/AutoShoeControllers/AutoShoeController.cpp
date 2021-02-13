@@ -5,6 +5,7 @@ const char* AutoShoeController::SPEED_MULTIPLIER_KEY = "spm";
 AutoShoeController::AutoShoeController(Sensors* sensors, int side)
 {
     this->sensors = sensors;
+    strideTracker = new StrideTracker(sensors->getMovementTracker());
     this->started = false;
     this->speedMultiplier = VrShoePreferences.getFloat(SPEED_MULTIPLIER_KEY, 1);
     this->side = side;
@@ -35,4 +36,9 @@ float AutoShoeController::getSpeedMultiplier()
 int AutoShoeController::getMovementState()
 {
     return movementState;
+}
+
+StrideTracker* AutoShoeController::getStrideTracker()
+{
+    return strideTracker;
 }

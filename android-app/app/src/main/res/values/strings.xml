@@ -63,6 +63,11 @@
     <string name="stop">Stop</string>
     <string name="break_in_shoes">Break In Shoes</string>
     <string name="reset_distance">Reset Distance</string>
+    <string name="stride_length">Stride Length: </string>
+    <string name="center_radius">Center Radius</string>
+    <string name="center_offset">Center Offset</string>
+    <string name="calculate_stride_length">Calculate Stride Length</string>
+    <string name="position">Position: </string>
     <string-array name="sides_array">
         <item>Unspecified</item>
         <item>Right</item>

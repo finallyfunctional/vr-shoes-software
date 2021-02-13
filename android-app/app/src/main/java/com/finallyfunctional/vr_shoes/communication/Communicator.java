@@ -157,6 +157,9 @@ public abstract class Communicator
         thisVrShoe.setSidewaysSpeed(message.ss);
         thisVrShoe.setForwardDistance(message.fd);
         thisVrShoe.setSidewaysDistance(message.sid);
+        thisVrShoe.position = message.po;
+        thisVrShoe.strideLength = message.sl;
+
 
         if(forwardSensorDataToOtherShoe() && message.d != null && message.d.equals(otherVrShoe.getDeviceId()))
         {
@@ -176,6 +179,9 @@ public abstract class Communicator
         vrShoe.setSide(message.si);
         vrShoe.setDutyCycleBoost(message.dcb);
         vrShoe.setSpeedMultiplier(message.spm);
+        vrShoe.centerRadius = message.cr;
+        vrShoe.centerOffset = message.co;
+        vrShoe.calculateStrideLength = message.csl;
 
         for(IShoeConfigurationsObserver observer : observers.getShoeConfigurationObservers())
         {

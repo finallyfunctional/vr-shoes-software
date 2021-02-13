@@ -206,6 +206,8 @@ void Communicator::sendSensorData()
     json[MessageKeys::SIDEWAY_DISTANCE] = roundFloatToTwoDecimalPlaces(distance.getY());
 
     json[MessageKeys::MOVEMENT_STATE] = shoeController->getMovementState();
+    json[MessageKeys::STRIDE_LENGTH] = roundFloatToTwoDecimalPlaces(shoeController->getStrideTracker()->getStrideLength());
+    json[MessageKeys::POSITION] = shoeController->getStrideTracker()->getPosition();
 }
 
 float Communicator::roundFloatToTwoDecimalPlaces(float number)
@@ -251,6 +253,9 @@ int Communicator::getShoeConfigurations()
     json[MessageKeys::SIDE] = VrShoePreferences.getInt(ShoeSides::SHOE_SIDE_KEY, ShoeSides::UNSPECIFIED);
     json[MessageKeys::DUTY_CYCLE_BOOST] = roundFloatToTwoDecimalPlaces(sensors->getSpeedController()->getDutyCycleBoost());
     json[MessageKeys::SPEED_MULTIPLER] = roundFloatToTwoDecimalPlaces(shoeController->getSpeedMultiplier());
+    json[MessageKeys::CENTER_RADIUS] = roundFloatToTwoDecimalPlaces(shoeController->getStrideTracker()->getCenterRadius());
+    json[MessageKeys::CENTER_OFFSET] = roundFloatToTwoDecimalPlaces(shoeController->getStrideTracker()->getCenterOffset());
+    json[MessageKeys::CALCULATE_STRIDE_LENGTH] = shoeController->getStrideTracker()->isStrideLengthCalculated();
 
     return ResponseCodes::GOOD_REQUEST_SEND_REPLY;
 }
@@ -261,6 +266,9 @@ int Communicator::configureShoe()
     float boost = json[MessageKeys::DUTY_CYCLE_BOOST];
     int shoeSide = json[MessageKeys::SIDE];
     float speedMultiplier = json[MessageKeys::SPEED_MULTIPLER];
+    float centerRadius = json[MessageKeys::CENTER_RADIUS];
+    float centerOffset = json[MessageKeys::CENTER_OFFSET];
+    bool calculateStrideLength = json[MessageKeys::CALCULATE_STRIDE_LENGTH];
 
     if(setShoeSide(shoeSide) == ResponseCodes::BAD_REQUEST)
     {
@@ -270,6 +278,9 @@ int Communicator::configureShoe()
     sensors->getRemoteVrShoe()->shoeId = otherShoeId;
     sensors->getSpeedController()->setDutyCycleBoost(boost);
     shoeController->setSpeedMultiplier(speedMultiplier);
+    shoeController->getStrideTracker()->setCenterRadius(centerRadius);
+    shoeController->getStrideTracker()->setCenterOffset(centerOffset);
+    shoeController->getStrideTracker()->shouldCalculateStrideLength(calculateStrideLength);
     
     return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 }

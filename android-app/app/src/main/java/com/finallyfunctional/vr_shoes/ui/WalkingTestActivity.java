@@ -6,6 +6,8 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,6 +34,9 @@ public class WalkingTestActivity extends AppCompatActivity implements IShoeConfi
     private Spinner vrShoeSpinner;
     private TextView forwardDistanceText, sidewayDistanceText;
     private TextView peakCurrentText, averageCurrentText, ampHoursText, ampHoursChargedText;
+    private EditText centerRadiusEdit, centerOffsetEdit;
+    private TextView positionText, strideLengthText;
+    private CheckBox calculateStrideLengthCheckBox;
 
     private Communicator communicator;
     private VrShoe vrShoe;
@@ -46,8 +51,13 @@ public class WalkingTestActivity extends AppCompatActivity implements IShoeConfi
         communicator = CommunicationInitializer.getCommunicator();
         communicator.getObservers().addShoeConfigurationObserver(this);
         communicator.getObservers().addSensorDataObserver(this);
+        communicator.stopNegatingMotion(communicator.getVrShoe1());
+        communicator.stopNegatingMotion(communicator.getVrShoe2());
         communicator.getShoeConfigurations(communicator.getVrShoe1());
         communicator.getShoeConfigurations(communicator.getVrShoe2());
+        communicator.resetDistance(communicator.getVrShoe1());
+        communicator.resetDistance(communicator.getVrShoe2());
+        communicator.readSensorDataFromShoes();
         vrShoe = communicator.getVrShoe1();
         assignUiElements();
         initializeVrShoeSpinner();
@@ -74,6 +84,9 @@ public class WalkingTestActivity extends AppCompatActivity implements IShoeConfi
         {
             initializeDutyCycleBoost();
             initializeSpeedMultiplier();
+            initializeCenterRadius();
+            initializeCenterOffset();
+            initializeCalculateStrideLength();
         }
     }
 
@@ -83,6 +96,7 @@ public class WalkingTestActivity extends AppCompatActivity implements IShoeConfi
         if(this.vrShoe == vrShoe)
         {
             setDistanceText();
+            setStrideProperties();
         }
     }
 
@@ -94,10 +108,17 @@ public class WalkingTestActivity extends AppCompatActivity implements IShoeConfi
         vrShoeSpinner = findViewById(R.id.walkingTestVrShoeSpinner);
         forwardDistanceText = findViewById(R.id.walkingTestForwardDistanceText);
         sidewayDistanceText = findViewById(R.id.walkingTestSidewayDistanceText);
+
         peakCurrentText = findViewById(R.id.walkingTestPeakCurrentLabel);
         averageCurrentText = findViewById(R.id.walkingTestAverageCurrentLabel);
         ampHoursText = findViewById(R.id.walkingTestAmpHoursLabel);
         ampHoursChargedText = findViewById(R.id.walkingTestAmpHoursChargedLabel);
+
+        strideLengthText = findViewById(R.id.walkingTestStrideLengthLabel);
+        centerRadiusEdit = findViewById(R.id.walkingTestCenterRadiusText);
+        centerOffsetEdit = findViewById(R.id.walkingTestCenterOffsetText);
+        positionText = findViewById(R.id.walkingTestPositionLabel);
+        calculateStrideLengthCheckBox = findViewById(R.id.walkingTestCalculateStrideLengthCheckBox);
     }
 
     private void initializeVrShoeSpinner()
@@ -185,6 +206,69 @@ public class WalkingTestActivity extends AppCompatActivity implements IShoeConfi
         });
     }
 
+    private void initializeCenterRadius()
+    {
+        centerRadiusEdit.setText(String.valueOf(vrShoe.centerRadius));
+        centerRadiusEdit.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                centerRadiusTextChanged();
+            }
+        });
+    }
+
+    private void initializeCenterOffset()
+    {
+        centerOffsetEdit.setText(String.valueOf(vrShoe.centerOffset));
+        centerOffsetEdit.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                centerOffsetTextChanged();
+            }
+        });
+    }
+
+    private void initializeCalculateStrideLength()
+    {
+        calculateStrideLengthCheckBox.setChecked(vrShoe.calculateStrideLength);
+        calculateStrideLengthCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                calculateStrideLengthStateChanged(isChecked);
+            }
+        });
+    }
+
     @Override
     protected void onDestroy()
     {
@@ -231,6 +315,29 @@ public class WalkingTestActivity extends AppCompatActivity implements IShoeConfi
     {
         forwardDistanceText.setText(getString(R.string.forward_distance) + vrShoe.getForwardDistance());
         sidewayDistanceText.setText(getString(R.string.sideway_distance) + vrShoe.getSidewaysDistance());
+    }
+
+    private void setStrideProperties()
+    {
+        strideLengthText.setText(getString(R.string.stride_length) + vrShoe.strideLength);
+        String position;
+        if(vrShoe.position == 0)
+        {
+            position = "behind";
+        }
+        else if(vrShoe.position == 1)
+        {
+            position = "center";
+        }
+        else if(vrShoe.position == 2)
+        {
+            position = "front";
+        }
+        else
+        {
+            position = "invalid " + vrShoe.position;
+        }
+        positionText.setText(getString(R.string.position) + position);
     }
 
     private void setPowerStatisticsText()
@@ -296,5 +403,59 @@ public class WalkingTestActivity extends AppCompatActivity implements IShoeConfi
         communicator.configureShoe(vrShoe2, vrShoe2Command);
         vrShoe1.setSpeedMultiplier(multiplier);
         vrShoe2.setSpeedMultiplier(multiplier);
+    }
+
+    private void centerRadiusTextChanged()
+    {
+        if(centerRadiusEdit.getText().toString().equals(""))
+        {
+            return;
+        }
+        float centerRadius = Float.parseFloat(centerRadiusEdit.getText().toString());
+        VrShoe vrShoe1 = communicator.getVrShoe1();
+        VrShoe vrShoe2 = communicator.getVrShoe2();
+        ShoeConfiguration vrShoe1Command = new ShoeConfiguration(vrShoe1);
+        ShoeConfiguration vrShoe2Command = new ShoeConfiguration(vrShoe2);
+        vrShoe1Command.cr = centerRadius;
+        vrShoe2Command.cr = centerRadius;
+        communicator.configureShoe(vrShoe1, vrShoe1Command);
+        communicator.configureShoe(vrShoe2, vrShoe2Command);
+        vrShoe1.centerRadius = centerRadius;
+        vrShoe2.centerRadius = centerRadius;
+    }
+
+    private void centerOffsetTextChanged()
+    {
+        if(centerOffsetEdit.getText().toString().equals("") ||
+           centerOffsetEdit.getText().toString().equals("-") ||
+           centerOffsetEdit.getText().toString().equals("."))
+        {
+            return;
+        }
+        float centerOffset = Float.parseFloat(centerOffsetEdit.getText().toString());
+        VrShoe vrShoe1 = communicator.getVrShoe1();
+        VrShoe vrShoe2 = communicator.getVrShoe2();
+        ShoeConfiguration vrShoe1Command = new ShoeConfiguration(vrShoe1);
+        ShoeConfiguration vrShoe2Command = new ShoeConfiguration(vrShoe2);
+        vrShoe1Command.co = centerOffset;
+        vrShoe2Command.co = centerOffset;
+        communicator.configureShoe(vrShoe1, vrShoe1Command);
+        communicator.configureShoe(vrShoe2, vrShoe2Command);
+        vrShoe1.centerOffset = centerOffset;
+        vrShoe2.centerOffset = centerOffset;
+    }
+
+    private void calculateStrideLengthStateChanged(boolean calculate)
+    {
+        VrShoe vrShoe1 = communicator.getVrShoe1();
+        VrShoe vrShoe2 = communicator.getVrShoe2();
+        ShoeConfiguration vrShoe1Command = new ShoeConfiguration(vrShoe1);
+        ShoeConfiguration vrShoe2Command = new ShoeConfiguration(vrShoe2);
+        vrShoe1Command.csl = calculate;
+        vrShoe2Command.csl = calculate;
+        communicator.configureShoe(vrShoe1, vrShoe1Command);
+        communicator.configureShoe(vrShoe2, vrShoe2Command);
+        vrShoe1.calculateStrideLength = calculate;
+        vrShoe2.calculateStrideLength = calculate;
     }
 }

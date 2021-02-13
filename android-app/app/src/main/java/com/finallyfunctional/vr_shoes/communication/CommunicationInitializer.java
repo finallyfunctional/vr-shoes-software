@@ -87,6 +87,7 @@ public abstract class CommunicationInitializer implements IShoeConfigurationsObs
                 message.osi = communicator.getVrShoe1().getDeviceId();
             }
             communicator.configureShoe(vrShoe, message);
+            communicator.getShoeConfigurations(vrShoe);
         }
         if(communicator.getVrShoe1().getOtherShoeDeviceId() != null &&
            communicator.getVrShoe2().getOtherShoeDeviceId() != null &&

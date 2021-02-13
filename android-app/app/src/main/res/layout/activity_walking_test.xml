@@ -139,11 +139,57 @@
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider" />
 
-                <View
-                    android:id="@+id/divider5"
+                <TextView
+                    android:id="@+id/walkingTestPositionLabel"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/position"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/walkingTestStrideLengthLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stride_length"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/walkingTestCenterRadiusLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/center_radius"
+                    android:textSize="24sp" />
+
+                <EditText
+                    android:id="@+id/walkingTestCenterRadiusText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/center_radius"
+                    android:ems="10"
+                    android:hint="@string/center_radius"
+                    android:inputType="numberDecimal" />
+
+                <TextView
+                    android:id="@+id/walkingTestCenterOffsetLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/center_offset"
+                    android:textSize="24sp" />
+
+                <EditText
+                    android:id="@+id/walkingTestCenterOffsetText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/center_offset"
+                    android:ems="10"
+                    android:hint="@string/center_radius"
+                    android:inputType="numberDecimal|numberSigned" />
+
+                <CheckBox
+                    android:id="@+id/walkingTestCalculateStrideLengthCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/calculate_stride_length" />
 
             </LinearLayout>
         </ScrollView>

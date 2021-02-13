@@ -4,9 +4,10 @@ StrideTracker::StrideTracker(MovementTracker* movementTracker)
 {
     this->movementTracker = movementTracker;
     centerRange = new Range();
-    strideLengthIndex = 0;
     strideLength = DEFAULT_STRIDE_LENGTH;
-    clearStrideLengths();
+    centerRadius = DEFAULT_CENTER_RADUIS;
+    centerOffset = DEFAULT_CENTER_OFFSET;
+    calculateStrideLength = true;
     movementTracker->resetDistance();
     reset();
 }
@@ -14,7 +15,7 @@ StrideTracker::StrideTracker(MovementTracker* movementTracker)
 void StrideTracker::recenter()
 {
     movementTracker->resetDistance();
-    centerRange->setRange(-1 * APPROX_CENTER_RADIUS, APPROX_CENTER_RADIUS);
+    centerRange->setRange(-1 * centerRadius + centerOffset, centerRadius + centerOffset);
     startedAtCenter = true;
 }
 
@@ -31,13 +32,13 @@ void StrideTracker::reset()
         float center = 0;
         if(position == ShoePositionState::FRONT)
         {
-            center = 0 - strideLength / 2 - 0.08;
+            center = 0 - strideLength / 2 + centerOffset;
         }
         else 
         {
-            center = strideLength / 2 - 0.08;
+            center = strideLength / 2 + centerOffset;
         }
-        centerRange->setRange(center - APPROX_CENTER_RADIUS, center + APPROX_CENTER_RADIUS);
+        centerRange->setRange(center - centerRadius, center + centerRadius);
     }
     movementTracker->resetDistance();
 }
@@ -59,33 +60,12 @@ int StrideTracker::getPosition()
     }
 }
 
-float StrideTracker::getAverageStrideLength()
+void StrideTracker::updateCurrentStrideLength()
 {
-    float sum = 0;
-    int count = 0;
-    for(int i = 0; i < NUM_STRIDES; i++)
+    if(!calculateStrideLength)
     {
-        if(recentStrideLengths[i] == 0)
-        {
-            continue;
-        }
-        sum += recentStrideLengths[i];
-        count++;
+        return;
     }
-    return count == 0 ? DEFAULT_STRIDE_LENGTH : sum / count;
-}
-
-void StrideTracker::clearStrideLengths()
-{
-    for(int i = 0; i < NUM_STRIDES; i++)
-    {
-        recentStrideLengths[i] = 0;
-    }
-    strideLengthIndex = 0;
-}
-
-void StrideTracker::storeCurrentStrideLength()
-{
     int position = getPosition();
     if(startedAtCenter && position == ShoePositionState::MIDDLE) //no stride
     {
@@ -97,9 +77,39 @@ void StrideTracker::storeCurrentStrideLength()
     {
         strideLength *= 2;
     }
-    recentStrideLengths[strideLengthIndex++] = strideLength;
-    if(strideLength >= NUM_STRIDES)
-    {
-        strideLengthIndex = 0;
-    }
+}
+
+float StrideTracker::getCenterRadius()
+{
+    return centerRadius;
+}
+
+void StrideTracker::setCenterRadius(float centerRadius)
+{
+    this->centerRadius = centerRadius;
+}
+
+float StrideTracker::getStrideLength()
+{
+    return strideLength;
+}
+
+bool StrideTracker::isStrideLengthCalculated()
+{
+    return calculateStrideLength;
+}
+
+void StrideTracker::shouldCalculateStrideLength(bool calculate)
+{
+    this->calculateStrideLength = calculate;
+}
+
+float StrideTracker::getCenterOffset()
+{
+    return centerOffset;
+}
+
+void StrideTracker::setCenterOffset(float offset)
+{
+    this->centerOffset = offset;
 }

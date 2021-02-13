@@ -14,22 +14,28 @@ class StrideTracker
     void reset();
     void recenter();
     int getPosition();
-    void storeCurrentStrideLength();
+    void updateCurrentStrideLength();
+    float getCenterRadius();
+    void setCenterRadius(float centerRadius);
+    float getStrideLength();
+    void shouldCalculateStrideLength(bool calculate);
+    bool isStrideLengthCalculated();
+    float getCenterOffset();
+    void setCenterOffset(float offset);
 
     private:
-    float getAverageStrideLength();
-    void clearStrideLengths();
 
-    const static int NUM_STRIDES = 20;
-    const float APPROX_CENTER_RADIUS = 0.15;
-    const float DEFAULT_STRIDE_LENGTH = 0.6;
+    const float DEFAULT_CENTER_RADUIS = 0.1;
+    const float DEFAULT_STRIDE_LENGTH = 0.45;
+    const float DEFAULT_CENTER_OFFSET = 0;
 
     MovementTracker* movementTracker;
     Range* centerRange;
     float strideLength;
-    float recentStrideLengths[NUM_STRIDES]; //keep track of last 20 stride lengths and average them
+    float centerRadius;
+    float centerOffset;
+    bool calculateStrideLength;
     bool startedAtCenter;
-    int strideLengthIndex;
 };
 
 #endif

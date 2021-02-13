@@ -7,7 +7,8 @@
 #include "../Sensors/SpeedController.h"
 #include "../ShoeSides.h"
 #include "../Timer.h"
-#include "./StrideTracking/StrideTracker.h"
+#include "./StrideTracking/Range.h"
+
 
 class ForwardWalking : public AutoShoeController
 {
@@ -19,7 +20,10 @@ class ForwardWalking : public AutoShoeController
 
     private:
     bool thisFootWasInAir;
-    StrideTracker* strideTracker;
+    bool oppositeFootWasOnGround;
+    bool turningBufferActive;
+    float turningBufferRadius;
+    Range* turningBufferRange;
     Timer* otherShoeMovementTimer;
 };
 

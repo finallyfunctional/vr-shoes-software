@@ -15,6 +15,9 @@ public class ShoeConfiguration
     public int si; //side
     public float dcb; //duty cycle boost
     public float spm; //speed multiplier
+    public float cr; //center radius
+    public float co; //center offset
+    public boolean csl; //calculate stride length
 
     public ShoeConfiguration()
     {
@@ -29,5 +32,8 @@ public class ShoeConfiguration
         dcb = vrShoe.getDutyCycleBoost();
         si = vrShoe.getSide();
         spm = vrShoe.getSpeedMultiplier();
+        cr = vrShoe.centerRadius;
+        co = vrShoe.centerOffset;
+        csl = vrShoe.calculateStrideLength;
     }
 }
