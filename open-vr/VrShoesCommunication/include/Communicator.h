@@ -18,6 +18,8 @@ public:
 	void getShoeConfigurations(const char* shoeId);
 	void startNegatingMovement(const char* shoeId);
 	void stopNegatingMovement(const char* shoeId);
+	void resetDistanceTracker(const char* shoeId);
+	bool shoesConfigured();
 
 protected:
 	void initialize(VrShoe* vrShoe1, VrShoe* vrShoe2);
@@ -29,6 +31,8 @@ protected:
 	Document json;
 	VrShoe* vrShoe1;
 	VrShoe* vrShoe2;
+	bool vrShoe1Configured;
+	bool vrShoe2Configured;
 
 private:
 	void recieveSensorData(VrShoe* vrShoe);

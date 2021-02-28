@@ -18,5 +18,4 @@ protected:
 	Communicator* communicator;
 	VrShoe* vrShoe1;
 	VrShoe* vrShoe2;
-
 };

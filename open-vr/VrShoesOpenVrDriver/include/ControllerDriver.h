@@ -32,6 +32,8 @@ private:
 	float GetYSpeed();
 	double GetEllapsedTimeInSeconds();
 	double GetDeceleratingSpeed(double timeAdjustment, double slopeAdjustment);
+	void StartNegatingMovement();
+	void StopNegatingMovement();
 
 	uint32_t driverId;
 	VRInputComponentHandle_t joystickYHandle;
@@ -44,4 +46,7 @@ private:
 	VrShoe* vrShoe2;
 	float previousYSpeed;
 	std::chrono::high_resolution_clock::time_point clockStart;
+	bool clockStarted;
+	bool clockCanBeReset;
+	bool shoesConfigured;
 };

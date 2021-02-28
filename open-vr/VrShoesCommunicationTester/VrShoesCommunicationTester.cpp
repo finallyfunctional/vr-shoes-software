@@ -56,8 +56,12 @@ int main()
     VrShoe prevVrShoe1 = VrShoe();
     VrShoe prevVrShoe2 = VrShoe();
 
+    communicator->resetDistanceTracker(vrShoe1->deviceId);
     communicator->startNegatingMovement(vrShoe1->deviceId);
+
+    communicator->resetDistanceTracker(vrShoe2->deviceId);
     communicator->startNegatingMovement(vrShoe2->deviceId);
+
     while (true)
     {
         communicator->processMessages();

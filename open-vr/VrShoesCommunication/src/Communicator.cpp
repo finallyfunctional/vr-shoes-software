@@ -48,6 +48,10 @@ int Communicator::handleRecievedMessage(const char* message)
 		}
 		return ResponseCodes::GOOD_REQUEST_NO_REPLY;
 	}
+	else if (strcmp(command, Messages::SHOE_CONFIGURATIONS) == 0)
+	{
+		recieveShoeConfigurations(vrShoeThatSentMessage);
+	}
 	return ResponseCodes::UNKNOWN_REQUEST;
 }
 
@@ -68,10 +72,23 @@ void Communicator::recieveShoeConfigurations(VrShoe* vrShoe)
 		if (vrShoe == this->vrShoe1)
 		{
 			sendShoeConfigurations(vrShoe->deviceId, this->vrShoe2->deviceId);
+			vrShoe1Configured = true;
 		}
 		else
 		{
 			sendShoeConfigurations(vrShoe->deviceId, this->vrShoe1->deviceId);
+			vrShoe2Configured = true;
+		}
+	}
+	else
+	{
+		if (vrShoe == this->vrShoe1)
+		{
+			vrShoe1Configured = true;
+		}
+		else
+		{
+			vrShoe2Configured = true;
 		}
 	}
 }
@@ -92,11 +109,17 @@ void Communicator::sendShoeConfigurations(const char* vrShoeId, const char* othe
 	writer.Key(MessageKeys::OTHER_SHOE_ID);
 	writer.String(otherVrShoeId);
 	writer.Key(MessageKeys::SIDE);
-	writer.String(json[MessageKeys::SIDE].GetString());
+	writer.Int(json[MessageKeys::SIDE].GetInt());
 	writer.Key(MessageKeys::DUTY_CYCLE_BOOST);
 	writer.Double(json[MessageKeys::DUTY_CYCLE_BOOST].GetDouble());
 	writer.Key(MessageKeys::SPEED_MULTIPLER);
 	writer.Double(json[MessageKeys::SPEED_MULTIPLER].GetDouble());
+	writer.Key(MessageKeys::CENTER_RADIUS);
+	writer.Double(json[MessageKeys::CENTER_RADIUS].GetDouble());
+	writer.Key(MessageKeys::CENTER_OFFSET);
+	writer.Double(json[MessageKeys::CENTER_OFFSET].GetDouble());
+	writer.Key(MessageKeys::CALCULATE_STRIDE_LENGTH);
+	writer.Bool(json[MessageKeys::CALCULATE_STRIDE_LENGTH].GetBool());
 	writer.EndObject();
 	sendMessageTo(vrShoeId, jsonStr.GetString());
 }
@@ -142,4 +165,23 @@ void Communicator::stopNegatingMovement(const char* shoeId)
 	writer.String(shoeId);
 	writer.EndObject();
 	sendMessageTo(shoeId, jsonStr.GetString());
+}
+
+void Communicator::resetDistanceTracker(const char* shoeId)
+{
+	StringBuffer jsonStr;
+	Writer<StringBuffer> writer(jsonStr);
+	writer.StartObject();
+	writer.Key(MessageKeys::COMMAND);
+	writer.String(Messages::RESET_DISTANCE_TRACKER);
+	writer.Key(MessageKeys::DESTINATION);
+	writer.String(shoeId);
+	writer.EndObject();
+	sendMessageTo(shoeId, jsonStr.GetString());
+
+}
+
+bool Communicator::shoesConfigured()
+{
+	return vrShoe1Configured && vrShoe2Configured;
 }

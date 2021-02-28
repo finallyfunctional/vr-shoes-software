@@ -1,8 +1,8 @@
 {
-	"alwaysActivate": false,
-	"name" : "ffVrShoes",
-	"directory" : "",
-	"resourceOnly" : false,
-
-	"hmd_presence" : []
+	"alwaysActivate": true,
+	"name": "ffVrShoes",
+	"directory": "",
+	"resourceOnly": false,
+	"prefersUpperDeviceIndices": true,
+	"hmd_presence": []
 }
