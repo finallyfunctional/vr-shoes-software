@@ -28,9 +28,9 @@
     }
   },
   "category": "legacy",
-  "controller_type": "ffVrShoes_controller",
-  "description": "Legacy mapping for ffVrShoes",
-  "name": "Legacy_Binding_ffVrShoes",
+  "controller_type": "ffvrshoes_controller",
+  "description": "Legacy mapping for ffvrshoes",
+  "name": "Legacy_Binding_ffvrshoes",
   "options": {
     "mirror_actions": false,
     "returnBindingsWithLeftHand": true,
