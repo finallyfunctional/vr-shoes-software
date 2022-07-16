@@ -1,0 +1,2 @@
+rootProject.name='FinallyFunctional-VR-Shoes'
+include ':app'

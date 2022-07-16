@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity">
+
+    <ProgressBar
+        android:id="@+id/mainProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/mainSpacer1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/mainWalkingTestBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="walkingTestBtnClick"
+            android:text="@string/walking_test" />
+
+        <TextView
+            android:id="@+id/mainSpacer2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/mainSettignsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="settingsBtnClicked"
+            android:text="@string/settings" />
+
+        <Button
+            android:id="@+id/mainDiagnosticsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="diagnosticsBtnClicked"
+            android:text="@string/Diagnostics" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
