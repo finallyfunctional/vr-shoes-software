@@ -1,0 +1,16 @@
+* https://github.com/DominikN/ESP32-MPU9250-web-view
+* https://github.com/sparkfun/SparkFun_MPU-9250-DMP_Arduino_Library
+* https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide#using-the-mpu-9250-dmp-arduino-library
+* https://electropeak.com/learn/interfacing-mpu9250-spi-i2c-9-axis-gyro-accelerator-magnetometer-module-with-arduino/
+* https://youtu.be/dXcF-Uqa-gw
+* https://www.i2cdevlib.com/devices/mpu6050#source
+
+
+* https://www.arxterra.com/pololu-magnetic-motor-encoder-code-and-set-up-guide/
+* http://andrewjkramer.net/motor-encoders-arduino/
+
+* https://www.ebay.com/itm/353850901650?hash=item5263284492:g:0VkAAOSwMYZh3FYU
+* https://www.aliexpress.com/item/3256803341408334.html?spm=a2g0o.productlist.0.0.2ee14d899Kzj6p&algo_pvid=701b88ed-7cb4-496b-8724-25e6a80b4cff&aem_p4p_detail=202207081540562079258518545120017372585&algo_exp_id=701b88ed-7cb4-496b-8724-25e6a80b4cff-3&pdp_ext_f=%7B%22sku_id%22%3A%2212000026178677265%22%7D&pdp_npi=2%40dis%21USD%21%214.75%21%21%21%21%21%402101e9d216573200560441725eb729%2112000026178677265%21sea
+
+* https://www.aliexpress.com/item/3256803334567876.html?_randl_currency=USD&_randl_shipto=US&src=google&aff_fcid=193c559f0ac44118acae32097698191a-1657330560137-09246-UneMJZVf&aff_fsk=UneMJZVf&aff_platform=aaf&sk=UneMJZVf&aff_trace_key=193c559f0ac44118acae32097698191a-1657330560137-09246-UneMJZVf&terminal_id=4e88799fc9a54bc8a0e8b94e6f1e6b55&afSmartRedirect=y&gatewayAdapt=4itemAdapt
+* https://www.igus.com/product/1195?artNr=RJUM-02-12
