@@ -14,3 +14,5 @@
 
 * https://www.aliexpress.com/item/3256803334567876.html?_randl_currency=USD&_randl_shipto=US&src=google&aff_fcid=193c559f0ac44118acae32097698191a-1657330560137-09246-UneMJZVf&aff_fsk=UneMJZVf&aff_platform=aaf&sk=UneMJZVf&aff_trace_key=193c559f0ac44118acae32097698191a-1657330560137-09246-UneMJZVf&terminal_id=4e88799fc9a54bc8a0e8b94e6f1e6b55&afSmartRedirect=y&gatewayAdapt=4itemAdapt
 * https://www.igus.com/product/1195?artNr=RJUM-02-12
+
+* https://playground.arduino.cc/Main/RotaryEncoders/#Example9
