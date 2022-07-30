@@ -33,15 +33,12 @@ void IMU::updateOrientation() {
 }
 
 void IMU::printOrientation() {
-    if (isNewData()) {
-        updateOrientation();
-        Serial.print("quat\t");
-        Serial.print(orientation.w);
-        Serial.print("\t");
-        Serial.print(orientation.x);
-        Serial.print("\t");
-        Serial.print(orientation.y);
-        Serial.print("\t");
-        Serial.println(orientation.z);
-    }
+    Serial.print("quat\t");
+    Serial.print(orientation.w);
+    Serial.print("\t");
+    Serial.print(orientation.x);
+    Serial.print("\t");
+    Serial.print(orientation.y);
+    Serial.print("\t");
+    Serial.println(orientation.z);
 }

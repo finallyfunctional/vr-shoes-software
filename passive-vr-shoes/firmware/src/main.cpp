@@ -3,7 +3,7 @@
 #include "imu.h"
 #include "encoder.h"
 #include "vrShoeSensorData.h"
-#include "serialBluetooth.h"
+#include "bleCommunicator.h"
 
 #define ENCODER_A 16
 #define ENCODER_B 17
@@ -11,7 +11,7 @@
 bool imuReady = false;
 bool bluetoothReady = false;
 VrShoeSensorData data, previouslySentData;
-SerialBluetooth serialBt;
+BleCommunicator bleCommunicator;
 
 void updateSensorData() {
     data.encoderTicks = Encoder::ticks;
@@ -31,7 +31,8 @@ void setup() {
     imuReady = IMU::initialize();
     Encoder::initialize(ENCODER_A, ENCODER_B);
     Serial.println("Initializing bluetooth");
-    bluetoothReady = serialBt.initialize();
+    bluetoothReady = bleCommunicator.initialize();
+    Serial.println("Ready");
 }
 
 void loop() {
@@ -43,7 +44,9 @@ void loop() {
     }
     updateSensorData();
     if(data != previouslySentData) {
-        serialBt.update(data);
+        bleCommunicator.update(data);
         previouslySentData = data;
+        IMU::printOrientation();
+        Encoder::printTicks();
     }
 }
