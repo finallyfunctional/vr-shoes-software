@@ -15,6 +15,7 @@ bool bluetoothReady = false;
 VrShoeSensorData data, previouslySentData;
 BleCommunicator bleCommunicator;
 TaskHandle_t communicationTask;
+SemaphoreHandle_t dataSemaphore;
 
 void feedTheWatchdog() {
     TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
@@ -23,11 +24,13 @@ void feedTheWatchdog() {
 }
 
 void updateSensorData() {
+    xSemaphoreTake(dataSemaphore, portMAX_DELAY );
     data.encoderTicks = Encoder::ticks;
     data.qw = IMU::orientation.w;
     data.qx = IMU::orientation.x;
     data.qy = IMU::orientation.y;
     data.qz = IMU::orientation.z;
+    xSemaphoreGive(dataSemaphore);
 }
 
 void core0Loop(void * parameters)
@@ -35,10 +38,12 @@ void core0Loop(void * parameters)
     Serial.println("Starting core 0 loop");
     while(true) {
         yield();
+        xSemaphoreTake(dataSemaphore, portMAX_DELAY );
         if(data != previouslySentData) {
             bleCommunicator.update(data);
             previouslySentData = data;
         }
+        xSemaphoreGive(dataSemaphore);
     }
 }
 
@@ -47,6 +52,7 @@ void setup() {
     Wire.setClock(400000);
 
     Serial.begin(115200);
+    dataSemaphore = xSemaphoreCreateMutex();
 
     Serial.println("Initializing components");
     imuReady = IMU::initialize();
