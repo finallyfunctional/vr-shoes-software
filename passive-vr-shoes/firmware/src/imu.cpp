@@ -13,7 +13,7 @@ bool IMU::initialize() {
     Serial.println("Initializing DMP");
     imuStatus = imu.dmpInitialize();
     if(imuStatus != 0) {
-        Serial.print("DMP intialization failed with code: ");
+        Serial.print("ERROR - DMP intialization failed with code: ");
         Serial.println(imuStatus);
         return false;
     }
