@@ -16,3 +16,9 @@
 * https://www.igus.com/product/1195?artNr=RJUM-02-12
 
 * https://playground.arduino.cc/Main/RotaryEncoders/#Example9
+
+* https://learn.adafruit.com/st-9-dof-combo?view=all
+* https://learn.adafruit.com/adafruit-sensorlab-gyroscope-calibration/comparing-gyroscopes#lsm6dsox-5-7
+* https://forum.arduino.cc/t/looking-for-a-good-imu-tried-the-bno055-but/685221
+* https://github.com/arduino-libraries/MadgwickAHRS/blob/master/src/MadgwickAHRS.h
+* https://github.com/PaulStoffregen/MahonyAHRS
