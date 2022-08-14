@@ -9,6 +9,7 @@
 #define ENCODER_A 16
 #define ENCODER_B 17
 
+bool core0TaskInitialized = false;
 bool imuReady = false;
 VrShoeSensorData data, previouslySentData;
 TaskHandle_t communicationTask;
@@ -52,6 +53,7 @@ void initialzeCore0Task() {
         &communicationTask,
         0
     );
+    core0TaskInitialized = true;
 }
 
 void setup() {
@@ -73,7 +75,9 @@ void setup() {
 }
 
 void loop() {
-
+    if(core0TaskInitialized) {
+        feedTheWatchdog();
+    }
     if (!imuReady) {
         Serial.println("Components did not initialize successfully");
         delay(10000);
