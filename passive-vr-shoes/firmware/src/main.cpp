@@ -3,7 +3,6 @@
 #include "imu.h"
 #include "encoder.h"
 #include "vrShoeSensorData.h"
-#include "bleCommunicator.h"
 #include "soc/timer_group_struct.h"
 #include "soc/timer_group_reg.h"
 
@@ -11,9 +10,7 @@
 #define ENCODER_B 17
 
 bool imuReady = false;
-bool bluetoothReady = false;
 VrShoeSensorData data, previouslySentData;
-BleCommunicator bleCommunicator;
 TaskHandle_t communicationTask;
 SemaphoreHandle_t dataSemaphore;
 
@@ -21,6 +18,7 @@ void feedTheWatchdog() {
     TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
     TIMERG0.wdt_feed=1;
     TIMERG0.wdt_wprotect=0;
+    yield();
 }
 
 void updateSensorData() {
@@ -39,26 +37,11 @@ void core0Loop(void * parameters)
     while(true) {
         yield();
         xSemaphoreTake(dataSemaphore, portMAX_DELAY );
-        if(data != previouslySentData) {
-            bleCommunicator.update(data);
-            previouslySentData = data;
-        }
         xSemaphoreGive(dataSemaphore);
     }
 }
 
-void setup() {
-    Wire.begin();
-    Wire.setClock(400000);
-
-    Serial.begin(115200);
-    dataSemaphore = xSemaphoreCreateMutex();
-
-    Serial.println("Initializing components");
-    imuReady = IMU::initialize();
-    Encoder::initialize(ENCODER_A, ENCODER_B);
-    Serial.println("Initializing bluetooth");
-    bluetoothReady = bleCommunicator.initialize();
+void initialzeCore0Task() {
     Serial.println("Initializing core 0");
     xTaskCreatePinnedToCore(
         core0Loop,
@@ -69,7 +52,19 @@ void setup() {
         &communicationTask,
         0
     );
-    if (!imuReady || !bluetoothReady) {
+}
+
+void setup() {
+    Wire.begin();
+    Wire.setClock(400000);
+
+    Serial.begin(115200);
+    dataSemaphore = xSemaphoreCreateMutex();
+    Serial.println("Initializing components");
+    imuReady = IMU::initialize();
+    Encoder::initialize(ENCODER_A, ENCODER_B);
+
+    if (!imuReady) {
         Serial.println("ERROR - Initializing components failed");
     }
     else {
@@ -78,10 +73,8 @@ void setup() {
 }
 
 void loop() {
-    feedTheWatchdog();
-    yield();
 
-    if (!imuReady || !bluetoothReady) {
+    if (!imuReady) {
         Serial.println("Components did not initialize successfully");
         delay(10000);
         return;
