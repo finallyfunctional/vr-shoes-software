@@ -22,3 +22,9 @@
 * https://forum.arduino.cc/t/looking-for-a-good-imu-tried-the-bno055-but/685221
 * https://github.com/arduino-libraries/MadgwickAHRS/blob/master/src/MadgwickAHRS.h
 * https://github.com/PaulStoffregen/MahonyAHRS
+
+* https://punchthrough.com/serial-over-ble/
+* https://www.link-labs.com/blog/bluetooth-vs-bluetooth-low-energy
+* https://punchthrough.com/maximizing-ble-throughput-on-ios-and-android/
+
+* https://googlechromelabs.github.io/serial-terminal/
