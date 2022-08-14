@@ -4,10 +4,14 @@ var camera;
 var renderer;
 var rectangle;
 
-const serviceId = "a0661d83-4017-4d5e-a7a9-330c74de60a3";
-const characteristicId = "241ff4a0-c71f-4843-9c12-11e8cfea0079";
+const messageTerminator = "\r\n";
+const baudRate = 115200;
 const textDecoder = new TextDecoder();
-var characteristic;
+var port;
+var reader;
+var readInterval;
+var messageQueue = "";
+
 
 function initializeOrientationScene() {
 	const container = document.getElementById("orientationScene");
@@ -43,34 +47,79 @@ function render() {
 	renderer.render(scene, camera);
 }
 
-document.getElementById("selectDeviceBtn").addEventListener("click", async (event) => {
-	const device = await navigator.bluetooth.requestDevice({ 
-		filters: [{ namePrefix: "VR-Shoe" }],
-		optionalServices: [serviceId]
-	});
-	const server = await device.gatt.connect();
-	const service = await server.getPrimaryService(serviceId);
-	characteristic = await service.getCharacteristic(characteristicId);
-	if(characteristicId) {
-		characteristic.addEventListener("characteristicvaluechanged", sensorValuesChanged);
-		setInterval(function () {
-			characteristic.readValue()
-		}, 300);
-		console.log("Connected to device");
+function checkForUsbSerial() {
+	if (!("serial" in navigator)) {
+		console.log("USB serial not supported by this browser");
 	}
+	else {
+		console.log("USB serial supported by this browser");
+	}
+}
+
+document.getElementById("selectPortBtn").addEventListener("click", async (event) => {
+	port = await navigator.serial.requestPort();
+	await port.open({ baudRate: baudRate });
+	reader = port.readable.getReader();
+	readInterval = setInterval(readUsbSerial, 10);
 });
 
-function sensorValuesChanged(event) {
-	const sensorValues = textDecoder.decode(event.target.value);
-	console.log(sensorValues);
-	const sensorValuesJson = JSON.parse(sensorValues);
-	const quat = new THREE.Quaternion(
-		sensorValuesJson.qx, 
-		sensorValuesJson.qy, 
-		sensorValuesJson.qz, 
-		sensorValuesJson.qw
-	);
-    rectangle.quaternion.multiplyQuaternions(defaultQuat, quat);
+async function readUsbSerial() {
+	if(!port.readable) {
+		console.log("Port not readable");
+		return;
+	}
+	const {done, nextMessage} = await readFullMessage();
+	if(!done) {
+		processSensorData(nextMessage);
+	}
+	else {
+		console.log("Serial port was closed");
+		reader.releaseLock();
+		clearInterval(readInterval);
+	}
+	  
+}
+
+async function readFullMessage() {
+	while(!messageQueue.includes(messageTerminator)) {
+		const { value, done } = await reader.read();
+		const message = textDecoder.decode(value);
+		if(done) {
+			return {done, nextMessage: ""};
+		}
+		messageQueue += message;
+	}
+
+	const nextMessage = messageQueue.slice(0, messageQueue.indexOf(messageTerminator));
+	messageQueue = messageQueue.replace(nextMessage, "").trimStart();
+	return {done: false, nextMessage};
+}
+
+
+function processSensorData(serialMessage) {
+	console.log(serialMessage);
+	if(isJson(serialMessage)) {
+		const sensorValuesJson = JSON.parse(serialMessage);
+	    if(sensorValuesJson.qx && sensorValuesJson.qy && sensorValuesJson.qz && sensorValuesJson.qw) {
+	    	const quat = new THREE.Quaternion(
+	    		sensorValuesJson.qx, 
+	    		sensorValuesJson.qy, 
+	    		sensorValuesJson.qz, 
+	    		sensorValuesJson.qw
+	    	);
+	    	rectangle.quaternion.multiplyQuaternions(defaultQuat, quat);
+	    }
+	}
+}
+
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
 }
 
 initializeOrientationScene();
+checkForUsbSerial();
