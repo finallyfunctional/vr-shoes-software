@@ -1,10 +1,12 @@
 #include <Arduino.h>
 #include "Wire.h"
+#include "soc/timer_group_struct.h"
+#include "soc/timer_group_reg.h"
 #include "imu.h"
 #include "encoder.h"
 #include "vrShoeSensorData.h"
-#include "soc/timer_group_struct.h"
-#include "soc/timer_group_reg.h"
+#include "sensorDataMessenger.h"
+
 
 #define ENCODER_A 16
 #define ENCODER_B 17
@@ -72,6 +74,7 @@ void setup() {
     else {
         Serial.println("Ready");
     }
+    //SensorDataMessenger::serialPrintSensorData(data);
 }
 
 void loop() {
@@ -85,6 +88,8 @@ void loop() {
     }
     if (IMU::isNewData()) {
         IMU::updateOrientation();
+        updateSensorData();
+        //SensorDataMessenger::serialPrintSensorData(data);
     }
-    updateSensorData();
+    delay(10);
 }
