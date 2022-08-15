@@ -8,7 +8,6 @@ class IMU {
      static bool initialize();
      static bool isNewData();
      static void updateOrientation();
-     static void printOrientation();
 
      static Quaternion orientation;
 

@@ -51,8 +51,3 @@ void Encoder::pinBInterrupt() {
     }
   }
 }
-
-void Encoder::printTicks() {
-  Serial.print("ticks: ");
-  Serial.println(ticks);
-}

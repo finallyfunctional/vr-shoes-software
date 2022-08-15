@@ -31,14 +31,3 @@ bool IMU::isNewData() {
 void IMU::updateOrientation() {
     imu.dmpGetQuaternion(&orientation, fifoBuffer);
 }
-
-void IMU::printOrientation() {
-    Serial.print("quat\t");
-    Serial.print(orientation.w);
-    Serial.print("\t");
-    Serial.print(orientation.x);
-    Serial.print("\t");
-    Serial.print(orientation.y);
-    Serial.print("\t");
-    Serial.println(orientation.z);
-}
