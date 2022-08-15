@@ -9,7 +9,6 @@ const baudRate = 115200;
 const textDecoder = new TextDecoder();
 var port;
 var reader;
-var keepReadingSerial = true;
 var messageQueue = "";
 
 
@@ -59,41 +58,48 @@ function checkForUsbSerial() {
 document.getElementById("selectPortBtn").addEventListener("click", async (event) => {
 	port = await navigator.serial.requestPort();
 	await port.open({ baudRate: baudRate });
-	while(port.readable && keepReadingSerial) {
+	await serialUpdate();
+});
+
+async function serialUpdate() {
+	while(port.readable) {
 		reader = port.readable.getReader();
 		try {
-			while(keepReadingSerial) {
-				await readUsbSerial();
+			while(true) {
+				const successful = await readUsbSerial();
+				if(!successful) {
+					return;
+				}
+				processMessageQueue();
 			}
 		}
 		catch(error) {
 			console.error(error);
 		}
 	}
-});
+	console.log("Port not readable");
+}
 
 async function readUsbSerial() {
-	if(!port.readable) {
-		console.log("Port not readable");
-		keepReadingSerial = false;
-		return;
-	}
+	
 	const { value, done } = await reader.read();
 	if(done) {
 		console.log("Serial port was closed");
 		reader.releaseLock();
 		keepReadingSerial = false;
-		return;
+		return false;
 	};
-
 	const message = textDecoder.decode(value);
 	messageQueue += message;
-	if(!messageQueue.includes(messageTerminator)) {
-		return;
+	return true;
+}
+
+function processMessageQueue() {
+	while(messageQueue.includes(messageTerminator)) {
+		const nextMessage = messageQueue.slice(0, messageQueue.indexOf(messageTerminator));
+		messageQueue = messageQueue.replace(nextMessage, "").trimStart();
+		processSensorData(nextMessage);
 	}
-	const nextMessage = messageQueue.slice(0, messageQueue.indexOf(messageTerminator));
-	messageQueue = messageQueue.replace(nextMessage, "").trimStart();
-	processSensorData(nextMessage);  
 }
 
 
