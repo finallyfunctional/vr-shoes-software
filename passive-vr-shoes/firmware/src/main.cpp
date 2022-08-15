@@ -13,7 +13,8 @@
 
 bool core0TaskInitialized = false;
 bool imuReady = false;
-VrShoeSensorData data, previouslySentData;
+bool updateAvailable = false;
+VrShoeSensorData data;
 TaskHandle_t communicationTask;
 SemaphoreHandle_t dataSemaphore;
 
@@ -74,7 +75,6 @@ void setup() {
     else {
         Serial.println("Ready");
     }
-    //SensorDataMessenger::serialPrintSensorData(data);
 }
 
 void loop() {
@@ -88,8 +88,14 @@ void loop() {
     }
     if (IMU::isNewData()) {
         IMU::updateOrientation();
-        updateSensorData();
-        //SensorDataMessenger::serialPrintSensorData(data);
+        updateAvailable = true;
     }
-    delay(10);
+    if(data.encoderTicks != Encoder::ticks) {
+        updateAvailable = true;
+    }
+    if(updateAvailable) {
+        updateSensorData();
+        SensorDataMessenger::serialPrintSensorData(data);
+        updateAvailable = false;
+    }  
 }
