@@ -12,6 +12,10 @@ class FloatUtils {
       static float roundFloatToTwoDecimalPlaces(float number) {
           return (float)(roundf(number * 100) / 100);
       }
+
+      static bool inRangeInclusive(float num, float min, float max) {
+          return num >= min && num <= max;
+      }
 };
 
 #endif

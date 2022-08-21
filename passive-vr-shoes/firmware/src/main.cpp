@@ -13,7 +13,6 @@
 
 bool core0TaskInitialized = false;
 bool imuReady = false;
-bool updateAvailable = false;
 VrShoeSensorData data;
 TaskHandle_t communicationTask;
 SemaphoreHandle_t dataSemaphore;
@@ -61,20 +60,23 @@ void initialzeCore0Task() {
 
 void setup() {
     Wire.begin();
-    Wire.setClock(400000);
 
     Serial.begin(115200);
     dataSemaphore = xSemaphoreCreateMutex();
     Serial.println("Initializing components");
-    imuReady = IMU::initialize();
     Encoder::initialize(ENCODER_A, ENCODER_B);
-
+    imuReady = IMU::initialize();
+    // if(!IMU::calibrate()) {
+    //     imuReady = false;
+    // }
     if (!imuReady) {
-        Serial.println("ERROR - Initializing components failed");
+        Serial.println("ERROR - Initializing componentas failed");
     }
     else {
         Serial.println("Ready");
     }
+
+    Wire.setClock(400000);
 }
 
 void loop() {
@@ -86,16 +88,8 @@ void loop() {
         delay(10000);
         return;
     }
-    if (IMU::isNewData()) {
-        IMU::updateOrientation();
-        updateAvailable = true;
-    }
-    if(data.encoderTicks != Encoder::ticks) {
-        updateAvailable = true;
-    }
-    if(updateAvailable) {
-        updateSensorData();
-        SensorDataMessenger::serialPrintSensorData(data);
-        updateAvailable = false;
-    }  
+    IMU::updateOrientation();
+    updateSensorData();
+    //SensorDataMessenger::serialPrintSensorData(data);
+    IMU::printQuaternion();
 }
