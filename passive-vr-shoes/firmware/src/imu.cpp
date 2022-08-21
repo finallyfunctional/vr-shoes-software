@@ -1,16 +1,5 @@
 #include "imu.h"
 
-Adafruit_SensorLab IMU::lab;
-Adafruit_Sensor_Calibration_EEPROM IMU::cal;
-Adafruit_Sensor *IMU::accelerometer, *IMU::gyroscope, *IMU::magnetometer;
-Adafruit_Madgwick IMU::filter;
-SimpleQuaternion IMU::orientation;
-unsigned long IMU::lastUpdateTimestamp;
-
-int IMU::magCalXValueCounts[magCalValueCountsSize];
-int IMU::magCalYValueCounts[magCalValueCountsSize];
-int IMU::magCalZValueCounts[magCalValueCountsSize];
-
 bool IMU::initialize() {
     Serial.println("Initializing Adafruit LSM6DSOX + LIS3MDL - Precision 9 DoF IMU");
     magnetometer = lab.getMagnetometer();

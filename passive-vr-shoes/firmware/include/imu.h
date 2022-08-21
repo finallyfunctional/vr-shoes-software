@@ -10,32 +10,32 @@
 
 class IMU {
     public:
-     static bool initialize();
-     static void updateOrientation();
+    bool initialize();
+     void updateOrientation();
 
-     static bool calibrate();
+     bool calibrate();
 
-     static void printQuaternion();
-     static void printCalibration();
+     void printQuaternion();
+     void printCalibration();
 
-     static SimpleQuaternion orientation;
+     SimpleQuaternion orientation;
 
     private:
-     static void calibrateGyro();
-     static bool calibrateMag();
-     static void storeMagCalibrationValue(int value, int counts[], char valueDescriptor);
-     static Pair calculateMagTrimmedMiddle(int counts[]);
+     void calibrateGyro();
+     bool calibrateMag();
+     void storeMagCalibrationValue(int value, int counts[], char valueDescriptor);
+     Pair calculateMagTrimmedMiddle(int counts[]);
 
-     static void printRawValues(sensors_event_t accel, sensors_event_t gyro, sensors_event_t mag);
+     void printRawValues(sensors_event_t accel, sensors_event_t gyro, sensors_event_t mag);
 
      static const int updateRate = 100;
      static const int magCalValueCountsSize = 1001;
 
-     static Adafruit_SensorLab lab;
-     static Adafruit_Sensor *accelerometer, *gyroscope, *magnetometer;
-     static Adafruit_Madgwick filter;
-     static unsigned long lastUpdateTimestamp;
+     Adafruit_SensorLab lab;
+     Adafruit_Sensor *accelerometer, *gyroscope, *magnetometer;
+     Adafruit_Madgwick filter;
+     unsigned long lastUpdateTimestamp;
 
-     static Adafruit_Sensor_Calibration_EEPROM cal;
-     static int magCalXValueCounts[magCalValueCountsSize], magCalYValueCounts[magCalValueCountsSize], magCalZValueCounts[magCalValueCountsSize];
+     Adafruit_Sensor_Calibration_EEPROM cal;
+     int magCalXValueCounts[magCalValueCountsSize], magCalYValueCounts[magCalValueCountsSize], magCalZValueCounts[magCalValueCountsSize];
 };

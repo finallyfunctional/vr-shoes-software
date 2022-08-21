@@ -13,6 +13,7 @@
 
 bool core0TaskInitialized = false;
 bool imuReady = false;
+IMU imu;
 VrShoeSensorData data;
 TaskHandle_t communicationTask;
 SemaphoreHandle_t dataSemaphore;
@@ -27,10 +28,10 @@ void feedTheWatchdog() {
 void updateSensorData() {
     xSemaphoreTake(dataSemaphore, portMAX_DELAY );
     data.encoderTicks = Encoder::ticks;
-    data.qw = IMU::orientation.w;
-    data.qx = IMU::orientation.x;
-    data.qy = IMU::orientation.y;
-    data.qz = IMU::orientation.z;
+    data.qw = imu.orientation.w;
+    data.qx = imu.orientation.x;
+    data.qy = imu.orientation.y;
+    data.qz = imu.orientation.z;
     xSemaphoreGive(dataSemaphore);
 }
 
@@ -65,8 +66,8 @@ void setup() {
     dataSemaphore = xSemaphoreCreateMutex();
     Serial.println("Initializing components");
     Encoder::initialize(ENCODER_A, ENCODER_B);
-    imuReady = IMU::initialize();
-    // if(!IMU::calibrate()) {
+    imuReady = imu.initialize();
+    // if(!imu.calibrate()) {
     //     imuReady = false;
     // }
     if (!imuReady) {
@@ -88,8 +89,8 @@ void loop() {
         delay(10000);
         return;
     }
-    IMU::updateOrientation();
+    imu.updateOrientation();
     updateSensorData();
     //SensorDataMessenger::serialPrintSensorData(data);
-    IMU::printQuaternion();
+    imu.printQuaternion();
 }
