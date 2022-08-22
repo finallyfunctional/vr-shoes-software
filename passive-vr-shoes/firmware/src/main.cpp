@@ -76,16 +76,16 @@ void setup() {
     dataSemaphore = xSemaphoreCreateMutex();
     logger.println("Initializing components");
     Encoder::initialize(ENCODER_A, ENCODER_B);
-    imuReady = imu.initialize();
+    imuReady = imu.initialize(logger);
+    Wire.setClock(400000);
+    //initialzeCore0Task();
     if (!imuReady) {
         logger.println("ERROR - Initializing componentas failed");
     }
     else {
         logger.println("Ready");
-    }
-
-    Wire.setClock(400000);
-    //initialzeCore0Task();
+        logger.logTo(false, true);
+    }    
 }
 
 void loop() {

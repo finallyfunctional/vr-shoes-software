@@ -1,22 +1,23 @@
 #include "imu.h"
 
-bool IMU::initialize() {
-    Serial.println("Initializing Adafruit LSM6DSOX + LIS3MDL - Precision 9 DoF IMU");
+bool IMU::initialize(Logger logger) {
+    this->logger = &logger;
+    this->logger->println("Initializing Adafruit LSM6DSOX + LIS3MDL - Precision 9 DoF IMU");
     magnetometer = lab.getMagnetometer();
     if (!magnetometer) {
-        Serial.println("ERROR - Could not find a magnetometer");
+        this->logger->println("ERROR - Could not find a magnetometer");
         return false;
     }
 
     accelerometer = lab.getAccelerometer();
     if(!accelerometer) {
-        Serial.println("ERROR - Could not find accelerometer");
+        this->logger->println("ERROR - Could not find accelerometer");
         return false;
     }
 
     gyroscope = lab.getGyroscope();
     if(!gyroscope) {
-        Serial.println("ERROR - Could not find gyroscope");
+        this->logger->println("ERROR - Could not find gyroscope");
         return false;
     }
 
@@ -34,27 +35,27 @@ bool IMU::initialize() {
 }
 
 void IMU::printRawValues(sensors_event_t accel, sensors_event_t gyro, sensors_event_t mag) {
-    Serial.print("Raw: ");
-    Serial.print(accel.acceleration.x, 4); Serial.print(", ");
-    Serial.print(accel.acceleration.y, 4); Serial.print(", ");
-    Serial.print(accel.acceleration.z, 4); Serial.print(", ");
-    Serial.print(gyro.gyro.x, 4); Serial.print(", ");
-    Serial.print(gyro.gyro.y, 4); Serial.print(", ");
-    Serial.print(gyro.gyro.z, 4); Serial.print(", ");
-    Serial.print(mag.magnetic.x, 4); Serial.print(", ");
-    Serial.print(mag.magnetic.y, 4); Serial.print(", ");
-    Serial.print(mag.magnetic.z, 4); Serial.println("");
+    logger->print("Raw: ");
+    logger->print(accel.acceleration.x); logger->print(", ");
+    logger->print(accel.acceleration.y); logger->print(", ");
+    logger->print(accel.acceleration.z); logger->print(", ");
+    logger->print(gyro.gyro.x); logger->print(", ");
+    logger->print(gyro.gyro.y); logger->print(", ");
+    logger->print(gyro.gyro.z); logger->print(", ");
+    logger->print(mag.magnetic.x); logger->print(", ");
+    logger->print(mag.magnetic.y); logger->print(", ");
+    logger->print(mag.magnetic.z); logger->println("");
 }
 
 void IMU::printQuaternion() {
-  Serial.print("Quaternion: ");
-  Serial.print(orientation.w, 4);
-  Serial.print(", ");
-  Serial.print(orientation.x, 4);
-  Serial.print(", ");
-  Serial.print(orientation.y, 4);
-  Serial.print(", ");
-  Serial.println(orientation.z, 4); 
+  logger->print("Quaternion: ");
+  logger->print(orientation.w);
+  logger->print(", ");
+  logger->print(orientation.x);
+  logger->print(", ");
+  logger->print(orientation.y);
+  logger->print(", ");
+  logger->println(orientation.z); 
 }
 
 void IMU::updateOrientation() {
@@ -96,7 +97,7 @@ void IMU::updateOrientation() {
 }
 
 void IMU::calibrateGyro() {
-    Serial.println("Place IMU on flat, stable surface within 3 seconds");
+    logger->println("Place IMU on flat, stable surface within 3 seconds");
     delay(3000);
 
     float minX = 0, maxX = 0, midX = 0;
@@ -120,12 +121,12 @@ void IMU::calibrateGyro() {
         delay(10);
     }
 
-    Serial.println("Zero rate offset in radians/s: ");
-    Serial.print(midX, 4); 
-    Serial.print(", ");
-    Serial.print(midY, 4); 
-    Serial.print(", ");
-    Serial.println(midZ, 4);
+    logger->println("Zero rate offset in radians/s: ");
+    logger->print(midX); 
+    logger->print(", ");
+    logger->print(midY); 
+    logger->print(", ");
+    logger->println(midZ);
 
     cal.gyro_zerorate[0] = midX;
     cal.gyro_zerorate[1] = midY;
@@ -136,9 +137,9 @@ void IMU::storeMagCalibrationValue(int value, int counts[], char valueDescriptor
     int maxValue = round(magCalValueCountsSize / 2);
     int minValue = maxValue * -1;
     if(value > maxValue || value < minValue) {
-        Serial.print("Magnetic ");
-        Serial.print(valueDescriptor);
-        Serial.println(" value out of range");
+        logger->print("Magnetic ");
+        logger->print(valueDescriptor);
+        logger->println(" value out of range");
     }
     else {
         counts[value + maxValue] = ++counts[value + maxValue];
@@ -181,7 +182,7 @@ Pair IMU::calculateMagTrimmedMiddle(int counts[]) {
 
 
 bool IMU::calibrateMag() {
-    Serial.println("Please twist the IMU for 3 minutes");
+    logger->println("Please twist the IMU for 3 minutes");
     sensors_event_t event;
     int minValue = -500;
     int maxValue = 500;
@@ -215,14 +216,14 @@ bool IMU::calibrateMag() {
     float fieldY = (maxY - minY) / 2;
     float fieldZ = (maxZ - minZ) / 2;
 
-    Serial.print(" Hard offset: (");
-    Serial.print(midX); Serial.print(", ");
-    Serial.print(midY); Serial.print(", ");
-    Serial.print(midZ); Serial.print(")"); 
-    Serial.print(" Field: (");
-    Serial.print(fieldX); Serial.print(", ");
-    Serial.print(fieldY); Serial.print(", ");
-    Serial.print(fieldZ); Serial.println(")");
+    logger->print(" Hard offset: (");
+    logger->print(midX); logger->print(", ");
+    logger->print(midY); logger->print(", ");
+    logger->print(midZ); logger->print(")"); 
+    logger->print(" Field: (");
+    logger->print(fieldX); logger->print(", ");
+    logger->print(fieldY); logger->print(", ");
+    logger->print(fieldZ); logger->println(")");
 
     if(FloatUtils::inRangeInclusive(fieldX, minField, maxField) &&
        FloatUtils::inRangeInclusive(fieldY, minField, maxField) &&
@@ -233,20 +234,20 @@ bool IMU::calibrateMag() {
         cal.mag_hardiron[2] = midZ;
         return true;
     }
-    Serial.println("Field values not in range (25-65)");
+    logger->println("Field values not in range (25-65)");
     return false;
 }
 
 bool IMU::calibrate() {
-    Serial.println("Starting IMU calibration");
+    logger->println("Starting IMU calibration");
     if(!cal.begin()) {
-        Serial.println("Calibration failed to start");
+        logger->println("Calibration failed to start");
         return false;
     }
     cal.loadCalibration();
     calibrateGyro();
     if(!calibrateMag()) {
-        Serial.println("ERROR - Magnometer failed to calibrate");
+        logger->println("ERROR - Magnometer failed to calibrate");
         return false;
     }
     cal.saveCalibration();
@@ -255,19 +256,19 @@ bool IMU::calibrate() {
 }
 
 void IMU::printCalibration() {
-    Serial.print("Gyro cal: (");
-    Serial.print(cal.gyro_zerorate[0]);
-    Serial.print(", ");
-    Serial.print(cal.gyro_zerorate[1]);
-    Serial.print(", ");
-    Serial.print(cal.gyro_zerorate[2]);
-    Serial.println(")");
-    Serial.print("Mag cal: (");
-    Serial.print(cal.mag_hardiron[0]);
-    Serial.print(", ");
-    Serial.print(cal.mag_hardiron[1]);
-    Serial.print(", ");
-    Serial.print(cal.mag_hardiron[2]);
-    Serial.println(")");
-    Serial.println("Calibration successful");
+    logger->print("Gyro cal: (");
+    logger->print(cal.gyro_zerorate[0]);
+    logger->print(", ");
+    logger->print(cal.gyro_zerorate[1]);
+    logger->print(", ");
+    logger->print(cal.gyro_zerorate[2]);
+    logger->println(")");
+    logger->print("Mag cal: (");
+    logger->print(cal.mag_hardiron[0]);
+    logger->print(", ");
+    logger->print(cal.mag_hardiron[1]);
+    logger->print(", ");
+    logger->print(cal.mag_hardiron[2]);
+    logger->println(")");
+    logger->println("Calibration successful");
 }

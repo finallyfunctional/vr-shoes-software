@@ -7,10 +7,11 @@
 #include "floatUtils.h"
 #include "pair.h"
 #include "arrayUtils.h"
+#include "logger.h"
 
 class IMU {
     public:
-    bool initialize();
+    bool initialize(Logger logger);
      void updateOrientation();
 
      bool calibrate();
@@ -30,6 +31,8 @@ class IMU {
 
      static const int updateRate = 100;
      static const int magCalValueCountsSize = 1001;
+
+     Logger* logger;
 
      Adafruit_SensorLab lab;
      Adafruit_Sensor *accelerometer, *gyroscope, *magnetometer;

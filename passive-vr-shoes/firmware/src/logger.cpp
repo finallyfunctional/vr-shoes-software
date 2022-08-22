@@ -18,6 +18,24 @@ void Logger::print(String message) {
     }
 }
 
+void Logger::println(float num) {
+    if(serial) {
+        Serial.println(num, 4);
+    }
+    if(bt && btSerial != nullptr) {
+        btSerial->println(String(num, 4));
+    }
+}
+
+void Logger::print(float num) {
+    if(serial) {
+        Serial.print(num, 4);
+    }
+    if(bt && btSerial != nullptr) {
+        btSerial->print(String(num, 4));
+    }
+}
+
 void Logger::setBluetooth(BtSerial btSerial) {
     this->btSerial = &btSerial;
 }

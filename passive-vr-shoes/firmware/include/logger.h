@@ -8,6 +8,8 @@ class Logger {
     public:
      void println(String message);
      void print(String message);
+     void println(float num);
+     void print(float num);
      void setBluetooth(BtSerial btSerial);
      void logTo(bool serial, bool bluetooth);
     private:
