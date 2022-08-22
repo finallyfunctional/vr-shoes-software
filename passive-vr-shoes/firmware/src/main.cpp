@@ -6,6 +6,8 @@
 #include "encoder.h"
 #include "vrShoeSensorData.h"
 #include "sensorDataMessenger.h"
+#include "btSerial.h"
+#include "vrShoeLogger.h"
 
 
 #define ENCODER_A 16
@@ -13,6 +15,8 @@
 
 bool core0TaskInitialized = false;
 bool imuReady = false;
+VrShoeLogger logger;
+BtSerial bt;
 IMU imu;
 VrShoeSensorData data;
 TaskHandle_t communicationTask;
@@ -37,16 +41,20 @@ void updateSensorData() {
 
 void core0Loop(void * parameters)
 {
-    Serial.println("Starting core 0 loop");
+    logger.println("Starting core 0 loop");
+    unsigned long time = 0;
     while(true) {
         yield();
-        xSemaphoreTake(dataSemaphore, portMAX_DELAY );
-        xSemaphoreGive(dataSemaphore);
+        if(time + 50 > millis()) {
+            xSemaphoreTake(dataSemaphore, portMAX_DELAY );
+            xSemaphoreGive(dataSemaphore);
+            time = millis();
+        }
     }
 }
 
 void initialzeCore0Task() {
-    Serial.println("Initializing core 0");
+    logger.println("Initializing core 0");
     xTaskCreatePinnedToCore(
         core0Loop,
         "core0Loop",
@@ -63,21 +71,22 @@ void setup() {
     Wire.begin();
 
     Serial.begin(115200);
+    bt.initialize();
+    logger.setBluetooth(bt);
+    logger.logTo(true, true);
     dataSemaphore = xSemaphoreCreateMutex();
-    Serial.println("Initializing components");
+    logger.println("Initializing components");
     Encoder::initialize(ENCODER_A, ENCODER_B);
     imuReady = imu.initialize();
-    // if(!imu.calibrate()) {
-    //     imuReady = false;
-    // }
     if (!imuReady) {
-        Serial.println("ERROR - Initializing componentas failed");
+        logger.println("ERROR - Initializing componentas failed");
     }
     else {
-        Serial.println("Ready");
+        logger.println("Ready");
     }
 
     Wire.setClock(400000);
+    //initialzeCore0Task();
 }
 
 void loop() {
@@ -85,12 +94,11 @@ void loop() {
         feedTheWatchdog();
     }
     if (!imuReady) {
-        Serial.println("Components did not initialize successfully");
+        logger.println("Components did not initialize successfully");
         delay(10000);
         return;
     }
     imu.updateOrientation();
     updateSensorData();
-    //SensorDataMessenger::serialPrintSensorData(data);
     imu.printQuaternion();
 }
