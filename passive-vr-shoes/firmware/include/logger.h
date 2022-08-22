@@ -1,10 +1,10 @@
-#ifndef VrShoeLogger_h
-#define VrShoeLogger_h
+#ifndef Logger_h
+#define Logger_h
 
 #include<Arduino.h>
 #include "btSerial.h"
 
-class VrShoeLogger {
+class Logger {
     public:
      void println(String message);
      void print(String message);

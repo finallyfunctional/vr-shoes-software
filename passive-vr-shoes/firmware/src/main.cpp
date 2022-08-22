@@ -7,15 +7,14 @@
 #include "vrShoeSensorData.h"
 #include "sensorDataMessenger.h"
 #include "btSerial.h"
-#include "vrShoeLogger.h"
-
+#include "logger.h"
 
 #define ENCODER_A 16
 #define ENCODER_B 17
 
 bool core0TaskInitialized = false;
 bool imuReady = false;
-VrShoeLogger logger;
+Logger logger;
 BtSerial bt;
 IMU imu;
 VrShoeSensorData data;

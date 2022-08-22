@@ -1,6 +1,6 @@
-#include "vrShoeLogger.h"
+#include "logger.h"
 
-void VrShoeLogger::println(String message) {
+void Logger::println(String message) {
     if(serial) {
         Serial.println(message);
     }
@@ -9,7 +9,7 @@ void VrShoeLogger::println(String message) {
     }
 }
 
-void VrShoeLogger::print(String message) {
+void Logger::print(String message) {
     if(serial) {
         Serial.print(message);
     }
@@ -18,11 +18,11 @@ void VrShoeLogger::print(String message) {
     }
 }
 
-void VrShoeLogger::setBluetooth(BtSerial btSerial) {
+void Logger::setBluetooth(BtSerial btSerial) {
     this->btSerial = &btSerial;
 }
 
-void VrShoeLogger::logTo(bool serial, bool bluetooth) {
+void Logger::logTo(bool serial, bool bluetooth) {
     this->serial = serial;
     this->bt = bluetooth;
 }
